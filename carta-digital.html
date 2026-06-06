@@ -455,12 +455,12 @@
       filter: brightness(.96) contrast(1.04) saturate(1.02);
       transition: transform 1.6s var(--ease), filter .6s var(--ease);
     }
-    /* En fotos verticales el plato siempre está en la parte baja del encuadre;
-       desplaza el anchor para que quede centrado y no haya tanto aire arriba.    */
+    /* En la mayoría de fotos verticales el plato está en la parte baja del encuadre.   */
     .dish__media.is-vertical img { object-position: center 78%; }
-    /* Override puntual por plato si alguna foto sigue saliendo descentrada       */
+    /* Overrides puntuales por plato cuando la foto no encaja con la regla general.    */
     .dish__media.is-top img    { object-position: center 30%; }
-    .dish__media.is-upper img  { object-position: center 45%; }
+    .dish__media.is-upper img  { object-position: center 40%; }
+    .dish__media.is-center img { object-position: center 50%; }
     .dish__media.is-lower img  { object-position: center 68%; }
     .dish__media.is-bottom img { object-position: center 88%; }
     .dish:hover .dish__media img { transform: scale(1.04); filter: brightness(1.02) contrast(1.05) saturate(1.05); }
@@ -1018,7 +1018,7 @@
 
       <!-- 12 -->
       <article class="dish reveal">
-        <figure class="dish__media reveal-img-wrap">
+        <figure class="dish__media reveal-img-wrap is-center">
           <img src="fotos-carta/12.jpg" alt="Uramaki de atún y kimchi" loading="lazy" />
         </figure>
         <div class="dish__body">
@@ -1121,7 +1121,7 @@
 
       <!-- 17 -->
       <article class="dish reveal">
-        <figure class="dish__media reveal-img-wrap">
+        <figure class="dish__media reveal-img-wrap is-center">
           <img src="fotos-carta/17.jpg" alt="Croquetas de kimchi" loading="lazy" />
         </figure>
         <div class="dish__body">
@@ -1138,7 +1138,7 @@
 
       <!-- 18 -->
       <article class="dish reveal">
-        <figure class="dish__media reveal-img-wrap">
+        <figure class="dish__media reveal-img-wrap is-upper">
           <img src="fotos-carta/18.jpg" alt="Nuestra versión del takoyaki" loading="lazy" />
         </figure>
         <div class="dish__body">
