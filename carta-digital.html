@@ -38,6 +38,11 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; }
+    /* Quita el cuadrado azul/gris que sale en móvil al tocar enlaces y botones */
+    a, button, [role="button"], .nav__tab, .nav__cta, .nav__brand, .footer__btn {
+      -webkit-tap-highlight-color: transparent;
+      tap-highlight-color: transparent;
+    }
 
     html {
       -webkit-font-smoothing: antialiased;
@@ -162,6 +167,7 @@
       transition: transform .4s var(--ease);
     }
     .nav__tab:hover { color: var(--paper); }
+    .nav__tab:active { color: var(--gold-bright); transform: scale(.97); transition: color .1s, transform .1s; }
     .nav__tab.is-active { color: var(--paper); }
     .nav__tab.is-active .jp { opacity: 1; }
     .nav__tab.is-active::after { transform: scaleX(1); }
@@ -179,6 +185,8 @@
       white-space: nowrap;
     }
     .nav__cta:hover { background: var(--gold-bright); transform: translateY(-1px); }
+    .nav__cta:active { background: var(--gold); transform: translateY(0) scale(.97); }
+    .nav__brand:active { color: var(--gold-bright); transition: color .1s; }
 
     @media (max-width: 720px) {
       .nav { grid-template-columns: auto minmax(0, 1fr); gap: 12px; padding: 10px 14px; }
@@ -667,6 +675,7 @@
       background: var(--gold-bright);
       transform: translateY(-2px);
     }
+    .footer__btn--primary:active { background: var(--gold); transform: translateY(0) scale(.98); }
     .footer__btn--ghost {
       background: transparent;
       color: var(--paper);
@@ -677,6 +686,7 @@
       color: var(--gold-bright);
       transform: translateY(-2px);
     }
+    .footer__btn--ghost:active { background: rgba(176,122,54,.1); transform: translateY(0) scale(.98); }
     .footer__btn svg { width: 14px; height: 14px; }
 
     .footer__contact {
