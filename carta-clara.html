@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Carta · Gula Restaurante (versión clara)</title>
+  <meta name="description" content="Carta de Gula Restaurante · Cabra, Córdoba" />
+
+  <link rel="icon" type="image/svg+xml" href="logo.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Manrope:wght@200;300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─────────────────────────────────────────────────────────
+       Gula · Carta imprimible (A4)
+       ───────────────────────────────────────────────────────── */
+
+    :root {
+      /* versión clara — papel washi crema + tinta oscura warm */
+      --paper:       #f3ead4;
+      --paper-2:     #ebe0c4;
+      --ink:         #1c1813;
+      --ink-soft:    #3a3128;
+      --ink-mute:    #8a7e6c;
+      --gold:        #a8732e;
+      --gold-soft:   #b88547;
+      --gold-bright: #c69856;
+      --claret:      #7a2a26;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #2c2924;
+      color: var(--ink);
+      font-family: 'Manrope', system-ui, sans-serif;
+      font-weight: 300;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Vista en pantalla: páginas como hojas sueltas centradas */
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 0;
+      gap: 24px;
+      min-height: 100vh;
+    }
+
+    .page {
+      position: relative;
+      width: 210mm;
+      min-height: 297mm;
+      padding: 18mm 22mm 14mm;
+      background: var(--paper);
+      background-image:
+        radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,.35), transparent 60%),
+        radial-gradient(80% 60% at 100% 100%, rgba(168,115,46,.05), transparent 70%);
+      color: var(--ink);
+      box-shadow: 0 30px 60px -20px rgba(0,0,0,.6);
+      overflow: hidden;
+    }
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 8mm;
+      border: 1px solid rgba(168,115,46,.18);
+      pointer-events: none;
+    }
+    /* Textura grano sutil */
+    .page::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .12;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    }
+
+    /* ── header (página 1) ──────────────────────────────────── */
+    .header {
+      text-align: center;
+      padding-bottom: 9mm;
+      border-bottom: 1px solid rgba(168,115,46,.25);
+      position: relative;
+    }
+    .brand-mark {
+      display: block;
+      margin: 0 auto 4mm;
+    }
+    .brand-mark svg.mark { width: 15mm; height: auto; display: block; margin: 0 auto; }
+    .brand-letras {
+      display: block;
+      margin: 0 auto;
+      color: var(--ink);
+    }
+    .brand-letras svg { height: 13mm; width: auto; display: block; margin: 0 auto; }
+    .tagline {
+      margin-top: 4mm;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 10.5pt;
+      color: var(--ink-soft);
+      letter-spacing: .02em;
+    }
+    .tagline .jp {
+      display: block;
+      font-family: 'Noto Serif JP', serif;
+      color: var(--gold);
+      font-style: normal;
+      font-size: 8.5pt;
+      letter-spacing: .25em;
+      margin-top: 1.5mm;
+    }
+
+    /* ── secciones (Sushi · Entrantes · Principales) ────────── */
+    .section {
+      margin-top: 7mm;
+    }
+    .section + .section {
+      margin-top: 5mm;
+    }
+    .section__head {
+      display: flex;
+      align-items: baseline;
+      gap: 6mm;
+      margin-bottom: 4mm;
+    }
+    .section__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: 24pt;
+      line-height: 1;
+      color: var(--ink);
+      margin: 0;
+      letter-spacing: -.005em;
+    }
+    .section__rule {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      align-self: center;
+      margin-bottom: 6pt;
+    }
+    .section__jp {
+      font-family: 'Noto Serif JP', serif;
+      color: var(--gold);
+      font-size: 13pt;
+      letter-spacing: .15em;
+    }
+
+    /* ── plato ──────────────────────────────────────────────── */
+    .dish {
+      margin-bottom: 3mm;
+      page-break-inside: avoid;
+    }
+    .dish__top {
+      display: flex;
+      align-items: baseline;
+      gap: 4mm;
+    }
+    .dish__name {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 500;
+      font-size: 9.8pt;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .dish__leader {
+      flex: 1;
+      border-bottom: 1px dotted rgba(28,24,19,.32);
+      align-self: end;
+      margin-bottom: 4pt;
+    }
+    .dish__meta {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 9.5pt;
+      color: var(--ink-mute);
+      white-space: nowrap;
+    }
+    .dish__price {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 500;
+      font-size: 11pt;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .01em;
+      white-space: nowrap;
+      min-width: 16mm;
+      text-align: right;
+    }
+    .dish__desc {
+      margin-top: 0.5mm;
+      padding-left: 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 9.5pt;
+      color: var(--ink-soft);
+      line-height: 1.3;
+      max-width: 130mm;
+    }
+
+    /* Estrellita Gadira (atún de almadraba sostenible) */
+    .gadira {
+      display: inline-block;
+      margin-left: 4pt;
+      padding: 1pt 5pt;
+      background: var(--claret);
+      color: var(--paper);
+      font-family: 'Manrope', sans-serif;
+      font-size: 6.5pt;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      border-radius: 12pt;
+      vertical-align: middle;
+      transform: translateY(-1pt);
+    }
+
+    /* ── QR card (alérgenos) ────────────────────────────────── */
+    .qr-card {
+      margin-top: 6mm;
+      padding: 4mm 6mm;
+      display: flex;
+      align-items: center;
+      gap: 7mm;
+      border: 1px solid rgba(168,115,46,.18);
+      background: linear-gradient(90deg, rgba(168,115,46,.03), transparent 70%);
+      position: relative;
+    }
+    .qr-card::before {
+      content: "";
+      position: absolute;
+      inset: 1.2mm;
+      border: 1px solid rgba(168,115,46,.06);
+      pointer-events: none;
+    }
+    .qr-card__frame {
+      width: 26mm;
+      height: 26mm;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+    .qr-card__frame img.qr {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;       /* mantiene módulos nítidos al escalar */
+    }
+    /* Logo centrado sobre el QR */
+    .qr-card__logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8mm;
+      height: 8mm;
+      padding: 1.2mm;
+      background: var(--paper);          /* recorta los módulos del QR */
+      display: grid;
+      place-items: center;
+    }
+    .qr-card__logo svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .qr-card__body {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5mm;
+      line-height: 1.25;
+    }
+    .qr-card__eyebrow {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 7.5pt;
+      color: var(--gold);
+      letter-spacing: .26em;
+    }
+    .qr-card__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 15pt;
+      color: var(--ink);
+      line-height: 1.05;
+    }
+    .qr-card__desc {
+      font-family: 'Manrope', sans-serif;
+      font-size: 8.5pt;
+      font-weight: 300;
+      color: var(--ink-mute);
+      line-height: 1.4;
+      max-width: 95mm;
+      letter-spacing: .01em;
+    }
+
+    /* ── footer (final de carta) ────────────────────────────── */
+    .footer {
+      margin-top: 7mm;
+      padding-top: 5mm;
+      border-top: 1px solid rgba(168,115,46,.25);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 6mm;
+      align-items: center;
+      text-align: center;
+    }
+    .footer__left, .footer__right {
+      font-family: 'Manrope', sans-serif;
+      font-size: 8.5pt;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      line-height: 1.7;
+    }
+    .footer__left { text-align: left; }
+    .footer__right { text-align: right; }
+    .footer__center {
+      font-family: 'Noto Serif JP', serif;
+      color: var(--gold);
+      font-size: 16pt;
+    }
+    .footer__phone {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 12pt;
+      color: var(--ink);
+      letter-spacing: .03em;
+      text-transform: none;
+      display: block;
+      margin-top: 2mm;
+    }
+
+    /* ── botón flotante (solo pantalla) ─────────────────────── */
+    .print-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 14px 22px;
+      background: var(--ink);
+      color: var(--paper);
+      border: 1px solid var(--gold);
+      font-family: 'Manrope', sans-serif;
+      font-size: 11px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 12px 28px -8px rgba(0,0,0,.4);
+      transition: transform .3s ease, background .3s ease;
+      z-index: 100;
+    }
+    .print-btn:hover {
+      background: var(--gold);
+      color: var(--ink);
+      transform: translateY(-2px);
+    }
+    .print-btn svg {
+      width: 13px; height: 13px;
+      vertical-align: middle;
+      margin-right: 8px;
+      transform: translateY(-1px);
+    }
+
+    /* ── IMPRESIÓN ─────────────────────────────────────────── */
+    @media print {
+      html, body {
+        background: var(--paper) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      body { display: block !important; gap: 0 !important; }
+      .page {
+        width: 210mm !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
+        padding: 18mm 22mm 14mm !important;
+        background: var(--paper) !important;
+        background-image: none !important;          /* sin radial-gradients */
+        box-shadow: none !important;
+        page-break-after: always;
+        page-break-inside: avoid;
+        break-after: page;
+      }
+      .page::after { display: none !important; }    /* sin grano (data URI pesado) */
+      .page:last-child { page-break-after: auto; break-after: auto; }
+      .print-btn { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ───────── PÁGINA 1 ───────── -->
+  <article class="page">
+
+    <header class="header">
+      <span class="brand-mark">
+        <svg class="mark" viewBox="48.37 637.83 264.26 204.96" aria-hidden="true">
+          <path fill="#a8732e" d="M237.6,691.5 L168.3,724.8 255.7,785.7c4.8,-10.6 7.4,-22.5 7.4,-35.1C263.1,726.5 253.4,705.7 237.6,691.5"/>
+          <path fill="#1c1813" d="m305.1,821.9c0.5,0.7 0.1,1.3 -0.3,1.9 -0.4,0.6 -1.1,0.5 -1.6,0.2 -1.1,-0.6 -32.9,-22.8 -47.8,-33.2 -0.6,-0.5 -1.3,-1.8 -2.3,-0.5 -1,1.3 0.1,1.8 1,2.4 18.4,14.2 36.6,28.7 54.4,43.7 1.3,1.1 2.8,2 3.5,3.6 0,0.5 0.3,1.1 0,1.6 -0.9,1.4 -2.7,0.4 -4,-0.6 -17.7,-14.2 -35.5,-28.3 -53.3,-42.4 -4,-3.2 -4,-3.2 -6.9,0.9 -12.7,17.8 -29.9,28.6 -51.4,31.9 -19.3,3 -37.1,-1.2 -53.1,-12.6 -18.7,-13.3 -31.5,-30.8 -36.1,-53.6 -1.5,-7.2 -1.6,-14.5 -1.1,-21.8 1,-12.9 3.7,-25.4 10.3,-36.7 1.3,-2.2 2.4,-4.4 4,-6.4 1.3,-1.5 0.8,-2.2 -0.5,-3.2 -11.7,-8.7 -23.2,-17.7 -34.9,-26.3 -11.4,-8.4 -23,-16.4 -34.5,-24.6 -0.8,-0.6 -1.8,-1 -1.6,-2.4 0.4,-1.7 1.9,-2.4 3.7,-1.5 0,-0.5 0,-0.9 -0,-1.3 -0,-1.1 0,-2.2 1.2,-2.6 1,-0.3 1.8,0.4 2.5,1 6.6,5.8 13.2,11.6 19.8,17.3 12.2,10.4 24.8,20.3 37.6,30 17.3,13 59.1,39.9 60.5,40.9 1.1,0.8 1.7,0.5 1.7,-0.9 0,-1.9 0.9,-59.1 0.2,-75.9 -0.1,-1.7 -0.2,-3.5 0.7,-5.1 0.5,-0.9 1.1,-1.7 2.1,-1.7 1.1,0 1.8,0.8 2.3,1.9 0.6,1.4 0.6,2.9 0.6,4.4 -0.1,15.6 1.3,82.5 1.5,83.2 0.3,1 1.2,1.8 2.1,1.6 1,-0.1 0.5,-1.3 0.5,-2 0,-6 0,-68.2 0,-83.5 0,-1.4 0,-2.8 0.7,-4 1.2,-2.1 3.2,-2.1 4.4,0 0.7,1.3 0.7,2.6 0.7,4 -0,9.5 1,80 1,88.7 0,1.7 0.5,2.8 1.9,3.6C198.5,744.2 304.6,821.3 305.1,821.9"/>
+            <path fill="#f3ead4" d="M154.2,743.3L169.4,743.3L169.4,740.6L153.8,740.6c-0.5,-4.1 -0.5,-8.1 -0.5,-11.5l-2.8,-0c-0,3.4 0,7.4 -0.5,11.5L134.3,740.6L134.3,743.3l15.2,-0c-1.5,8 -5.4,15.8 -15.8,20 0.7,0.6 1.5,1.5 1.9,2.2 10.2,-4.4 14.4,-12.1 16.3,-19.9 1.8,7.8 6.1,15.5 16.3,19.9 0.4,-0.7 1.2,-1.7 1.9,-2.2C159.6,759.2 155.7,751.3 154.2,743.3"/>
+            <path fill="#f3ead4" d="m165.6,771.9l-7.5,-0l0,5.5l7.5,-0zM146.3,795.7l0,-4.1l-10.9,-0l0,-2.3l10.9,-0l0,-3.9l-11.8,-0l0,-2.4l11.8,-0l0,-3l2.7,-0l0,24.4l-2.7,-0l0,-6.3l-12.7,-0l0,-2.5zM170.1,795.7l0,2.5l-12.7,-0l0,6.3l-2.7,-0l0,-24.4l2.7,-0l0,3l11.8,-0l0,2.4l-11.8,-0l0,3.9l10.9,-0l0,2.3l-10.9,-0l0,4.1zM155.6,771.9l-7.4,-0l0,5.5l7.4,-0zM145.8,771.9l-7.1,-0l0,5.5l7.1,-0zM168.2,779.7l-32.2,-0l0,-10l32.2,-0z"/>
+        </svg>
+      </span>
+      <span class="brand-letras">
+        <svg viewBox="291.38 618.13 454.17 288.97" aria-hidden="true">
+          <g fill="currentColor">
+            <path d="M415.4,865.3C419.5,865.3 421.7,863.5 421.7,860.3 421.7,857.1 419.5,855.2 415.4,855.2L409.9,855.2L409.9,865.3ZM421.8,872.6 L417.2,866.4C416.6,866.5 416,866.5 415.4,866.5L409.9,866.5L409.9,872.6L408.5,872.6L408.5,854L415.4,854c4.8,-0 7.7,2.3 7.7,6.3 0,2.9 -1.6,5 -4.5,5.8l4.8,6.5z"/>
+            <path d="m455.1,871.4l0,1.2l-13.2,-0l0,-18.6l12.8,-0L454.7,855.2L443.3,855.2L443.3,862.6l10.2,-0L453.5,863.8l-10.2,-0l0,7.6z"/>
+            <path d="m472,870.2 l0.6,-1c1.3,1.3 3.8,2.3 6.3,2.3 3.8,-0 5.5,-1.6 5.5,-3.6 0,-5.6 -12,-2.2 -12,-9.1 0,-2.6 2.1,-4.9 6.8,-4.9 2.1,-0 4.3,0.6 5.8,1.7L484.5,856.7c-1.6,-1.1 -3.5,-1.6 -5.3,-1.6 -3.7,-0 -5.4,1.7 -5.4,3.7 0,5.6 12,2.3 12,9 0,2.6 -2.2,4.9 -6.9,4.9C476.1,872.7 473.4,871.7 472,870.2"/>
+            <path d="M507.7,855.2L500.8,855.2L500.8,854L516,854L516,855.2L509.1,855.2L509.1,872.6L507.7,872.6Z"/>
+            <path d="M543.5,866.2 L538.5,855.5 533.5,866.2ZM544,867.4l-11.1,-0l-2.4,5.2l-1.5,-0l8.8,-18.6l1.4,-0L548,872.6L546.5,872.6Z"/>
+            <path d="M564.6,864.7L564.6,854L566,854L566,864.7c0,4.6 2.3,6.8 6.3,6.8 4,-0 6.3,-2.2 6.3,-6.8l0,-10.6l1.4,-0L580,864.7c0,5.3 -2.9,8 -7.7,8C567.5,872.7 564.6,870 564.6,864.7"/>
+            <path d="M606.3,865.3C610.4,865.3 612.6,863.5 612.6,860.3 612.6,857.1 610.4,855.2 606.3,855.2L600.8,855.2L600.8,865.3ZM612.7,872.6 L608.2,866.4C607.6,866.5 607,866.5 606.3,866.5L600.8,866.5L600.8,872.6L599.4,872.6L599.4,854L606.3,854c4.8,-0 7.7,2.3 7.7,6.3 0,2.9 -1.6,5 -4.5,5.8l4.8,6.5z"/>
+            <path d="M647.8,866.2 L642.8,855.5 637.8,866.2ZM648.3,867.4l-11.1,-0l-2.4,5.2l-1.5,-0l8.8,-18.6l1.4,-0L652.3,872.6l-1.5,-0z"/>
+            <path d="m682.2,854l0,18.6l-1.1,-0l-13.1,-16.1l0,16.1l-1.4,-0L666.6,854l1.2,-0l13,16.1 0,-16.1z"/>
+            <path d="m706.3,855.2l-6.9,-0l0,-1.2l15.2,-0L714.6,855.2L707.7,855.2L707.7,872.6L706.3,872.6Z"/>
+            <path d="m745,871.4l0,1.2l-13.2,-0l0,-18.6l12.8,-0L744.6,855.2L733.1,855.2L733.1,862.6l10.2,-0L743.4,863.8L733.1,863.8L733.1,871.4Z"/>
+            <path d="m402.4,788.9c-11,21.2 -23.5,42.2 -35.3,59.1 -21.9,32 -47.7,46.8 -55.1,42.5l-0,-0c-1.2,-0.6 -2,-1.9 -2.4,-3.5 -0.6,-3 -0.6,-11.9 13.6,-30.2C341.7,833.3 371.2,807.9 402.4,788.9m174.6,-69c7.5,-21.2 15.1,-38 22.6,-50.1 6.9,-10.9 11,-14.7 12.3,-14.7 0.1,-0 0.2,0 0.2,0 0.8,0.4 0.4,4.5 -5.8,16.7C598,688.4 586,706.8 577,719.9M744.8,742.1c-0.3,-0.8 -1,-1.3 -1.9,-1.4 -1.3,-0.2 -3.5,0.5 -5.2,2.9 -9.9,11.8 -35.7,27.6 -48.7,24.7 -3,-0.7 -5.1,-2.3 -6.5,-4.7 -2.7,-4.8 -2.2,-12.7 1.4,-23.7 0.8,-2.4 0.1,-4.6 -1.7,-5.8 -2.4,-1.5 -6.8,-1.3 -11.1,2.7 -0.4,0.4 -1.3,1.4 -2.5,2.6 -5.9,6.3 -21.7,23.1 -25,22.8 -0.2,-0 -0.3,-0.1 -0.3,-0.2 -1.7,-2.3 0.5,-9 2,-12.2 6.4,-15.7 20.4,-25.3 29.5,-24.4 4.7,0.4 8.5,3 10.9,7.4 1,2.5 2.9,4.2 5,4.5 1.3,0.2 2.5,-0.3 3.2,-1.2 0.8,-1.1 0.8,-2.8 -0.1,-4.6 -3.7,-7.7 -11.3,-10.2 -17,-11 -11.1,-1.6 -22.8,1.7 -32.3,9 -5,3.9 -9.1,8.7 -12,14 -3.4,5 -6.6,10.4 -10,16.1 -0.9,1.4 -1.7,2.9 -2.6,4.4C600.9,796 574.5,828.7 561.5,825.2l-0,-0c-2.7,-0.7 -4.8,-2.6 -6.2,-5.6 -7.9,-17.1 9.2,-67.3 15.4,-80.2 31.5,-41 48.4,-69.8 51.7,-88 1.4,-7.5 -0,-12.7 -4,-14.8 -4.2,-2.2 -10.8,-0.2 -16,5C586.6,658 568.6,703.7 557,743.6c-3.1,3.7 -11,13.1 -20.2,20.9 -9.6,8.2 -17.4,12.1 -23,11.6 -1.8,-0.4 -3.1,-1.4 -3.8,-3.1 -2,-4.2 -0.4,-12.1 4.4,-22.1 1.3,-2.8 0.6,-5.6 -1.7,-7.4 -2.4,-1.8 -6.4,-2.3 -10.2,0.9 -0.7,0.7 -2.2,3 -4.3,6.3 -4.5,6.9 -11.3,17.4 -16.8,21.9 -2.1,1.9 -4.2,2.8 -5.2,2.3 -0.7,-0.4 -0.9,-1.6 -0.6,-3.5l0,-0c0.9,-5.2 5.3,-15.3 8.7,-23.4 2.3,-5.3 4.3,-10 5,-12.4 1.1,-4.4 -0.2,-8.2 -3.1,-9.6 -2.8,-1.3 -6.3,0 -8.9,3.5C475.4,732.3 472.6,737.5 469.9,743.7 459.9,748.9 449.3,754.9 439,760.7 433.1,764 427,767.5 421.2,770.7c12.1,-29.5 20.4,-64.4 22.1,-82.5 0.1,-5.8 -1.1,-9.9 -3.4,-11.1 -1,-0.6 -2.2,-0.5 -3.2,0.2C435,678.3 433.3,681.3 433.8,686.2 432.2,700.8 416.7,719.9 393.1,736.2 369.8,752.4 344.3,761.9 326.8,761.2c-11.8,-0.5 -20.2,-4.8 -24.3,-12.3 -6.2,-11.5 -2.1,-30 11.9,-53.6 20.4,-34.9 61.2,-63 84.1,-64.8 9.7,-0.7 16.5,3.5 19.1,11.9 5.1,16.4 -6.8,36.8 -20.6,44.9 -3,1.8 -4.6,4.5 -4.2,7.2 0.3,2.3 2,4.2 4.2,4.8 1.7,0.5 6,0.9 11.1,-5.2 12.6,-15.4 20.7,-48.5 12.1,-65.2 -3.7,-7.3 -10.4,-10.8 -19.2,-10.2 -11.6,0.8 -26.9,7.8 -42.8,19.7 -15.5,11.6 -30.7,26.9 -42.9,43.3 -30.6,40.6 -27.7,72.5 -11.3,86.2 10.7,9 26.8,10.3 46.3,3.8 17.8,-5.9 37.8,-18.2 54.8,-33.6C420.1,724.4 430.7,710.2 434.9,698.5 430,728.9 421.6,748.1 407.7,778.3c-44,25.4 -72.8,47.6 -90.6,69.8 -17.1,21.6 -23.1,40.8 -15.8,51.3 3.3,4.7 8.8,7.2 15.8,7.2 3.6,-0 7.5,-0.6 11.7,-2 20.3,-6.4 41.9,-28.9 59.1,-61.6 9.2,-17.5 21.7,-41.4 30.2,-63.5 16.7,-9.8 33.3,-19 48.5,-26.9 -0.7,2.2 -1.2,4.4 -1.7,6.5C463.4,766.5 463.2,775.9 470.7,779.5c10.9,5.4 20.6,-6.1 28.6,-16.2 -2,5.3 -1.9,10 0.2,13.4 2,3.4 5.9,5.3 11.3,5.6 0.5,0 1,0 1.5,0 8.4,-0 17.5,-3.9 27.2,-11.7 4.9,-4 9.5,-8.5 13.6,-13 -9.1,33.6 -10.3,54.9 -3.5,65.1 2.5,3.7 6,5.9 10.6,6.4 0.5,0.1 0.9,0.1 1.4,0.1 16.5,-0 44.5,-30 61.6,-58.8 1.5,-2.4 2.9,-4.8 4.3,-7.1 0.4,4.5 2.2,7.8 5.1,9.3 11.5,6 24.5,-10.8 33,-21.8 2.1,-2.7 3.8,-4.9 5.2,-6.4 -3.5,7.5 -3.7,15 -0.5,20.7 2.9,5.4 8.6,8.7 16.1,9.4 1.4,0.2 2.8,0.2 4.2,0.2 19,-0 40.2,-13.3 52.1,-27.4 2.6,-2.8 2.5,-4.5 2.2,-5.3"/>
+          </g>
+        </svg>
+      </span>
+      <div class="tagline">
+        Cocina japonesa con producto del sur
+        <span class="jp">献立 · Carta</span>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="section__head">
+        <span class="section__jp">寿司</span>
+        <h2 class="section__title">Sushi</h2>
+        <span class="section__rule"></span>
+      </div>
+
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nigiri del abuelo Antonio</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 piezas</span>
+          <span class="dish__price">5,70&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Atún rojo, panko y aire del jugo del «picaíllo».</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nigiri flameado de ventresca y foie</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 piezas</span>
+          <span class="dish__price">6,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con ralladura de corazón de atún curado.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nigiri de anguila</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 piezas</span>
+          <span class="dish__price">6,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con foie flameado.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nigiri de salmón y ajo negro</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 piezas</span>
+          <span class="dish__price">5,70&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Mahonesa de ajo negro y alcaparra.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nigiri de salmón al teriyaki</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 piezas</span>
+          <span class="dish__price">5,50&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Pez mantequilla con salsa de trufa negra.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nigiri de dorada</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 piezas</span>
+          <span class="dish__price">5,50&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con mantequilla dulce picante.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nigiri de butterfish</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 piezas</span>
+          <span class="dish__price">5,70&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con mahonesa de trufa negra.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nigiri de boletus</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 piezas</span>
+          <span class="dish__price">5,20&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con papada ibérica y chip de ajo.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nigiri de jamón de pato</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 piezas</span>
+          <span class="dish__price">6,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con reducción de mango y cebolla.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Uramaki de salmón y aguacate</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">8 piezas</span>
+          <span class="dish__price">12,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con salsa unagi y cebolla frita.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Uramaki de atún picante</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">8 piezas</span>
+          <span class="dish__price">13,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con aguacate y salsa picante.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Uramaki de atún y kimchi</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">8 piezas</span>
+          <span class="dish__price">13,50&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con topping de salmón, mayo kimchi, lima y cebollino.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Uramaki de la casita</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">8 piezas</span>
+          <span class="dish__price">12,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Membrillo, foie y panko crunch.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Futomaki rainbow</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">12 piezas</span>
+          <span class="dish__price">15,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Atún rojo, pez mantequilla, salmón y aguacate.</p>
+      </div>
+
+
+    </section>
+
+  </article>
+
+
+  <!-- ───────── PÁGINA 2 ───────── -->
+  <article class="page">
+
+    <section class="section" style="margin-top: 4mm;">
+      <div class="section__head">
+        <span class="section__jp">前菜</span>
+        <h2 class="section__title">Entrantes</h2>
+        <span class="section__rule"></span>
+      </div>
+
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Tartar de atún rojo con ajoblanco</span>
+          <span class="dish__leader"></span>
+          <span class="dish__price">20,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con crujiente de miel de caña y aire de ponzu.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Ensaladilla de gambón</span>
+          <span class="dish__leader"></span>
+          <span class="dish__price">14,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Gambón, panko y mahonesa japonesa.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Croquetas de kimchi</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">6 unidades</span>
+          <span class="dish__price">12,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con leche de oveja y sashimi de atún rojo.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Nuestra versión del takoyaki</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">6 unidades</span>
+          <span class="dish__price">12,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con leche de oveja, pulpo, salsa unagi, katsuobushi y caldo dashi.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Dumplings fritos</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">6 unidades</span>
+          <span class="dish__price">12,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Relleno de alita de pollo a baja temperatura.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Gyozas de carrillera</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 unidades</span>
+          <span class="dish__price">12,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Relleno del guiso tradicional cordobés.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Pan bao de panceta ibérica</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 unidades</span>
+          <span class="dish__price">13,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Cocinada a baja temperatura durante 9 horas.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Baozi de calamares</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 unidades</span>
+          <span class="dish__price">15,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Relleno de calamares «encebollaos».</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Baozi de bolognese</span>
+          <span class="dish__leader"></span>
+          <span class="dish__meta">2 unidades</span>
+          <span class="dish__price">14,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Relleno de ragú de ternera y cerdo.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__head">
+        <span class="section__jp">主菜</span>
+        <h2 class="section__title">Principales</h2>
+        <span class="section__rule"></span>
+      </div>
+
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Katsu curry</span>
+          <span class="dish__leader"></span>
+          <span class="dish__price">16,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con arroz y lomo ibérico.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Udon de carbonara</span>
+          <span class="dish__leader"></span>
+          <span class="dish__price">19,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con guanchale y pecorino romano.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Magret de pato de Navarra</span>
+          <span class="dish__leader"></span>
+          <span class="dish__price">21,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Salsa de trufa y foie, setas de temporada y zanahorias baby.</p>
+      </div>
+
+      <div class="dish">
+        <div class="dish__top">
+          <span class="dish__name">Tteokbokki en salsa de gochujang</span>
+          <span class="dish__leader"></span>
+          <span class="dish__price">18,00&nbsp;€</span>
+        </div>
+        <p class="dish__desc">Con mollejas de cordero y setas shitake.</p>
+      </div>
+    </section>
+
+    <aside class="qr-card" aria-label="QR para carta digital y alérgenos">
+      <div class="qr-card__frame">
+        <img class="qr" alt="QR carta digital y alérgenos" src="data:image/png;base64,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" />
+        <span class="qr-card__logo" aria-hidden="true">
+          <svg viewBox="48.37 637.83 264.26 204.96">
+            <path fill="#a8732e" d="M237.6,691.5 L168.3,724.8 255.7,785.7c4.8,-10.6 7.4,-22.5 7.4,-35.1C263.1,726.5 253.4,705.7 237.6,691.5"/>
+            <path fill="#1c1813" d="m305.1,821.9c0.5,0.7 0.1,1.3 -0.3,1.9 -0.4,0.6 -1.1,0.5 -1.6,0.2 -1.1,-0.6 -32.9,-22.8 -47.8,-33.2 -0.6,-0.5 -1.3,-1.8 -2.3,-0.5 -1,1.3 0.1,1.8 1,2.4 18.4,14.2 36.6,28.7 54.4,43.7 1.3,1.1 2.8,2 3.5,3.6 0,0.5 0.3,1.1 0,1.6 -0.9,1.4 -2.7,0.4 -4,-0.6 -17.7,-14.2 -35.5,-28.3 -53.3,-42.4 -4,-3.2 -4,-3.2 -6.9,0.9 -12.7,17.8 -29.9,28.6 -51.4,31.9 -19.3,3 -37.1,-1.2 -53.1,-12.6 -18.7,-13.3 -31.5,-30.8 -36.1,-53.6 -1.5,-7.2 -1.6,-14.5 -1.1,-21.8 1,-12.9 3.7,-25.4 10.3,-36.7 1.3,-2.2 2.4,-4.4 4,-6.4 1.3,-1.5 0.8,-2.2 -0.5,-3.2 -11.7,-8.7 -23.2,-17.7 -34.9,-26.3 -11.4,-8.4 -23,-16.4 -34.5,-24.6 -0.8,-0.6 -1.8,-1 -1.6,-2.4 0.4,-1.7 1.9,-2.4 3.7,-1.5 0,-0.5 0,-0.9 -0,-1.3 -0,-1.1 0,-2.2 1.2,-2.6 1,-0.3 1.8,0.4 2.5,1 6.6,5.8 13.2,11.6 19.8,17.3 12.2,10.4 24.8,20.3 37.6,30 17.3,13 59.1,39.9 60.5,40.9 1.1,0.8 1.7,0.5 1.7,-0.9 0,-1.9 0.9,-59.1 0.2,-75.9 -0.1,-1.7 -0.2,-3.5 0.7,-5.1 0.5,-0.9 1.1,-1.7 2.1,-1.7 1.1,0 1.8,0.8 2.3,1.9 0.6,1.4 0.6,2.9 0.6,4.4 -0.1,15.6 1.3,82.5 1.5,83.2 0.3,1 1.2,1.8 2.1,1.6 1,-0.1 0.5,-1.3 0.5,-2 0,-6 0,-68.2 0,-83.5 0,-1.4 0,-2.8 0.7,-4 1.2,-2.1 3.2,-2.1 4.4,0 0.7,1.3 0.7,2.6 0.7,4 -0,9.5 1,80 1,88.7 0,1.7 0.5,2.8 1.9,3.6C198.5,744.2 304.6,821.3 305.1,821.9"/>
+            <path fill="#f3ead4" d="M154.2,743.3L169.4,743.3L169.4,740.6L153.8,740.6c-0.5,-4.1 -0.5,-8.1 -0.5,-11.5l-2.8,-0c-0,3.4 0,7.4 -0.5,11.5L134.3,740.6L134.3,743.3l15.2,-0c-1.5,8 -5.4,15.8 -15.8,20 0.7,0.6 1.5,1.5 1.9,2.2 10.2,-4.4 14.4,-12.1 16.3,-19.9 1.8,7.8 6.1,15.5 16.3,19.9 0.4,-0.7 1.2,-1.7 1.9,-2.2C159.6,759.2 155.7,751.3 154.2,743.3"/>
+            <path fill="#f3ead4" d="m165.6,771.9l-7.5,-0l0,5.5l7.5,-0zM146.3,795.7l0,-4.1l-10.9,-0l0,-2.3l10.9,-0l0,-3.9l-11.8,-0l0,-2.4l11.8,-0l0,-3l2.7,-0l0,24.4l-2.7,-0l0,-6.3l-12.7,-0l0,-2.5zM170.1,795.7l0,2.5l-12.7,-0l0,6.3l-2.7,-0l0,-24.4l2.7,-0l0,3l11.8,-0l0,2.4l-11.8,-0l0,3.9l10.9,-0l0,2.3l-10.9,-0l0,4.1zM155.6,771.9l-7.4,-0l0,5.5l7.4,-0zM145.8,771.9l-7.1,-0l0,5.5l7.1,-0zM168.2,779.7l-32.2,-0l0,-10l32.2,-0z"/>
+          </svg>
+        </span>
+      </div>
+      <div class="qr-card__body">
+        <span class="qr-card__eyebrow">献立 · アレルゲン</span>
+        <span class="qr-card__title">Carta digital y alérgenos</span>
+        <span class="qr-card__desc">Escanea con la cámara del móvil para consultar la información detallada de cada plato y los alérgenos.</span>
+      </div>
+    </aside>
+
+    <footer class="footer">
+      <div class="footer__left">
+        Gula Restaurante<br>
+        Cabra · Córdoba
+      </div>
+      <div class="footer__center" aria-hidden="true">和</div>
+      <div class="footer__right">
+        Reservas
+        <span class="footer__phone">667 09 98 28</span>
+      </div>
+    </footer>
+
+  </article>
+
+  <button class="print-btn" type="button" onclick="window.print()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v7H6z" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Imprimir / Guardar PDF
+  </button>
+
+</body>
+</html>
