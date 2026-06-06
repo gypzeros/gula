@@ -49,6 +49,7 @@
       -moz-osx-font-smoothing: grayscale;
       scroll-behavior: smooth;
       -webkit-text-size-adjust: 100%;
+      overflow-x: clip;        /* clip constraint sin romper smooth scroll */
     }
     body {
       margin: 0;
@@ -59,11 +60,11 @@
       font-size: 16px;
       line-height: 1.6;
       letter-spacing: .005em;
-      overflow-x: clip;        /* clip no rompe el smooth scroll en iOS (a diferencia de hidden) */
+      overflow-x: clip;
     }
-    /* Fallback para navegadores sin soporte de overflow-x: clip */
+    /* Fallback para navegadores sin soporte de overflow-x: clip (Safari < 16) */
     @supports not (overflow-x: clip) {
-      body { overflow-x: hidden; }
+      html, body { overflow-x: hidden; }
     }
     img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
