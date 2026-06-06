@@ -451,9 +451,18 @@
     .dish__media img {
       width: 100%; height: 100%;
       object-fit: cover;
+      object-position: center 50%;
       filter: brightness(.96) contrast(1.04) saturate(1.02);
       transition: transform 1.6s var(--ease), filter .6s var(--ease);
     }
+    /* En fotos verticales el plato siempre está en la parte baja del encuadre;
+       desplaza el anchor para que quede centrado y no haya tanto aire arriba.    */
+    .dish__media.is-vertical img { object-position: center 78%; }
+    /* Override puntual por plato si alguna foto sigue saliendo descentrada       */
+    .dish__media.is-top img    { object-position: center 30%; }
+    .dish__media.is-upper img  { object-position: center 45%; }
+    .dish__media.is-lower img  { object-position: center 68%; }
+    .dish__media.is-bottom img { object-position: center 88%; }
     .dish:hover .dish__media img { transform: scale(1.04); filter: brightness(1.02) contrast(1.05) saturate(1.05); }
     /* photo subtle vignette */
     .dish__media::after {
@@ -1352,6 +1361,18 @@
 
 
   <script>
+    /* ── Auto-detect vertical photos and adjust crop anchor ─────── */
+    document.querySelectorAll('.dish__media img').forEach(img => {
+      const tagVertical = () => {
+        if (img.naturalHeight > img.naturalWidth) {
+          img.closest('.dish__media').classList.add('is-vertical');
+        }
+      };
+      if (img.complete && img.naturalWidth > 0) tagVertical();
+      else img.addEventListener('load', tagVertical, { once: true });
+    });
+
+
     /* ── Reveal on scroll (graceful, never hides JS-off content) ── */
     const revealables = document.querySelectorAll('.reveal, .reveal-img-wrap');
 
