@@ -188,6 +188,9 @@ function applySettings(s) {
   const main  = $("#statusMain");
   const asapTime = $("#asapTime");
 
+  // Marca el <body> para que el CSS oculte/muestre la carta
+  document.body.classList.toggle("is-closed", !s.enabled);
+
   if (s.enabled) {
     card.classList.remove("is-closed");
     label.textContent = "Aceptando pedidos";

@@ -790,6 +790,20 @@
       border-color: var(--gold);
       background: linear-gradient(180deg, rgba(176,122,54,.08), rgba(28,24,19,.5));
     }
+
+
+    /* ── estado "cerrado": oculta la carta y deja solo el aviso ── */
+    body.is-closed .layout,
+    body.is-closed .nav__tabs,
+    body.is-closed .cart-bar {
+      display: none !important;
+    }
+    body.is-closed .status {
+      padding-bottom: 100px;        /* deja espacio respirable cuando no hay nada más */
+    }
+    body.is-closed .head__lede {
+      opacity: .5;
+    }
   </style>
 </head>
 <body>
