@@ -295,10 +295,57 @@ function renderOrders() {
       const next = btn.dataset.statusAction;
       btn.disabled = true;
       await updateOrderStatus(orderId, next);
-      // El SMS al cliente lo dispara la Cloud Function onOrderWrite
-      // automáticamente cuando ve el cambio de status. Aquí no hacemos nada.
+
+      // Avisar al cliente por WhatsApp con texto prefab:
+      //  · al confirmar (pending → preparing)
+      //  · al marcar como listo (preparing → ready)
+      // Solo se abre la ventana con el mensaje ya redactado — el admin
+      // pulsa "Enviar" en WhatsApp Business y listo.
+      const order = allOrders.find((o) => o.id === orderId);
+      if (!order) return;
+      if (next === "preparing") openWhatsAppPrefab(order, "confirmed");
+      if (next === "ready")     openWhatsAppPrefab(order, "ready");
     });
   });
+
+  // Botón "Reenviar WhatsApp" en pedidos ya en estado ready
+  $$('[data-resend-wa]').forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const order = allOrders.find((o) => o.id === btn.dataset.orderId);
+      if (order) openWhatsAppPrefab(order, "ready");
+    });
+  });
+}
+
+// ─── Aviso al cliente por WhatsApp (prefab, manual) ───────────
+function phoneDigits(raw) {
+  // Limpia el teléfono dejando solo dígitos para wa.me
+  // Asume +34 si llegan 9 dígitos
+  const d = String(raw || "").replace(/[^\d]/g, "");
+  if (d.length === 9) return "34" + d;
+  return d;
+}
+
+function openWhatsAppPrefab(o, kind) {
+  const phone = phoneDigits(o.customer.phone);
+  const pickup = o.pickupTime?.toDate ? o.pickupTime.toDate() : new Date(o.pickupTime);
+  const pickupStr = `${String(pickup.getHours()).padStart(2,"0")}:${String(pickup.getMinutes()).padStart(2,"0")}`;
+  const minsLeft = Math.max(1, Math.round((pickup.getTime() - Date.now()) / 60_000));
+
+  let text;
+  if (kind === "confirmed") {
+    const when = o.scheduled
+      ? `Te lo tendremos listo a las *${pickupStr}*`
+      : `Te lo tendremos listo en unos *${minsLeft} min*`;
+    text = `¡Hola ${o.customer.name}! 🍣\nHemos confirmado tu pedido *${o.number}* en Gula. ${when}.\nTe avisaremos cuando esté listo para recoger.`;
+  } else if (kind === "ready") {
+    text = `¡${o.customer.name}, tu pedido *${o.number}* está listo para recoger! 🍣\nTe esperamos en C/ Rafael Leña Caballero, bloque 2 — Cabra.\n¡Gracias!`;
+  } else {
+    text = `Hola ${o.customer.name}, te escribo desde Gula sobre tu pedido ${o.number}.`;
+  }
+
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank", "noopener");
 }
 
 function renderOrder(o) {
@@ -338,8 +385,6 @@ function renderOrder(o) {
 }
 
 function nextActions(o) {
-  // WhatsApp manual como red de seguridad si el SMS no llegó o el cliente prefiere ese canal.
-  const wa = `https://wa.me/${o.customer.phone.replace(/[^\d]/g, "")}?text=${encodeURIComponent(`Hola ${o.customer.name}, te escribo desde Gula sobre tu pedido ${o.number}.`)}`;
   switch (o.status) {
     case "pending":
       return `
@@ -352,7 +397,7 @@ function nextActions(o) {
       `;
     case "ready":
       return `
-        <a class="action-btn action-btn--ghost" href="${wa}" target="_blank" rel="noopener" title="Contacto manual por WhatsApp (el SMS ya se envió automáticamente)">WhatsApp</a>
+        <button class="action-btn action-btn--ghost" data-resend-wa data-order-id="${o.id}" title="Volver a abrir WhatsApp con el mensaje 'listo para recoger'">Reenviar WhatsApp</button>
         <button class="action-btn action-btn--primary" data-status-action="picked_up" data-order-id="${o.id}">Recogido</button>
       `;
     case "picked_up":

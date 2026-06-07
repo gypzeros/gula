@@ -2,8 +2,7 @@
 
 import { MENU, CATEGORIES, MENU_BY_ID, formatEUR } from "./menu-data.js";
 import { listenSettings, createOrder, ensureSettingsExist } from "./order-store.js";
-// Los emails ahora los manda la Cloud Function al detectar el nuevo doc en
-// /orders. No hay nada que disparar desde aquí.
+import { sendOrderNotification } from "./email-notify.js";
 
 // ─── Estado en memoria ─────────────────────────────────────────
 const cart = new Map();     // id → qty
@@ -409,19 +408,14 @@ $$(".time-options__btn").forEach((btn) => {
 $("#submitOrder").addEventListener("click", async () => {
   const name  = $("#customerName").value.trim();
   const phone = $("#customerPhone").value.trim();
-  const email = $("#customerEmail").value.trim();
   const notes = $("#customerNotes").value.trim();
 
-  if (!name || !phone || !email) {
-    alert("Por favor, completa nombre, teléfono y email.");
+  if (!name || !phone) {
+    alert("Por favor, completa nombre y teléfono.");
     return;
   }
   if (!/^[\+\d\s\-]{9,}$/.test(phone)) {
     alert("El teléfono no parece válido. Pónlo con prefijo +34.");
-    return;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    alert("El email no parece válido.");
     return;
   }
 
@@ -464,7 +458,7 @@ $("#submitOrder").addEventListener("click", async () => {
 
   try {
     const order = await createOrder({
-      customer: { name, phone, email },
+      customer: { name, phone },
       items,
       total,
       pickupTime,
@@ -475,8 +469,9 @@ $("#submitOrder").addEventListener("click", async () => {
     cart.clear();
     saveCart();
     updateCartUI();
-    // Los 4 emails (cliente recibido / confirmado / listo + admin nuevo) los
-    // dispara la Cloud Function onOrderWrite al detectar el cambio en Firestore.
+    // Aviso al admin por email (fire-and-forget, no bloquea la UX).
+    // Solo se manda si hay un email configurado en /settings.
+    sendOrderNotification({ order, toEmail: settings.notificationEmail });
   } catch (err) {
     console.error(err);
     alert("Algo ha ido mal. Inténtalo de nuevo o llámanos al 667 09 98 28.");

@@ -71,9 +71,6 @@ export async function createOrder({ customer, items, total, pickupTime, schedule
     notes: notes || "",
     status: "pending",
     createdAt: serverTimestamp(),
-    // La Cloud Function escribe timestamps al mandar cada email:
-    // mailSent.customerReceived / customerConfirmed / customerReady / adminNew
-    mailSent: {},
   };
   const ref = await addDoc(ORDERS_REF, payload);
   return { id: ref.id, ...payload };
