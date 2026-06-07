@@ -235,15 +235,44 @@ function renderOrders() {
 
   $("#ordersList").innerHTML = list.map(renderOrder).join("");
 
-  // Eventos para los botones
+  // Eventos para los botones de cambio de estado
   $$('[data-status-action]').forEach((btn) => {
     btn.addEventListener("click", async () => {
       const orderId = btn.dataset.orderId;
       const next = btn.dataset.statusAction;
       btn.disabled = true;
       await updateOrderStatus(orderId, next);
+
+      // Al CONFIRMAR el pedido (pending → preparing): avisar al cliente.
+      // TODO: cuando esté configurado Twilio, esto se moverá a una Cloud
+      // Function que dispara el SMS de forma automática (sin intervención).
+      // Mientras tanto: abrimos WhatsApp con el mensaje prefab y el admin
+      // solo tiene que pulsar enviar.
+      if (next === "preparing") {
+        const order = allOrders.find((o) => o.id === orderId);
+        if (order) openWhatsAppConfirmation(order);
+      }
     });
   });
+}
+
+// ─── Mensajes para el cliente vía WhatsApp ────────────────────
+function buildPhoneE164(raw) {
+  // Limpia el teléfono dejando solo dígitos para wa.me
+  return raw.replace(/[^\d]/g, "");
+}
+
+function openWhatsAppConfirmation(o) {
+  const phone = buildPhoneE164(o.customer.phone);
+  const pickup = o.pickupTime?.toDate ? o.pickupTime.toDate() : new Date(o.pickupTime);
+  const pickupStr = `${String(pickup.getHours()).padStart(2,"0")}:${String(pickup.getMinutes()).padStart(2,"0")}`;
+  const minsLeft = Math.max(1, Math.round((pickup.getTime() - Date.now()) / 60_000));
+  const when = o.scheduled
+    ? `Te lo tenemos listo a las ${pickupStr}`
+    : `Te lo tenemos listo en unos ${minsLeft} minutos`;
+  const text = `Hola ${o.customer.name}, hemos confirmado tu pedido ${o.number} en Gula 🍣\n\n${when}. Te avisaremos cuando esté listo para recoger.`;
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank", "noopener");
 }
 
 function renderOrder(o) {
@@ -287,7 +316,7 @@ function nextActions(o) {
   switch (o.status) {
     case "pending":
       return `
-        <button class="action-btn action-btn--primary" data-status-action="preparing" data-order-id="${o.id}">Empezar a preparar</button>
+        <button class="action-btn action-btn--primary" data-status-action="preparing" data-order-id="${o.id}">Confirmar y avisar</button>
         <button class="action-btn action-btn--danger" data-status-action="cancelled" data-order-id="${o.id}">Cancelar</button>
       `;
     case "preparing":
