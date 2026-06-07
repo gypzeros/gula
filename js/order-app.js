@@ -73,11 +73,52 @@ function updateCartUI() {
   const totalQty = [...cart.values()].reduce((a, b) => a + b, 0);
   const total = [...cart.entries()].reduce((sum, [id, q]) => sum + MENU_BY_ID[id].price * q, 0);
 
+  // ── barra flotante (móvil) ──────────────────────────────
   $("#cartCount").textContent = totalQty;
   $("#cartTotal").textContent = formatEUR(total);
   $("#cartBar").classList.toggle("is-visible", totalQty > 0 && settings.enabled);
 
-  // Refresca cada dish con su contador y estado
+  // ── sidebar lateral (desktop) ───────────────────────────
+  const sideCount = $("#cartSideCount");
+  const sideEmpty = $("#cartSideEmpty");
+  const sideList  = $("#cartSideList");
+  const sideFooter = $("#cartSideFooter");
+  const sideTotal  = $("#cartSideTotal");
+  const sideCta    = $("#openCheckoutSide");
+
+  if (sideCount) {
+    sideCount.textContent = `${totalQty} plato${totalQty === 1 ? "" : "s"}`;
+
+    if (cart.size === 0) {
+      sideEmpty.style.display = "block";
+      sideList.innerHTML = "";
+      sideFooter.style.display = "none";
+    } else {
+      sideEmpty.style.display = "none";
+      sideList.innerHTML = [...cart.entries()].map(([id, q]) => {
+        const d = MENU_BY_ID[id];
+        return `
+          <li class="cart-side__item" data-dish="${id}">
+            <div class="cart-side__item-row">
+              <span class="cart-side__item-name">${d.name}</span>
+              <span class="cart-side__item-line">${formatEUR(d.price * q)}</span>
+            </div>
+            <div class="cart-side__item-actions">
+              <button data-action="dec" aria-label="Quitar uno">−</button>
+              <span>${q}</span>
+              <button data-action="inc" aria-label="Añadir uno">+</button>
+              <button class="cart-side__item-remove" data-action="remove" aria-label="Eliminar">Quitar</button>
+            </div>
+          </li>
+        `;
+      }).join("");
+      sideFooter.style.display = "block";
+      sideTotal.textContent = formatEUR(total);
+      sideCta.disabled = !settings.enabled;
+    }
+  }
+
+  // ── refresca cada dish (botón añadir / contador) ────────
   $$(".dish").forEach((el) => {
     const id = el.dataset.dish;
     const qty = cart.get(id) || 0;
@@ -97,16 +138,17 @@ function updateCartUI() {
   });
 }
 
-// Delegación de eventos sobre las dishes
+// Delegación de eventos sobre dishes y sidebar
 document.addEventListener("click", (e) => {
   const action = e.target.dataset?.action;
   if (!action) return;
-  const dish = e.target.closest("[data-dish]");
-  if (!dish) return;
-  const id = dish.dataset.dish;
+  const container = e.target.closest("[data-dish]");
+  if (!container) return;
+  const id = container.dataset.dish;
   const current = cart.get(id) || 0;
   if (action === "add" || action === "inc") setQty(id, current + 1);
   else if (action === "dec") setQty(id, current - 1);
+  else if (action === "remove") setQty(id, 0);
 });
 
 
@@ -197,6 +239,7 @@ function renderSummary() {
 }
 
 $("#openCheckout").addEventListener("click", openCheckout);
+$("#openCheckoutSide")?.addEventListener("click", openCheckout);
 $$('[data-close-modal]').forEach((b) => b.addEventListener("click", closeCheckout));
 $("#checkoutModal").addEventListener("click", (e) => {
   if (e.target.id === "checkoutModal") closeCheckout();

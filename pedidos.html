@@ -203,11 +203,36 @@
     .tabs__btn.is-active::after { transform: scaleX(1); }
 
 
-    /* ── lista de platos ──────────────────────────────────── */
-    .section {
+    /* ── layout en desktop: menú a la izquierda + carrito a la derecha ── */
+    .layout {
       max-width: var(--max);
       margin: 0 auto;
-      padding: 40px var(--gutter) 60px;
+      padding: 0 var(--gutter);
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 40px;
+      align-items: start;
+    }
+    .layout__menu { min-width: 0; }
+
+    @media (max-width: 1080px) {
+      .layout { grid-template-columns: 1fr 320px; gap: 28px; }
+    }
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding: 0;
+      }
+      .cart-side { display: none; }
+    }
+    @media (min-width: 881px) {
+      .cart-bar { display: none !important; }
+    }
+
+
+    /* ── lista de platos ──────────────────────────────────── */
+    .section {
+      padding: 40px 0 60px;
     }
     .section__head {
       display: flex; align-items: baseline; gap: 20px;
@@ -335,7 +360,159 @@
     }
 
 
-    /* ── carrito flotante ─────────────────────────────────── */
+    /* ── carrito lateral (desktop) ────────────────────────── */
+    .cart-side {
+      position: sticky;
+      top: 132px;
+      padding: 24px;
+      border: 1px solid rgba(176,122,54,.22);
+      background: linear-gradient(180deg, var(--surface), rgba(28,24,19,.7));
+      max-height: calc(100vh - 160px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(176,122,54,.4) transparent;
+    }
+    .cart-side::-webkit-scrollbar { width: 6px; }
+    .cart-side::-webkit-scrollbar-thumb { background: rgba(176,122,54,.3); border-radius: 3px; }
+
+    .cart-side__head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(176,122,54,.18);
+    }
+    .cart-side__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-weight: 400;
+      font-size: 1.5rem;
+      color: var(--paper);
+      margin: 0;
+    }
+    .cart-side__title em { color: var(--gold-bright); font-style: italic; }
+    .cart-side__count {
+      font-family: 'Manrope', sans-serif;
+      font-size: .62rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .cart-side__empty {
+      padding: 36px 0 24px;
+      text-align: center;
+      color: var(--paper-mute);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .cart-side__empty .kanji {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 4.2rem;
+      color: rgba(176,122,54,.22);
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    .cart-side__list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cart-side__item {
+      padding: 12px 14px;
+      border: 1px solid rgba(176,122,54,.12);
+      background: rgba(15,12,10,.5);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color .25s var(--ease);
+    }
+    .cart-side__item:hover { border-color: rgba(176,122,54,.3); }
+    .cart-side__item-row {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+    }
+    .cart-side__item-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--paper);
+      line-height: 1.2;
+      flex: 1;
+    }
+    .cart-side__item-line {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: .95rem;
+      color: var(--gold-bright);
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .cart-side__item-actions {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .cart-side__item-actions button {
+      width: 24px; height: 24px;
+      border: 1px solid rgba(176,122,54,.32);
+      color: var(--paper);
+      display: grid; place-items: center;
+      font-size: .9rem; line-height: 1;
+      transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+    }
+    .cart-side__item-actions button:hover { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+    .cart-side__item-actions span {
+      min-width: 26px; text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--paper);
+    }
+    .cart-side__item-remove {
+      margin-left: auto;
+      font-size: .58rem; letter-spacing: .24em; text-transform: uppercase;
+      color: var(--paper-mute);
+      transition: color .2s var(--ease);
+    }
+    .cart-side__item-remove:hover { color: var(--claret); }
+
+    .cart-side__footer {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid rgba(176,122,54,.18);
+    }
+    .cart-side__total-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 14px;
+    }
+    .cart-side__total-label {
+      font-size: .62rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--paper-mute);
+    }
+    .cart-side__total-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-weight: 500;
+      font-size: 1.8rem;
+      color: var(--gold-bright);
+      font-variant-numeric: tabular-nums;
+    }
+    .cart-side__cta {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: .7rem; letter-spacing: .3em; text-transform: uppercase;
+      transition: background .2s var(--ease), color .2s var(--ease);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .cart-side__cta:hover:not(:disabled) { background: var(--gold-bright); }
+    .cart-side__cta:disabled { opacity: .4; cursor: not-allowed; }
+    .cart-side__cta svg { width: 12px; height: 12px; }
+
+
+    /* ── carrito flotante (móvil) ─────────────────────────── */
     .cart-bar {
       position: fixed;
       bottom: 16px;
@@ -660,10 +837,41 @@
   </nav>
 
 
-  <!-- MENU ────────────────────────────────────────────────── -->
-  <main id="menu">
-    <!-- Las secciones se renderizan desde JS -->
-  </main>
+  <!-- LAYOUT ──────────────────────────────────────────────── -->
+  <div class="layout">
+    <!-- MENU a la izquierda -->
+    <main class="layout__menu" id="menu">
+      <!-- Las secciones se renderizan desde JS -->
+    </main>
+
+    <!-- CARRITO LATERAL a la derecha (visible en desktop) -->
+    <aside class="cart-side" id="cartSide">
+      <header class="cart-side__head">
+        <h2 class="cart-side__title">Tu <em>pedido</em></h2>
+        <span class="cart-side__count" id="cartSideCount">0 platos</span>
+      </header>
+
+      <div class="cart-side__empty" id="cartSideEmpty">
+        <div class="kanji">膳</div>
+        Tu mesa está vacía.<br>Añade platos de la carta.
+      </div>
+
+      <ul class="cart-side__list" id="cartSideList"></ul>
+
+      <footer class="cart-side__footer" id="cartSideFooter" style="display:none;">
+        <div class="cart-side__total-row">
+          <span class="cart-side__total-label">Total</span>
+          <span class="cart-side__total-value" id="cartSideTotal">0,00 €</span>
+        </div>
+        <button class="cart-side__cta" id="openCheckoutSide">
+          Realizar pedido
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </footer>
+    </aside>
+  </div>
 
 
   <!-- CARRITO FLOTANTE ────────────────────────────────────── -->
