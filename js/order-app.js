@@ -22,7 +22,7 @@ function renderMenu() {
     section.id = `cat-${cat.key}`;
     section.innerHTML = `
       <div class="section__head">
-        <span class="section__num">${cat.label[0].toLowerCase()}</span>
+        <span class="section__num">${cat.kanji[0]}</span>
         <h2 class="section__name">${cat.label}</h2>
         <span class="section__jp">${cat.kanji}</span>
       </div>
