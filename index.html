@@ -517,7 +517,11 @@
     @media (max-width: 520px) {
       .gallery__grid { grid-template-columns: 1fr; }
       .tile { aspect-ratio: 4/5; }
-      .t7 { aspect-ratio: 3/2; }
+      /* En 1 columna, anulamos el span 2 que heredan t1/t7 del breakpoint
+         de 880px — si no, el grid crea una columna implícita de 0px y los
+         tiles que sí caben en la única columna explícita (323px) quedan
+         desplazados 12px a la derecha respecto a t1/t7. */
+      .t1, .t7 { grid-column: auto !important; aspect-ratio: 3/2; }
     }
 
     /* ── hours ──────────────────────────────────────────────── */
