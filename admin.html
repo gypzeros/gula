@@ -570,6 +570,249 @@
       animation: spin 1s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── botón disponibilidad de platos ───────────────────── */
+    .dishes-btn {
+      margin-top: 22px;
+      width: 100%;
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px;
+      background: rgba(15,12,10,.5);
+      border: 1px solid rgba(176,122,54,.22);
+      text-align: left;
+      position: relative;
+      transition: border-color .2s var(--ease), background .2s var(--ease);
+    }
+    .dishes-btn:hover { border-color: var(--gold); background: rgba(176,122,54,.06); }
+    .dishes-btn__icon {
+      flex-shrink: 0;
+      width: 38px; height: 38px;
+      display: grid; place-items: center;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.35rem;
+      color: var(--gold-bright);
+      background: rgba(176,122,54,.08);
+      border: 1px solid rgba(176,122,54,.2);
+    }
+    .dishes-btn__body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .dishes-btn__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--paper);
+    }
+    .dishes-btn__sub {
+      font-size: .58rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--paper-mute);
+    }
+    .dishes-btn__badge {
+      flex-shrink: 0;
+      min-width: 30px; height: 30px;
+      padding: 0 9px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 999px;
+      background: var(--claret);
+      color: var(--paper);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0;
+      box-shadow: 0 0 0 0 rgba(122,42,38,.55);
+      animation: badgePulse 2.2s ease-in-out infinite;
+    }
+    .dishes-btn__badge[hidden] { display: none; }
+    @keyframes badgePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(122,42,38,.55); }
+      50% { box-shadow: 0 0 0 6px rgba(122,42,38,0); }
+    }
+
+    /* ── modal disponibilidad ─────────────────────────────── */
+    .dishes-modal {
+      position: fixed; inset: 0;
+      background: rgba(15,12,10,.78);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: stretch; justify-content: center;
+      z-index: 200;
+      padding: 0;
+    }
+    .dishes-modal.is-open { display: flex; }
+    .dishes-modal__card {
+      width: 100%;
+      max-width: 720px;
+      max-height: 100svh;
+      background: var(--surface);
+      border-left: 1px solid rgba(176,122,54,.2);
+      border-right: 1px solid rgba(176,122,54,.2);
+      display: flex; flex-direction: column;
+      animation: modalIn .3s var(--ease);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .dishes-modal__head {
+      flex-shrink: 0;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid rgba(176,122,54,.15);
+      display: flex; align-items: flex-start; gap: 16px;
+    }
+    .dishes-modal__title-wrap { flex: 1; }
+    .dishes-modal__eyebrow {
+      font-family: 'Noto Serif JP', serif;
+      font-size: .72rem; letter-spacing: .3em;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .dishes-modal__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-weight: 400;
+      font-size: 1.7rem;
+      color: var(--paper);
+      margin: 0;
+    }
+    .dishes-modal__close {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      display: grid; place-items: center;
+      border: 1px solid rgba(176,122,54,.25);
+      color: var(--paper-mute);
+      transition: color .2s var(--ease), border-color .2s var(--ease);
+    }
+    .dishes-modal__close:hover { color: var(--gold-bright); border-color: var(--gold); }
+
+    .dishes-modal__lede {
+      flex-shrink: 0;
+      padding: 14px 24px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: .95rem;
+      color: var(--paper-soft);
+      background: rgba(176,122,54,.04);
+      border-bottom: 1px solid rgba(176,122,54,.1);
+      margin: 0;
+    }
+
+    .dishes-modal__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0 80px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .dishes-modal__section { padding: 14px 24px 6px; }
+    .dishes-modal__section-title {
+      display: flex; align-items: baseline; gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(176,122,54,.15);
+      margin-bottom: 10px;
+    }
+    .dishes-modal__section-title .kanji {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.4rem;
+      color: var(--gold-bright);
+    }
+    .dishes-modal__section-title .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--paper);
+    }
+
+    .dish-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 10px 4px;
+      border-bottom: 1px solid rgba(176,122,54,.06);
+      transition: opacity .2s var(--ease);
+    }
+    .dish-row:last-child { border-bottom: 0; }
+    .dish-row.is-off { opacity: .55; }
+
+    .dish-row__photo {
+      flex-shrink: 0;
+      width: 46px; height: 46px;
+      object-fit: cover;
+      border: 1px solid rgba(176,122,54,.18);
+      filter: saturate(1.05);
+      transition: filter .2s var(--ease);
+    }
+    .dish-row.is-off .dish-row__photo { filter: grayscale(.9) brightness(.7); }
+
+    .dish-row__info {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .dish-row__name {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.02rem;
+      color: var(--paper);
+      line-height: 1.15;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .dish-row__meta {
+      display: flex; gap: 8px;
+      font-size: .72rem;
+      color: var(--paper-mute);
+      letter-spacing: .04em;
+    }
+    .dish-row__price { color: var(--gold-bright); }
+
+    .dish-row__switch {
+      flex-shrink: 0;
+      width: 46px; height: 26px;
+      background: rgba(122,42,38,.5);
+      border-radius: 999px;
+      position: relative;
+      transition: background .25s var(--ease);
+    }
+    .dish-row.is-on .dish-row__switch { background: var(--sage); }
+    .dish-row__switch::after {
+      content: "";
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 20px; height: 20px;
+      background: var(--paper);
+      border-radius: 50%;
+      transition: transform .25s var(--ease);
+    }
+    .dish-row.is-on .dish-row__switch::after { transform: translateX(20px); }
+
+    .dishes-modal__foot {
+      flex-shrink: 0;
+      padding: 14px 24px;
+      border-top: 1px solid rgba(176,122,54,.15);
+      background: var(--surface);
+      display: flex; align-items: center; gap: 14px;
+      font-size: .75rem;
+      color: var(--paper-mute);
+    }
+    .dishes-modal__foot .count strong {
+      color: var(--gold-bright);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      margin-right: 4px;
+    }
+    .dishes-modal__foot .all-on {
+      margin-left: auto;
+      padding: 8px 14px;
+      border: 1px solid rgba(176,122,54,.3);
+      color: var(--gold-bright);
+      font-size: .6rem; letter-spacing: .26em; text-transform: uppercase;
+      transition: background .2s var(--ease), color .2s var(--ease);
+    }
+    .dishes-modal__foot .all-on:hover { background: var(--gold); color: var(--ink); }
+
+    @media (min-width: 720px) {
+      .dishes-modal { padding: 40px; align-items: center; }
+      .dishes-modal__card {
+        max-height: 86vh;
+        border: 1px solid rgba(176,122,54,.2);
+      }
+    }
   </style>
 </head>
 <body>
@@ -674,6 +917,15 @@
             <textarea class="msg__input" id="pausedMessage" placeholder="Hoy estamos al completo…"></textarea>
             <button class="msg__save" id="saveMessageBtn">Guardar mensaje</button>
           </div>
+
+          <button class="dishes-btn" id="openDishesBtn" type="button">
+            <span class="dishes-btn__icon" aria-hidden="true">膳</span>
+            <span class="dishes-btn__body">
+              <span class="dishes-btn__title">Disponibilidad de platos</span>
+              <span class="dishes-btn__sub">Marcar agotados</span>
+            </span>
+            <span class="dishes-btn__badge" id="disabledBadge" hidden>0</span>
+          </button>
         </div>
       </aside>
 
@@ -701,6 +953,33 @@
         <div id="ordersList">
           <div class="empty">No hay pedidos todavía hoy.</div>
         </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Disponibilidad de platos ────────────────────── -->
+    <div class="dishes-modal" id="dishesModal" aria-hidden="true">
+      <div class="dishes-modal__card" role="dialog" aria-modal="true" aria-labelledby="dishesModalTitle">
+        <header class="dishes-modal__head">
+          <div class="dishes-modal__title-wrap">
+            <div class="dishes-modal__eyebrow">在庫 · Stock</div>
+            <h2 class="dishes-modal__title" id="dishesModalTitle">Disponibilidad de platos</h2>
+          </div>
+          <button class="dishes-modal__close" id="closeDishesBtn" aria-label="Cerrar">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M1 1 L13 13 M13 1 L1 13" />
+            </svg>
+          </button>
+        </header>
+        <p class="dishes-modal__lede">
+          Desactiva los platos que se han agotado. El cliente los verá en gris con la etiqueta <em>agotado</em>.
+        </p>
+        <div class="dishes-modal__body" id="dishesModalBody">
+          <!-- generado por JS -->
+        </div>
+        <footer class="dishes-modal__foot">
+          <span class="count"><strong id="disabledCount">0</strong>agotados</span>
+          <button class="all-on" id="allOnBtn" type="button">Activar todos</button>
+        </footer>
       </div>
     </div>
   </section>

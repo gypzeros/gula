@@ -287,6 +287,54 @@
       transition: border-color .3s var(--ease), background .3s var(--ease);
     }
     .dish:hover { border-color: rgba(176,122,54,.35); }
+
+    /* Plato agotado: gris + sello rojo en la foto */
+    .dish.is-soldout {
+      position: relative;
+      opacity: .85;
+      background: linear-gradient(180deg, rgba(28,24,19,.35), rgba(20,17,14,.35));
+    }
+    .dish.is-soldout:hover { border-color: rgba(176,122,54,.15); }
+    .dish.is-soldout .dish__photo { filter: grayscale(.95) brightness(.55); }
+    .dish.is-soldout .dish__name,
+    .dish.is-soldout .dish__desc,
+    .dish.is-soldout .dish__meta { opacity: .55; }
+    .dish.is-soldout .dish__price { text-decoration: line-through; }
+
+    .dish__soldout-stamp {
+      position: absolute;
+      top: 22px; left: 22px;
+      display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 8px 10px;
+      background: rgba(122,42,38,.92);
+      border: 1.5px solid var(--paper);
+      color: var(--paper);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: .68rem;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      transform: rotate(-6deg);
+      box-shadow: 0 4px 14px rgba(0,0,0,.4);
+      pointer-events: none;
+    }
+    .dish__soldout-stamp .kanji {
+      font-family: 'Noto Serif JP', serif;
+      font-style: normal;
+      font-size: .85rem;
+      letter-spacing: .02em;
+      margin-bottom: 1px;
+    }
+
+    .qty__add--off {
+      pointer-events: none;
+      border: 1px dashed rgba(122,42,38,.55) !important;
+      background: transparent !important;
+      color: var(--claret) !important;
+      cursor: not-allowed;
+      font-style: italic;
+    }
+
     .dish__photo {
       width: 92px; height: 92px;
       object-fit: cover;

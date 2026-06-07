@@ -34,10 +34,16 @@ function renderMenu() {
   }
 }
 
+function isDishDisabled(id) {
+  return Array.isArray(settings.disabledDishes) && settings.disabledDishes.includes(id);
+}
+
 function renderDish(d) {
+  const off = isDishDisabled(d.id);
   return `
-    <article class="dish" data-dish="${d.id}">
+    <article class="dish ${off ? "is-soldout" : ""}" data-dish="${d.id}">
       <img class="dish__photo" src="${d.photo}" alt="${d.name}" loading="lazy" />
+      ${off ? `<span class="dish__soldout-stamp"><span class="kanji">売切</span>Agotado</span>` : ""}
       <div class="dish__body">
         <h3 class="dish__name">${d.name}</h3>
         <p class="dish__desc">${d.desc}</p>
@@ -47,12 +53,15 @@ function renderDish(d) {
         </div>
       </div>
       <div class="dish__qty">
-        <div class="qty" data-qty="${d.id}" style="display:none;">
-          <button class="qty__btn" data-action="dec" aria-label="Quitar uno">−</button>
-          <span class="qty__count">0</span>
-          <button class="qty__btn" data-action="inc" aria-label="Añadir uno">+</button>
-        </div>
-        <button class="qty__add" data-action="add" data-dish="${d.id}">Añadir</button>
+        ${off
+          ? `<span class="qty__add qty__add--off" aria-disabled="true">Agotado</span>`
+          : `<div class="qty" data-qty="${d.id}" style="display:none;">
+              <button class="qty__btn" data-action="dec" aria-label="Quitar uno">−</button>
+              <span class="qty__count">0</span>
+              <button class="qty__btn" data-action="inc" aria-label="Añadir uno">+</button>
+            </div>
+            <button class="qty__add" data-action="add" data-dish="${d.id}">Añadir</button>`
+        }
       </div>
     </article>
   `;
@@ -124,6 +133,7 @@ function updateCartUI() {
 
   // ── refresca cada dish (botón añadir / contador) ────────
   $$(".dish").forEach((el) => {
+    if (el.classList.contains("is-soldout")) return;
     const id = el.dataset.dish;
     const qty = cart.get(id) || 0;
     el.classList.toggle("is-in-cart", qty > 0);
@@ -237,8 +247,23 @@ function refreshScheduledTimeSelect() {
 
 
 // ─── Settings (status banner) ─────────────────────────────────
+let _lastDisabledKey = "";
 function applySettings(s) {
   settings = s;
+
+  // Si cambió la lista de agotados, limpia carrito y repinta el menú
+  const key = (s.disabledDishes || []).slice().sort().join(",");
+  if (key !== _lastDisabledKey) {
+    _lastDisabledKey = key;
+    const disabledSet = new Set(s.disabledDishes || []);
+    let cartTouched = false;
+    for (const id of [...cart.keys()]) {
+      if (disabledSet.has(id)) { cart.delete(id); cartTouched = true; }
+    }
+    renderMenu();
+    if (cartTouched) updateCartUI();
+  }
+
   const card = $("#statusCard");
   const label = $("#statusLabel");
   const main  = $("#statusMain");

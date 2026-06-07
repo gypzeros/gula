@@ -1,6 +1,6 @@
 // Lógica del panel admin: login, edición de ajustes, gestión de pedidos
 
-import { formatEUR } from "./menu-data.js";
+import { formatEUR, MENU, CATEGORIES } from "./menu-data.js";
 import {
   listenSettings, updateSettings, ensureSettingsExist,
   listenOrdersForDay, updateOrderStatus,
@@ -80,6 +80,16 @@ function applySettingsUI(s) {
   if (document.activeElement !== $("#openToInput")) {
     $("#openToInput").value = s.openTo || "23:30";
   }
+
+  // Badge con número de platos agotados
+  const disabledCount = Array.isArray(s.disabledDishes) ? s.disabledDishes.length : 0;
+  const badge = $("#disabledBadge");
+  badge.textContent = disabledCount;
+  if (disabledCount > 0) badge.removeAttribute("hidden");
+  else badge.setAttribute("hidden", "");
+
+  // Si el modal está abierto, repintar los toggles
+  if ($("#dishesModal").classList.contains("is-open")) renderDishesModalBody();
 
   settingsApplying = false;
 }
@@ -341,3 +351,96 @@ function nextActions(o) {
 setInterval(() => {
   if ($("#dashView").style.display === "block" && allOrders.length) renderOrders();
 }, 60_000);
+
+
+// ─── Modal: disponibilidad de platos ──────────────────────────
+function getDisabledSet() {
+  return new Set(Array.isArray(currentSettings.disabledDishes) ? currentSettings.disabledDishes : []);
+}
+
+function renderDishesModalBody() {
+  const disabled = getDisabledSet();
+  const body = $("#dishesModalBody");
+  const groups = CATEGORIES.map((cat) => {
+    const dishes = MENU.filter((d) => d.cat === cat.key);
+    if (!dishes.length) return "";
+    const rows = dishes.map((d) => {
+      const isOff = disabled.has(d.id);
+      const photo = d.photo
+        ? `<img class="dish-row__photo" src="${d.photo}" alt="" loading="lazy" />`
+        : `<span class="dish-row__photo" aria-hidden="true"></span>`;
+      return `
+        <div class="dish-row ${isOff ? "is-off" : "is-on"}" data-dish-id="${d.id}">
+          ${photo}
+          <div class="dish-row__info">
+            <div class="dish-row__name">${d.name}</div>
+            <div class="dish-row__meta">
+              ${d.pieces ? `<span>${d.pieces}</span>` : ""}
+              <span class="dish-row__price">${formatEUR(d.price)}</span>
+            </div>
+          </div>
+          <div class="dish-row__switch" role="switch" aria-checked="${!isOff}" aria-label="Disponible"></div>
+        </div>
+      `;
+    }).join("");
+    return `
+      <section class="dishes-modal__section">
+        <div class="dishes-modal__section-title">
+          <span class="kanji">${cat.kanji || ""}</span>
+          <span class="name">${cat.label}</span>
+        </div>
+        ${rows}
+      </section>
+    `;
+  }).join("");
+  body.innerHTML = groups;
+
+  // Contador al pie
+  $("#disabledCount").textContent = disabled.size;
+}
+
+async function toggleDish(id) {
+  const disabled = getDisabledSet();
+  if (disabled.has(id)) disabled.delete(id);
+  else disabled.add(id);
+  // Optimistic UI: actualiza la fila inmediatamente
+  const row = document.querySelector(`.dish-row[data-dish-id="${id}"]`);
+  if (row) {
+    const isOff = disabled.has(id);
+    row.classList.toggle("is-off", isOff);
+    row.classList.toggle("is-on", !isOff);
+    row.querySelector(".dish-row__switch")?.setAttribute("aria-checked", String(!isOff));
+  }
+  $("#disabledCount").textContent = disabled.size;
+  await updateSettings({ disabledDishes: Array.from(disabled) });
+}
+
+$("#openDishesBtn").addEventListener("click", () => {
+  renderDishesModalBody();
+  $("#dishesModal").classList.add("is-open");
+  document.body.style.overflow = "hidden";
+});
+function closeDishesModal() {
+  $("#dishesModal").classList.remove("is-open");
+  document.body.style.overflow = "";
+}
+$("#closeDishesBtn").addEventListener("click", closeDishesModal);
+$("#dishesModal").addEventListener("click", (e) => {
+  if (e.target === $("#dishesModal")) closeDishesModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && $("#dishesModal").classList.contains("is-open")) closeDishesModal();
+});
+
+// Delegación: tap en cualquier parte de la fila (o el switch) para alternar
+$("#dishesModalBody").addEventListener("click", (e) => {
+  const row = e.target.closest(".dish-row");
+  if (!row) return;
+  const id = row.dataset.dishId;
+  if (id) toggleDish(id);
+});
+
+$("#allOnBtn").addEventListener("click", async () => {
+  if (!getDisabledSet().size) return;
+  await updateSettings({ disabledDishes: [] });
+});
