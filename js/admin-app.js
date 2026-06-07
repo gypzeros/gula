@@ -248,8 +248,9 @@ function renderOrders() {
 
 function renderOrder(o) {
   const pickup = o.pickupTime?.toDate ? o.pickupTime.toDate() : new Date(o.pickupTime);
-  const created = o.createdAt?.toDate ? o.createdAt.toDate() : new Date();
+  const created = o.createdAt?.toDate ? o.createdAt.toDate() : null;
   const pickupStr = pickup ? `${String(pickup.getHours()).padStart(2,"0")}:${String(pickup.getMinutes()).padStart(2,"0")}` : "—";
+  const createdStr = created ? `${String(created.getHours()).padStart(2,"0")}:${String(created.getMinutes()).padStart(2,"0")}` : null;
   const minsToPickup = pickup ? Math.round((pickup.getTime() - Date.now()) / 60000) : null;
 
   const itemsHtml = o.items.map((it) => `
@@ -262,10 +263,11 @@ function renderOrder(o) {
     <article class="order is-${o.status}">
       <div class="order__top">
         <span class="order__number">${o.number}</span>
+        ${createdStr ? `<span class="order__created">creado a las ${createdStr}</span>` : ""}
         <span class="order__name">${o.customer.name}</span>
         <span class="order__phone"><a href="tel:${o.customer.phone}">${o.customer.phone}</a></span>
         <div class="order__time">
-          <small>${o.scheduled ? "Programado" : "Lo antes posible"}</small>
+          <small>${o.scheduled ? "Recogida programada" : "Lo antes posible"}</small>
           <strong>${pickupStr}</strong>
           <small>${minsToPickup !== null ? (minsToPickup >= 0 ? `en ${minsToPickup} min` : `hace ${-minsToPickup} min`) : ""}</small>
         </div>
