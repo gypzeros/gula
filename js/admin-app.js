@@ -366,7 +366,14 @@ function openWhatsAppPrefab(o, kind) {
     text = `Hola ${o.customer.name}, te escribo desde Gula sobre tu pedido ${o.number}.`;
   }
 
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  // wa.me en desktop siempre muestra una landing intermedia. Usamos
+  // web.whatsapp.com/send que abre directamente WhatsApp Web con el mensaje
+  // ya redactado. En móvil mantenemos wa.me porque funciona mejor con la app.
+  const isMobile = /Android|iPhone|iPad|iPod|webOS|Opera Mini|IEMobile/i.test(navigator.userAgent || "");
+  const encoded = encodeURIComponent(text);
+  const url = isMobile
+    ? `https://wa.me/${phone}?text=${encoded}`
+    : `https://web.whatsapp.com/send?phone=${phone}&text=${encoded}`;
   window.open(url, "_blank", "noopener");
 }
 
