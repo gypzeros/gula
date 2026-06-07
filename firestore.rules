@@ -1,0 +1,114 @@
+// ════════════════════════════════════════════════════════════════════
+//   Gula Restaurante · Reglas de seguridad de Firestore
+//   Proyecto: gularestaurante-c45ff
+// ────────────────────────────────────────────────────────────────────
+//   Para aplicar estas reglas:
+//   1. Entra en console.firebase.google.com → proyecto gularestaurante
+//   2. Firestore Database → pestaña "Reglas"
+//   3. Pega TODO este archivo (sustituyendo lo que haya)
+//   4. Pulsa "Publicar"
+//
+//   ⚠️ ANTES de aplicar, asegúrate de que:
+//   • Tu usuario admin existe en Firebase Auth (Authentication → Users)
+//   • Has reemplazado los emails admin en la lista ADMIN_EMAILS abajo
+// ════════════════════════════════════════════════════════════════════
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helpers ───────────────────────────────────────────────────
+    // El usuario está autenticado Y su email está en la lista admin.
+    // Estos emails DEBEN existir como usuario en Firebase Authentication.
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email in [
+               // ⚠️ EDITA esta lista con tus emails admin.
+               "REEMPLAZA-CON-TU-EMAIL-ADMIN@gularestaurante.es"
+               // , "otro.admin@gmail.com"   // descomenta y edita para añadir más
+             ];
+    }
+
+    // ─── /settings/{doc}  (config global del restaurante) ──────────
+    // Cualquiera lee (el cliente necesita saber el estado para el banner).
+    // Solo admin escribe.
+    match /settings/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── /menu/{doc}  (catálogo — preparado por si lo movemos a DB) ─
+    match /menu/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── /counters/{doc}  (contador para numerar pedidos G-001…) ────
+    // El contador se incrementa en una transacción del cliente al
+    // crear cada pedido. Lo blindamos limitando los cambios a +1.
+    match /counters/{doc} {
+      allow read: if true;
+      // Crear (primera vez): valor debe ser 1
+      allow create: if request.resource.data.keys().hasOnly(['value'])
+                 && request.resource.data.value == 1;
+      // Actualizar: solo permitido incrementar en exactamente +1
+      allow update: if request.resource.data.keys().hasOnly(['value'])
+                 && request.resource.data.value == resource.data.value + 1;
+      allow delete: if isAdmin();
+    }
+
+    // ─── /orders/{orderId}  (pedidos) ──────────────────────────────
+    match /orders/{orderId} {
+
+      // Lectura, edición y borrado: solo admin
+      allow read:   if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+
+      // Creación: público, PERO con validaciones estrictas
+      // para evitar manipulación desde la consola del navegador.
+      allow create: if
+           // Estructura obligatoria
+              request.resource.data.keys().hasAll([
+                'number', 'customer', 'items', 'total',
+                'pickupTime', 'scheduled', 'status', 'createdAt', 'smsSent'
+              ])
+           // El status inicial debe ser pending
+           && request.resource.data.status == 'pending'
+           // Customer
+           && request.resource.data.customer is map
+           && request.resource.data.customer.name is string
+           && request.resource.data.customer.name.size() >= 2
+           && request.resource.data.customer.name.size() <= 80
+           && request.resource.data.customer.phone is string
+           && request.resource.data.customer.phone.size() >= 9
+           && request.resource.data.customer.phone.size() <= 20
+           // Items (mínimo 1, máximo 50)
+           && request.resource.data.items is list
+           && request.resource.data.items.size() >= 1
+           && request.resource.data.items.size() <= 50
+           // Total razonable (entre 0,01€ y 500€)
+           && request.resource.data.total is number
+           && request.resource.data.total > 0
+           && request.resource.data.total < 500
+           // createdAt debe ser el timestamp del servidor
+           && request.resource.data.createdAt == request.time
+           // smsSent inicial obligatorio false
+           && request.resource.data.smsSent == false
+           // scheduled debe ser bool
+           && request.resource.data.scheduled is bool
+           // Notes opcional pero limitado
+           && (!('notes' in request.resource.data)
+               || (request.resource.data.notes is string
+                   && request.resource.data.notes.size() <= 500))
+           // Number debe coincidir con el patrón G-### (lo genera la transacción)
+           && request.resource.data.number is string
+           && request.resource.data.number.matches('^G-[0-9]+$');
+    }
+
+    // ─── Cualquier otra ruta: bloqueada por defecto ────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
