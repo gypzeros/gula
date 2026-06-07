@@ -317,6 +317,12 @@
       }
       .hero__kanji { font-size: 22rem; top: auto; bottom: -4vh; right: -10vw; }
       .hero__media { max-height: 70vh; aspect-ratio: 4/5; }
+      /* En móvil quitamos los marcos dorados decorativos y los textos
+         flotantes que sobresalen, porque se ven descentrados respecto a
+         la foto y crean inconsistencia visual. */
+      .hero__media::before { display: none; }
+      .hero__media .badge   { display: none; }
+      .hero__media .caption { display: none; }
     }
 
     /* ── concept (about) ────────────────────────────────────── */
@@ -528,7 +534,7 @@
       margin: 0 auto;
     }
     .hours__head {
-      text-align: center;
+      text-align: left;
       margin-bottom: 90px;
     }
     .hours__head .eyebrow { display: block; margin-bottom: 26px; }
@@ -727,6 +733,9 @@
     @media (max-width: 880px) {
       .visit__grid { grid-template-columns: 1fr; }
       .info-list li { grid-template-columns: 110px 1fr; gap: 14px; padding: 16px 0; }
+      /* En móvil quitamos el marco dorado decorativo detrás de la foto:
+         el offset queda fuera del viewport y se ve descentrado. */
+      .visit__media::after { display: none; }
     }
 
     /* ── footer ─────────────────────────────────────────────── */
@@ -1177,7 +1186,7 @@
     <div class="hero__copy">
       <div class="hero__eyebrow">
         <span class="rule"></span>
-        <span class="eyebrow">Sushi · Cabra, Córdoba · Est.</span>
+        <span class="eyebrow">Sushi · Cabra, Córdoba</span>
       </div>
 
       <h1 class="hero__title">
