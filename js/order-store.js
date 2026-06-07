@@ -71,7 +71,9 @@ export async function createOrder({ customer, items, total, pickupTime, schedule
     notes: notes || "",
     status: "pending",
     createdAt: serverTimestamp(),
-    smsSent: false,
+    // La Cloud Function de Twilio escribe aquí timestamps al mandar cada SMS:
+    // smsSent.received / smsSent.confirmed / smsSent.ready
+    smsSent: {},
   };
   const ref = await addDoc(ORDERS_REF, payload);
   return { id: ref.id, ...payload };

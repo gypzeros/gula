@@ -93,8 +93,11 @@ service cloud.firestore {
            && request.resource.data.total < 500
            // createdAt debe ser el timestamp del servidor
            && request.resource.data.createdAt == request.time
-           // smsSent inicial obligatorio false
-           && request.resource.data.smsSent == false
+           // smsSent inicial debe ser un mapa vacío (la Cloud Function lo va rellenando)
+           // Se acepta también `false` por compatibilidad con clientes antiguos.
+           && (request.resource.data.smsSent == false
+               || (request.resource.data.smsSent is map
+                   && request.resource.data.smsSent.keys().size() == 0))
            // scheduled debe ser bool
            && request.resource.data.scheduled is bool
            // Notes opcional pero limitado

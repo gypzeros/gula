@@ -295,37 +295,10 @@ function renderOrders() {
       const next = btn.dataset.statusAction;
       btn.disabled = true;
       await updateOrderStatus(orderId, next);
-
-      // Al CONFIRMAR el pedido (pending → preparing): avisar al cliente.
-      // TODO: cuando esté configurado Twilio, esto se moverá a una Cloud
-      // Function que dispara el SMS de forma automática (sin intervención).
-      // Mientras tanto: abrimos WhatsApp con el mensaje prefab y el admin
-      // solo tiene que pulsar enviar.
-      if (next === "preparing") {
-        const order = allOrders.find((o) => o.id === orderId);
-        if (order) openWhatsAppConfirmation(order);
-      }
+      // El SMS al cliente lo dispara la Cloud Function onOrderWrite
+      // automáticamente cuando ve el cambio de status. Aquí no hacemos nada.
     });
   });
-}
-
-// ─── Mensajes para el cliente vía WhatsApp ────────────────────
-function buildPhoneE164(raw) {
-  // Limpia el teléfono dejando solo dígitos para wa.me
-  return raw.replace(/[^\d]/g, "");
-}
-
-function openWhatsAppConfirmation(o) {
-  const phone = buildPhoneE164(o.customer.phone);
-  const pickup = o.pickupTime?.toDate ? o.pickupTime.toDate() : new Date(o.pickupTime);
-  const pickupStr = `${String(pickup.getHours()).padStart(2,"0")}:${String(pickup.getMinutes()).padStart(2,"0")}`;
-  const minsLeft = Math.max(1, Math.round((pickup.getTime() - Date.now()) / 60_000));
-  const when = o.scheduled
-    ? `Te lo tenemos listo a las ${pickupStr}`
-    : `Te lo tenemos listo en unos ${minsLeft} minutos`;
-  const text = `Hola ${o.customer.name}, hemos confirmado tu pedido ${o.number} en Gula 🍣\n\n${when}. Te avisaremos cuando esté listo para recoger.`;
-  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-  window.open(url, "_blank", "noopener");
 }
 
 function renderOrder(o) {
@@ -365,7 +338,8 @@ function renderOrder(o) {
 }
 
 function nextActions(o) {
-  const wa = `https://wa.me/${o.customer.phone.replace(/[^\d]/g, "")}?text=${encodeURIComponent(`Hola ${o.customer.name}, tu pedido ${o.number} de Gula ya está listo para recoger 🍣`)}`;
+  // WhatsApp manual como red de seguridad si el SMS no llegó o el cliente prefiere ese canal.
+  const wa = `https://wa.me/${o.customer.phone.replace(/[^\d]/g, "")}?text=${encodeURIComponent(`Hola ${o.customer.name}, te escribo desde Gula sobre tu pedido ${o.number}.`)}`;
   switch (o.status) {
     case "pending":
       return `
@@ -378,7 +352,7 @@ function nextActions(o) {
       `;
     case "ready":
       return `
-        <a class="action-btn action-btn--ghost" href="${wa}" target="_blank" rel="noopener">WhatsApp aviso</a>
+        <a class="action-btn action-btn--ghost" href="${wa}" target="_blank" rel="noopener" title="Contacto manual por WhatsApp (el SMS ya se envió automáticamente)">WhatsApp</a>
         <button class="action-btn action-btn--primary" data-status-action="picked_up" data-order-id="${o.id}">Recogido</button>
       `;
     case "picked_up":
