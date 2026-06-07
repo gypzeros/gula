@@ -294,17 +294,30 @@ function renderOrders() {
       const orderId = btn.dataset.orderId;
       const next = btn.dataset.statusAction;
       btn.disabled = true;
+      // Confirmación para CUALQUIER cancelación, en cualquier estado
+      if (next === "cancelled") {
+        const target = allOrders.find((o) => o.id === orderId);
+        const ok = await askConfirm({
+          eyebrow: "取消 · Cancelación",
+          title: `¿Cancelar el pedido ${target?.number || ""}?`,
+          body: `Cliente: <strong>${target?.customer?.name || ""}</strong>. Esta acción no se puede deshacer — el pedido pasará a estado cancelado.`,
+          confirmLabel: "Cancelar pedido",
+          cancelLabel: "Mantener",
+          confirmStyle: "danger",
+        });
+        if (!ok) { btn.disabled = false; return; }
+      }
+
       await updateOrderStatus(orderId, next);
 
-      // Avisar al cliente por WhatsApp con texto prefab:
-      //  · al confirmar (pending → preparing)
-      //  · al marcar como listo (preparing → ready)
+      // Avisar al cliente por WhatsApp con texto prefab.
       // Solo se abre la ventana con el mensaje ya redactado — el admin
       // pulsa "Enviar" en WhatsApp Business y listo.
       const order = allOrders.find((o) => o.id === orderId);
       if (!order) return;
       if (next === "preparing") openWhatsAppPrefab(order, "confirmed");
       if (next === "ready")     openWhatsAppPrefab(order, "ready");
+      if (next === "cancelled") openWhatsAppPrefab(order, "cancelled");
     });
   });
 
@@ -347,6 +360,8 @@ function openWhatsAppPrefab(o, kind) {
     text = `Hola ${o.customer.name}, hemos confirmado tu pedido *${o.number}* en Gula. ${when}.\nTe avisaremos cuando esté listo para recoger.\n\n¡Gracias!`;
   } else if (kind === "ready") {
     text = `${o.customer.name}, tu pedido *${o.number}* está listo para recoger.\nTe esperamos en C/ Rafael Leña Caballero, bloque 2 — Cabra.\n\n¡Gracias!`;
+  } else if (kind === "cancelled") {
+    text = `Hola ${o.customer.name}, lamentamos comunicarte que hemos tenido que cancelar tu pedido *${o.number}* en Gula.\nSi necesitas más información llámanos al 667 09 98 28.\n\nDisculpa las molestias.`;
   } else {
     text = `Hola ${o.customer.name}, te escribo desde Gula sobre tu pedido ${o.number}.`;
   }
@@ -392,20 +407,23 @@ function renderOrder(o) {
 }
 
 function nextActions(o) {
+  const cancelBtn = `<button class="action-btn action-btn--danger" data-status-action="cancelled" data-order-id="${o.id}">Cancelar</button>`;
   switch (o.status) {
     case "pending":
       return `
         <button class="action-btn action-btn--primary" data-status-action="preparing" data-order-id="${o.id}">Confirmar y avisar</button>
-        <button class="action-btn action-btn--danger" data-status-action="cancelled" data-order-id="${o.id}">Cancelar</button>
+        ${cancelBtn}
       `;
     case "preparing":
       return `
         <button class="action-btn action-btn--primary" data-status-action="ready" data-order-id="${o.id}">Marcar como listo</button>
+        ${cancelBtn}
       `;
     case "ready":
       return `
         <button class="action-btn action-btn--ghost" data-resend-wa data-order-id="${o.id}" title="Volver a abrir WhatsApp con el mensaje 'listo para recoger'">Reenviar WhatsApp</button>
         <button class="action-btn action-btn--primary" data-status-action="picked_up" data-order-id="${o.id}">Recogido</button>
+        ${cancelBtn}
       `;
     case "picked_up":
       return `<span style="font-size:.7rem;color:var(--paper-mute);letter-spacing:.26em;text-transform:uppercase">✓ Recogido</span>`;
@@ -420,6 +438,59 @@ function nextActions(o) {
 setInterval(() => {
   if ($("#dashView").style.display === "block" && allOrders.length) renderOrders();
 }, 60_000);
+
+
+// ─── Modal de confirmación genérico ───────────────────────────
+// Uso:
+//   const ok = await askConfirm({
+//     title: "¿Cancelar pedido G-005?",
+//     body: "Esto no se puede deshacer.",
+//     confirmLabel: "Cancelar pedido",
+//     cancelLabel: "Mantener",
+//     confirmStyle: "danger"   // danger | primary
+//   });
+//   if (!ok) return;
+function askConfirm({ eyebrow, title, body = "", confirmLabel = "Sí", cancelLabel = "No", confirmStyle = "danger" } = {}) {
+  return new Promise((resolve) => {
+    const modal   = $("#confirmModal");
+    const eyeEl   = $("#confirmModalEyebrow");
+    const titleEl = $("#confirmModalTitle");
+    const bodyEl  = $("#confirmModalBody");
+    const yesBtn  = $("#confirmModalYes");
+    const noBtn   = $("#confirmModalNo");
+
+    if (eyebrow !== undefined) eyeEl.textContent = eyebrow;
+    titleEl.textContent = title || "¿Seguro?";
+    bodyEl.innerHTML = body;                              // permite <strong> y mínimo HTML controlado
+    yesBtn.textContent = confirmLabel;
+    noBtn.textContent  = cancelLabel;
+    yesBtn.className = `confirm-modal__btn confirm-modal__btn--${confirmStyle}`;
+
+    modal.classList.add("is-open");
+    noBtn.focus();
+
+    const cleanup = (result) => {
+      modal.classList.remove("is-open");
+      yesBtn.removeEventListener("click", onYes);
+      noBtn.removeEventListener("click", onNo);
+      modal.removeEventListener("click", onBackdrop);
+      document.removeEventListener("keydown", onKey);
+      resolve(result);
+    };
+    const onYes      = () => cleanup(true);
+    const onNo       = () => cleanup(false);
+    const onBackdrop = (e) => { if (e.target === modal) cleanup(false); };
+    const onKey      = (e) => {
+      if (e.key === "Escape") cleanup(false);
+      else if (e.key === "Enter") cleanup(true);
+    };
+
+    yesBtn.addEventListener("click", onYes);
+    noBtn.addEventListener("click", onNo);
+    modal.addEventListener("click", onBackdrop);
+    document.addEventListener("keydown", onKey);
+  });
+}
 
 
 // ─── Modal: disponibilidad de platos ──────────────────────────

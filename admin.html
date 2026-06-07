@@ -876,6 +876,87 @@
         border: 1px solid rgba(176,122,54,.2);
       }
     }
+
+    /* ── modal genérico de confirmación ───────────────────── */
+    .confirm-modal {
+      position: fixed; inset: 0;
+      background: rgba(15,12,10,.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 300;
+      padding: 20px;
+    }
+    .confirm-modal.is-open { display: flex; }
+    .confirm-modal__card {
+      width: 100%; max-width: 440px;
+      background: var(--surface);
+      border: 1px solid rgba(176,122,54,.25);
+      padding: 28px 28px 24px;
+      animation: confirmIn .25s var(--ease);
+    }
+    @keyframes confirmIn {
+      from { opacity: 0; transform: translateY(8px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .confirm-modal__eyebrow {
+      font-family: 'Noto Serif JP', serif;
+      font-size: .7rem;
+      letter-spacing: .32em;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .confirm-modal__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 1.7rem;
+      color: var(--paper);
+      margin: 0 0 12px;
+      line-height: 1.15;
+    }
+    .confirm-modal__body {
+      margin: 0 0 22px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--paper-soft);
+      line-height: 1.5;
+    }
+    .confirm-modal__body strong {
+      color: var(--paper);
+      font-weight: 500;
+    }
+    .confirm-modal__actions {
+      display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
+    }
+    .confirm-modal__btn {
+      padding: 12px 18px;
+      font-size: .62rem; letter-spacing: .28em; text-transform: uppercase;
+      transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+    }
+    .confirm-modal__btn--ghost {
+      border: 1px solid rgba(216,205,182,.3);
+      color: var(--paper-soft);
+    }
+    .confirm-modal__btn--ghost:hover {
+      border-color: var(--gold);
+      color: var(--gold-bright);
+    }
+    .confirm-modal__btn--danger {
+      background: var(--claret);
+      color: var(--paper);
+    }
+    .confirm-modal__btn--danger:hover {
+      background: #8e3231;
+    }
+    .confirm-modal__btn--primary {
+      background: var(--gold);
+      color: var(--ink);
+    }
+    .confirm-modal__btn--primary:hover {
+      background: var(--gold-bright);
+    }
   </style>
 </head>
 <body>
@@ -1056,6 +1137,19 @@
           <span class="count"><strong id="disabledCount">0</strong>agotados</span>
           <button class="all-on" id="allOnBtn" type="button">Activar todos</button>
         </footer>
+      </div>
+    </div>
+
+    <!-- MODAL: Confirmación genérica ──────────────────────── -->
+    <div class="confirm-modal" id="confirmModal" aria-hidden="true">
+      <div class="confirm-modal__card" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+        <div class="confirm-modal__eyebrow" id="confirmModalEyebrow">確認 · Confirmación</div>
+        <h2 class="confirm-modal__title" id="confirmModalTitle">¿Seguro?</h2>
+        <p class="confirm-modal__body" id="confirmModalBody"></p>
+        <div class="confirm-modal__actions">
+          <button class="confirm-modal__btn confirm-modal__btn--ghost" id="confirmModalNo" type="button">No</button>
+          <button class="confirm-modal__btn confirm-modal__btn--danger" id="confirmModalYes" type="button">Sí</button>
+        </div>
       </div>
     </div>
   </section>
