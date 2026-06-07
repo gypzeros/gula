@@ -80,12 +80,20 @@ export async function createOrder({ customer, items, total, pickupTime, schedule
 
 // ─── Orders (admin) ─────────────────────────────────────────────
 export function listenTodayOrders(cb) {
-  // Pedidos del día (createdAt ≥ start of today)
-  const start = new Date();
+  return listenOrdersForDay(new Date(), cb);
+}
+
+// Escucha pedidos de un día concreto (de las 00:00 a las 23:59:59).
+// Devuelve la función para cancelar la suscripción.
+export function listenOrdersForDay(date, cb) {
+  const start = new Date(date);
   start.setHours(0, 0, 0, 0);
+  const end = new Date(date);
+  end.setHours(23, 59, 59, 999);
   const q = query(
     ORDERS_REF,
     where("createdAt", ">=", Timestamp.fromDate(start)),
+    where("createdAt", "<=", Timestamp.fromDate(end)),
     orderBy("createdAt", "desc"),
   );
   return onSnapshot(q, (snap) => {

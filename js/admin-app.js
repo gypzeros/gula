@@ -3,7 +3,7 @@
 import { formatEUR } from "./menu-data.js";
 import {
   listenSettings, updateSettings, ensureSettingsExist,
-  listenTodayOrders, updateOrderStatus,
+  listenOrdersForDay, updateOrderStatus,
   adminSignIn, adminSignOut, onAdminAuthChange,
 } from "./order-store.js";
 
@@ -137,7 +137,65 @@ $("#saveMessageBtn").addEventListener("click", async () => {
 
 // ─── Orders ────────────────────────────────────────────────────
 let allOrders = [];
-let filterMode = "active";   // active | all | ready | picked_up
+let filterMode = "active";          // active | all | ready | picked_up
+let currentDate = startOfDay(new Date());
+let unsubscribeOrders = null;
+
+function startOfDay(d) {
+  const r = new Date(d);
+  r.setHours(0, 0, 0, 0);
+  return r;
+}
+
+function formatDateLabel(date) {
+  const today = startOfDay(new Date());
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (date.getTime() === today.getTime())     return "Hoy";
+  if (date.getTime() === yesterday.getTime()) return "Ayer";
+  return date.toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" });
+}
+
+function toDateInputValue(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+
+function switchDate(newDate) {
+  currentDate = startOfDay(newDate);
+  $("#dateLabel").textContent = formatDateLabel(currentDate);
+  $("#dateInput").value = toDateInputValue(currentDate);
+
+  const today = startOfDay(new Date());
+  $("#dateNext").disabled = currentDate.getTime() >= today.getTime();
+
+  // Cancela el listener anterior antes de suscribirse al nuevo día
+  if (unsubscribeOrders) unsubscribeOrders();
+  unsubscribeOrders = listenOrdersForDay(currentDate, (orders) => {
+    allOrders = orders;
+    renderOrders();
+  });
+}
+
+// Navegación con flechas + apertura del calendario nativo
+$("#datePrev").addEventListener("click", () => {
+  const d = new Date(currentDate);
+  d.setDate(d.getDate() - 1);
+  switchDate(d);
+});
+$("#dateNext").addEventListener("click", () => {
+  const d = new Date(currentDate);
+  d.setDate(d.getDate() + 1);
+  const today = startOfDay(new Date());
+  if (d.getTime() <= today.getTime()) switchDate(d);
+});
+$("#dateButton").addEventListener("click", () => {
+  try { $("#dateInput").showPicker(); }
+  catch { $("#dateInput").click(); }
+});
+$("#dateInput").addEventListener("change", (e) => {
+  if (!e.target.value) return;
+  switchDate(new Date(e.target.value));
+});
 
 $$(".filter").forEach((b) => {
   b.addEventListener("click", () => {
@@ -149,10 +207,7 @@ $$(".filter").forEach((b) => {
 
 function startListening() {
   listenSettings(applySettingsUI);
-  listenTodayOrders((orders) => {
-    allOrders = orders;
-    renderOrders();
-  });
+  switchDate(new Date());           // por defecto, hoy
 }
 
 function renderOrders() {
@@ -168,7 +223,13 @@ function renderOrders() {
   $("#ordersCount").textContent = `${list.length} pedido${list.length === 1 ? "" : "s"}`;
 
   if (list.length === 0) {
-    $("#ordersList").innerHTML = `<div class="empty">No hay pedidos ${filterMode === "active" ? "en curso" : ""} ahora mismo.</div>`;
+    const dayLabel = formatDateLabel(currentDate).toLowerCase();
+    let msg;
+    if (filterMode === "active") msg = `No hay pedidos en curso ${dayLabel === "hoy" ? "ahora mismo" : dayLabel}.`;
+    else if (filterMode === "ready") msg = `No hay pedidos listos ${dayLabel === "hoy" ? "ahora mismo" : dayLabel}.`;
+    else if (filterMode === "picked_up") msg = `No hay pedidos recogidos ${dayLabel === "hoy" ? "todavía" : dayLabel}.`;
+    else msg = `No hay pedidos ${dayLabel === "hoy" ? "todavía hoy" : "este día"}.`;
+    $("#ordersList").innerHTML = `<div class="empty">${msg}</div>`;
     return;
   }
 

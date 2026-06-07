@@ -381,6 +381,39 @@
       font-size: .7rem; letter-spacing: .26em; text-transform: uppercase;
       color: var(--paper-mute);
     }
+    .date-picker {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .date-picker__nav {
+      width: 30px; height: 30px;
+      border: 1px solid rgba(176,122,54,.22);
+      color: var(--paper);
+      display: grid; place-items: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+    }
+    .date-picker__nav:hover:not(:disabled) {
+      background: var(--gold); color: var(--ink); border-color: var(--gold);
+    }
+    .date-picker__nav:disabled {
+      opacity: .25; cursor: not-allowed;
+    }
+    .date-picker__current {
+      padding: 6px 18px;
+      border: 1px solid rgba(176,122,54,.28);
+      background: rgba(176,122,54,.06);
+      color: var(--paper);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      min-width: 110px;
+      text-align: center;
+      transition: border-color .2s var(--ease);
+    }
+    .date-picker__current:hover { border-color: var(--gold); }
+
     .filters { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
     .filter {
       padding: 6px 12px;
@@ -634,7 +667,15 @@
       <!-- ORDERS ──────────── -->
       <div class="orders">
         <header class="orders__head">
-          <h2 class="orders__title">Pedidos de hoy</h2>
+          <h2 class="orders__title">Pedidos</h2>
+          <div class="date-picker">
+            <button class="date-picker__nav" id="datePrev" aria-label="Día anterior">←</button>
+            <button class="date-picker__current" id="dateButton" aria-label="Cambiar fecha">
+              <span id="dateLabel">Hoy</span>
+            </button>
+            <button class="date-picker__nav" id="dateNext" aria-label="Día siguiente">→</button>
+            <input type="date" id="dateInput" hidden />
+          </div>
           <span class="orders__count" id="ordersCount">0 pedidos</span>
           <div class="filters" id="filters">
             <button class="filter is-active" data-filter="active">En curso</button>
