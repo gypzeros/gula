@@ -80,6 +80,9 @@ function applySettingsUI(s) {
   if (document.activeElement !== $("#openToInput")) {
     $("#openToInput").value = s.openTo || "23:30";
   }
+  if (document.activeElement !== $("#notifEmailInput")) {
+    $("#notifEmailInput").value = s.notificationEmail || "";
+  }
 
   // Badge con número de platos agotados
   const disabledCount = Array.isArray(s.disabledDishes) ? s.disabledDishes.length : 0;
@@ -129,6 +132,46 @@ $("#prepSlider").addEventListener("change", async (e) => {
   sliderDebounce = setTimeout(async () => {
     await updateSettings({ prepMinutes: parseInt(e.target.value) });
   }, 200);
+});
+
+// Email de notificación
+function isValidEmail(v) {
+  // Validación razonable, no perfecta (el RFC real es muy permisivo)
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+$("#saveNotifEmailBtn").addEventListener("click", async () => {
+  const input = $("#notifEmailInput");
+  const btn   = $("#saveNotifEmailBtn");
+  const errEl = $("#notifError");
+  const val = input.value.trim();
+
+  errEl.hidden = true;
+  input.classList.remove("is-invalid");
+
+  // Permitir vaciar el campo (desactivar notificaciones)
+  if (val !== "" && !isValidEmail(val)) {
+    input.classList.add("is-invalid");
+    errEl.textContent = "El email no parece válido.";
+    errEl.hidden = false;
+    return;
+  }
+
+  btn.classList.add("is-saving");
+  btn.textContent = "Guardando…";
+  await updateSettings({ notificationEmail: val });
+  btn.classList.remove("is-saving");
+  btn.classList.add("is-saved");
+  btn.textContent = val ? "Guardado ✓" : "Vaciado ✓";
+  setTimeout(() => {
+    btn.classList.remove("is-saved");
+    btn.textContent = "Guardar";
+  }, 1600);
+});
+
+// Validación en vivo (limpia el error en cuanto escribes)
+$("#notifEmailInput").addEventListener("input", () => {
+  $("#notifEmailInput").classList.remove("is-invalid");
+  $("#notifError").hidden = true;
 });
 
 // Mensaje

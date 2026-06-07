@@ -364,6 +364,69 @@
     .msg__save:hover { background: var(--gold); color: var(--ink); }
     .msg__save.is-saving { opacity: .5; }
 
+    /* notificación email */
+    .notif-config {
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px dashed rgba(176,122,54,.18);
+    }
+    .notif-row {
+      display: flex; gap: 8px;
+      margin-top: 6px;
+    }
+    .notif-input {
+      flex: 1; min-width: 0;
+      padding: 10px 12px;
+      background: rgba(15,12,10,.5);
+      border: 1px solid rgba(176,122,54,.25);
+      color: var(--paper);
+      font: inherit;
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: .9rem;
+      letter-spacing: .01em;
+    }
+    .notif-input:focus { outline: none; border-color: var(--gold); }
+    .notif-input.is-invalid { border-color: var(--claret); }
+    .notif-input::placeholder { color: var(--paper-mute); font-style: italic; }
+    .notif-save {
+      flex-shrink: 0;
+      padding: 0 14px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: .6rem; letter-spacing: .28em; text-transform: uppercase;
+      transition: background .2s var(--ease), color .2s var(--ease);
+    }
+    .notif-save:hover { background: var(--gold); color: var(--ink); }
+    .notif-save.is-saving { opacity: .5; cursor: wait; }
+    .notif-save.is-saved {
+      background: var(--sage);
+      border-color: var(--sage);
+      color: var(--ink);
+    }
+    .notif-hint {
+      display: flex; align-items: center; gap: 8px;
+      margin: 10px 0 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: .9rem;
+      color: var(--paper-soft);
+    }
+    .notif-hint__kanji {
+      font-family: 'Noto Serif JP', serif;
+      font-style: normal;
+      font-size: .75rem;
+      letter-spacing: .04em;
+      color: var(--gold);
+      padding: 2px 6px;
+      border: 1px solid rgba(176,122,54,.3);
+      background: rgba(176,122,54,.05);
+    }
+    .notif-error {
+      margin: 6px 0 0;
+      color: var(--claret);
+      font-size: .78rem;
+    }
+
 
     /* ── lista de pedidos ─────────────────────────────────── */
     .orders { display: flex; flex-direction: column; gap: 16px; }
@@ -916,6 +979,19 @@
             <label class="msg__label" for="pausedMessage">Mensaje cuando está cerrado</label>
             <textarea class="msg__input" id="pausedMessage" placeholder="Hoy estamos al completo…"></textarea>
             <button class="msg__save" id="saveMessageBtn">Guardar mensaje</button>
+          </div>
+
+          <div class="notif-config">
+            <label class="msg__label" for="notifEmailInput">Email para avisos de pedidos</label>
+            <div class="notif-row">
+              <input type="email" id="notifEmailInput" class="notif-input" placeholder="tu@email.com" autocomplete="email" inputmode="email" />
+              <button class="notif-save" id="saveNotifEmailBtn" type="button">Guardar</button>
+            </div>
+            <p class="notif-hint">
+              <span class="notif-hint__kanji">通知</span>
+              Te avisaremos por email cada vez que entre un pedido nuevo.
+            </p>
+            <p class="notif-error" id="notifError" hidden></p>
           </div>
 
           <button class="dishes-btn" id="openDishesBtn" type="button">
