@@ -23,8 +23,8 @@ service cloud.firestore {
     function isAdmin() {
       return request.auth != null
           && request.auth.token.email in [
-               // ⚠️ EDITA esta lista con tus emails admin.
-               "REEMPLAZA-CON-TU-EMAIL-ADMIN@gularestaurante.es"
+               // Emails admin (deben existir en Firebase Authentication)
+               "gularestaurantesc@gmail.com"
                // , "otro.admin@gmail.com"   // descomenta y edita para añadir más
              ];
     }
