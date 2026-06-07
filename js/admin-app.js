@@ -329,17 +329,24 @@ function phoneDigits(raw) {
 function openWhatsAppPrefab(o, kind) {
   const phone = phoneDigits(o.customer.phone);
   const pickup = o.pickupTime?.toDate ? o.pickupTime.toDate() : new Date(o.pickupTime);
+  const created = o.createdAt?.toDate ? o.createdAt.toDate() : null;
   const pickupStr = `${String(pickup.getHours()).padStart(2,"0")}:${String(pickup.getMinutes()).padStart(2,"0")}`;
-  const minsLeft = Math.max(1, Math.round((pickup.getTime() - Date.now()) / 60_000));
+
+  // Para pedidos "lo antes posible" mostramos la duración original (pickup - createdAt)
+  // en lugar de "tiempo restante", para que coincida con lo que configuraste y no
+  // baje en 1 min mientras el admin tarda en pulsar Confirmar.
+  const prepMins = created
+    ? Math.max(1, Math.round((pickup.getTime() - created.getTime()) / 60_000))
+    : Math.max(1, Math.round((pickup.getTime() - Date.now()) / 60_000));
 
   let text;
   if (kind === "confirmed") {
     const when = o.scheduled
       ? `Te lo tendremos listo a las *${pickupStr}*`
-      : `Te lo tendremos listo en unos *${minsLeft} min*`;
-    text = `¡Hola ${o.customer.name}! 🍣\nHemos confirmado tu pedido *${o.number}* en Gula. ${when}.\nTe avisaremos cuando esté listo para recoger.`;
+      : `Te lo tendremos listo en unos *${prepMins} min*`;
+    text = `Hola ${o.customer.name}, hemos confirmado tu pedido *${o.number}* en Gula. ${when}.\nTe avisaremos cuando esté listo para recoger.\n\n¡Gracias!`;
   } else if (kind === "ready") {
-    text = `¡${o.customer.name}, tu pedido *${o.number}* está listo para recoger! 🍣\nTe esperamos en C/ Rafael Leña Caballero, bloque 2 — Cabra.\n¡Gracias!`;
+    text = `${o.customer.name}, tu pedido *${o.number}* está listo para recoger.\nTe esperamos en C/ Rafael Leña Caballero, bloque 2 — Cabra.\n\n¡Gracias!`;
   } else {
     text = `Hola ${o.customer.name}, te escribo desde Gula sobre tu pedido ${o.number}.`;
   }
