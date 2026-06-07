@@ -544,12 +544,57 @@
       font-size: 1.05rem;
       line-height: 1.55;
       color: var(--paper-soft);
-      margin: 0 0 28px;
+      margin: 0 0 20px;
       max-width: 42ch;
       position: relative;
       z-index: 1;
     }
     .dish:nth-child(even) .dish__desc { margin-left: auto; }
+
+    /* ── alérgenos por plato ─────────────────────────────────── */
+    .dish__allergens {
+      margin: 0 0 28px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: .92rem;
+      color: var(--paper-mute);
+      letter-spacing: .01em;
+      line-height: 1.5;
+      max-width: 42ch;
+      position: relative;
+      z-index: 1;
+    }
+    .dish:nth-child(even) .dish__allergens { margin-left: auto; }
+    .dish__allergens .label {
+      display: inline-block;
+      font-family: 'Manrope', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: .58rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-right: 10px;
+      vertical-align: 1px;
+    }
+    .dish__allergens .label::before {
+      content: "";
+      display: inline-block;
+      width: 18px; height: 1px;
+      background: var(--gold);
+      vertical-align: 3px;
+      margin-right: 8px;
+    }
+    .dish__allergens-item:not(:last-child)::after {
+      content: " · ";
+      color: var(--gold-soft);
+      font-style: normal;
+      margin: 0 2px;
+    }
+    .dish__allergens--empty {
+      color: var(--paper-mute);
+      font-style: italic;
+    }
 
     .dish__meta {
       display: flex;
@@ -839,6 +884,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 01 · Nigiri</span></div>
           <h3 class="dish__name">Nigiri del <em>abuelo Antonio</em></h3>
           <p class="dish__desc">Atún rojo, panko y aire del jugo del «picaíllo». Un homenaje familiar.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Gluten (panko)</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 piezas</span>
             <span class="dish__price">5,70 €</span>
@@ -856,6 +905,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 02 · Nigiri</span></div>
           <h3 class="dish__name">Nigiri flameado de <em>ventresca y foie</em></h3>
           <p class="dish__desc">Con ralladura de corazón de atún curado.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 piezas</span>
             <span class="dish__price">6,00 €</span>
@@ -873,6 +926,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 03 · Nigiri</span></div>
           <h3 class="dish__name">Nigiri de <em>anguila</em></h3>
           <p class="dish__desc">Con foie flameado en la mesa.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Soja (salsa unagi)</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 piezas</span>
             <span class="dish__price">6,00 €</span>
@@ -890,6 +947,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 04 · Nigiri</span></div>
           <h3 class="dish__name">Nigiri de salmón y <em>ajo negro</em></h3>
           <p class="dish__desc">Mahonesa de ajo negro y alcaparra.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Posible mostaza</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 piezas</span>
             <span class="dish__price">5,70 €</span>
@@ -907,6 +968,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 05 · Nigiri</span></div>
           <h3 class="dish__name">Nigiri de salmón al <em>teriyaki</em></h3>
           <p class="dish__desc">Pez mantequilla con salsa de trufa negra.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Soja</span><span class="dish__allergens-item">Gluten</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 piezas</span>
             <span class="dish__price">5,50 €</span>
@@ -924,6 +989,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 06 · Nigiri</span></div>
           <h3 class="dish__name">Nigiri de <em>dorada</em></h3>
           <p class="dish__desc">Con mantequilla dulce picante.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Huevo</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 piezas</span>
             <span class="dish__price">5,50 €</span>
@@ -941,6 +1010,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 07 · Nigiri</span></div>
           <h3 class="dish__name">Nigiri de <em>butterfish</em></h3>
           <p class="dish__desc">Con mahonesa de trufa negra.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Posible gluten</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 piezas</span>
             <span class="dish__price">5,70 €</span>
@@ -958,6 +1031,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 08 · Nigiri</span></div>
           <h3 class="dish__name">Nigiri de <em>boletus</em></h3>
           <p class="dish__desc">Con papada ibérica y chip de ajo.</p>
+          <div class="dish__allergens dish__allergens--empty">
+            <span class="label">Alérgenos</span>
+            Sin alérgenos evidentes
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 piezas</span>
             <span class="dish__price">5,20 €</span>
@@ -975,6 +1052,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 09 · Nigiri</span></div>
           <h3 class="dish__name">Nigiri de <em>jamón de pato</em></h3>
           <p class="dish__desc">Con reducción de mango y cebolla.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 piezas</span>
             <span class="dish__price">6,00 €</span>
@@ -992,6 +1073,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 10 · Uramaki</span></div>
           <h3 class="dish__name">Uramaki de <em>salmón y aguacate</em></h3>
           <p class="dish__desc">Con salsa unagi y cebolla frita.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">8 piezas</span>
             <span class="dish__price">12,00 €</span>
@@ -1009,6 +1094,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 11 · Uramaki</span></div>
           <h3 class="dish__name">Uramaki de <em>atún picante</em></h3>
           <p class="dish__desc">Con aguacate y salsa picante.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">8 piezas</span>
             <span class="dish__price">13,00 €</span>
@@ -1026,6 +1115,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 12 · Uramaki</span></div>
           <h3 class="dish__name">Uramaki de <em>atún y kimchi</em></h3>
           <p class="dish__desc">Con topping de salmón, mayo kimchi, lima y cebollino.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">8 piezas</span>
             <span class="dish__price">13,50 €</span>
@@ -1043,6 +1136,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 13 · Uramaki</span></div>
           <h3 class="dish__name">Uramaki de <em>la casita</em></h3>
           <p class="dish__desc">Membrillo, foie y panko crunch.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Soja</span><span class="dish__allergens-item">Gluten</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">8 piezas</span>
             <span class="dish__price">12,00 €</span>
@@ -1060,6 +1157,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 14 · Futomaki</span></div>
           <h3 class="dish__name">Futomaki <em>rainbow</em></h3>
           <p class="dish__desc">Atún rojo, pez mantequilla, salmón y aguacate.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">12 piezas</span>
             <span class="dish__price">15,00 €</span>
@@ -1097,6 +1198,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 15 · Entrante</span></div>
           <h3 class="dish__name">Tartar de <em>atún rojo</em> con ajoblanco</h3>
           <p class="dish__desc">Con crujiente de miel de caña y aire de ponzu.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Frutos de cáscara (almendra)</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__price">20,00 €</span>
           </div>
@@ -1113,6 +1218,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 16 · Entrante</span></div>
           <h3 class="dish__name">Ensaladilla de <em>gambón</em></h3>
           <p class="dish__desc">Gambón, panko y mahonesa japonesa.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Crustáceos</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Gluten (panko)</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__price">14,00 €</span>
           </div>
@@ -1129,6 +1238,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 17 · Entrante</span></div>
           <h3 class="dish__name">Croquetas de <em>kimchi</em></h3>
           <p class="dish__desc">Con leche de oveja y sashimi de atún rojo.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Huevo</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">6 unidades</span>
             <span class="dish__price">12,00 €</span>
@@ -1146,6 +1259,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 18 · Entrante</span></div>
           <h3 class="dish__name">Nuestra versión del <em>takoyaki</em></h3>
           <p class="dish__desc">Con leche de oveja, pulpo, salsa unagi, katsuobushi y caldo dashi.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Moluscos (pulpo)</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">6 unidades</span>
             <span class="dish__price">12,00 €</span>
@@ -1163,6 +1280,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 19 · Entrante</span></div>
           <h3 class="dish__name">Dumplings <em>fritos</em></h3>
           <p class="dish__desc">Relleno de alita de pollo a baja temperatura.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Soja</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">6 unidades</span>
             <span class="dish__price">12,00 €</span>
@@ -1180,6 +1301,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 20 · Entrante</span></div>
           <h3 class="dish__name">Gyozas de <em>carrillera</em></h3>
           <p class="dish__desc">Relleno del guiso tradicional cordobés.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Soja</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 unidades</span>
             <span class="dish__price">12,00 €</span>
@@ -1197,6 +1322,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 21 · Entrante</span></div>
           <h3 class="dish__name">Pan bao de <em>panceta ibérica</em></h3>
           <p class="dish__desc">Cocinada a baja temperatura durante 9 horas.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 unidades</span>
             <span class="dish__price">13,00 €</span>
@@ -1214,6 +1343,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 22 · Entrante</span></div>
           <h3 class="dish__name">Baozi de <em>calamares</em></h3>
           <p class="dish__desc">Relleno de calamares «encebollaos».</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Moluscos</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 unidades</span>
             <span class="dish__price">15,00 €</span>
@@ -1231,6 +1364,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 23 · Entrante</span></div>
           <h3 class="dish__name">Baozi de <em>bolognese</em></h3>
           <p class="dish__desc">Relleno de ragú de ternera y cerdo.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Posible apio</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__pieces">2 unidades</span>
             <span class="dish__price">14,00 €</span>
@@ -1268,6 +1405,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 24 · Principal</span></div>
           <h3 class="dish__name">Katsu <em>curry</em></h3>
           <p class="dish__desc">Con arroz y lomo ibérico.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Soja</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__price">16,00 €</span>
           </div>
@@ -1284,6 +1425,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 25 · Principal</span></div>
           <h3 class="dish__name">Udon de <em>carbonara</em></h3>
           <p class="dish__desc">Con guanchale y pecorino romano.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Huevo</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__price">19,00 €</span>
           </div>
@@ -1300,6 +1445,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 26 · Principal</span></div>
           <h3 class="dish__name">Magret de <em>pato de Navarra</em></h3>
           <p class="dish__desc">Salsa de trufa y foie, setas de temporada y zanahorias baby.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Posibles sulfitos</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__price">21,00 €</span>
           </div>
@@ -1316,6 +1465,10 @@
           <div class="dish__eyebrow"><span class="ord">N° 27 · Principal</span></div>
           <h3 class="dish__name">Tteokbokki en salsa de <em>gochujang</em></h3>
           <p class="dish__desc">Con mollejas de cordero y setas shitake.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Soja</span><span class="dish__allergens-item">Gluten</span>
+          </div>
           <div class="dish__meta">
             <span class="dish__price">18,00 €</span>
           </div>
