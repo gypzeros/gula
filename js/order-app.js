@@ -563,13 +563,13 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && $("#dishLightbox").classList.contains("is-open")) closeLightbox();
 });
 
-// Añadir desde el lightbox: incrementa el qty y refresca el botón
+// Añadir desde el lightbox: incrementa el qty y cierra el modal
 $("#lightboxAdd").addEventListener("click", () => {
   const id = $("#lightboxAdd").dataset.dish;
   if (!id || isDishDisabled(id)) return;
   const current = cart.get(id) || 0;
   setQty(id, current + 1);
-  syncLightboxButton(id);
+  closeLightbox();
 });
 
 
