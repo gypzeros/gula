@@ -414,12 +414,22 @@ function showConfirmation(order) {
   $("#confirmName").textContent = order.customer.name;
   $("#confirmNumber").textContent = order.number;
   const t = order.pickupTime.toDate ? order.pickupTime.toDate() : order.pickupTime;
-  const hh = String(t.getHours()).padStart(2, "0");
-  const mm = String(t.getMinutes()).padStart(2, "0");
-  $("#confirmPickup").textContent = `a las ${hh}:${mm}`;
+
+  // Si el cliente eligió "lo antes posible" → muestra minutos relativos.
+  // Si programó una hora concreta → muestra la hora.
+  let label;
+  if (order.scheduled) {
+    const hh = String(t.getHours()).padStart(2, "0");
+    const mm = String(t.getMinutes()).padStart(2, "0");
+    label = `a las ${hh}:${mm}`;
+  } else {
+    const mins = Math.max(1, Math.round((t.getTime() - Date.now()) / 60_000));
+    label = `en unos ${mins} minutos`;
+  }
+  $("#confirmPickup").textContent = label;
+
   $("#checkoutForm").style.display = "none";
   $("#confirmView").style.display = "block";
-  // permite cerrar al hacer clic fuera o en la X
   $("#submitOrder").disabled = false;
   $("#submitOrder").textContent = "Confirmar pedido";
 }
