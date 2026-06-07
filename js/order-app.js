@@ -505,6 +505,74 @@ function showConfirmation(order) {
 }
 
 
+// ─── Lightbox de fotos a pantalla completa ────────────────────
+function openLightbox(dishId) {
+  const d = MENU_BY_ID[dishId];
+  if (!d) return;
+  $("#lightboxImg").src = d.photo;
+  $("#lightboxImg").alt = d.name;
+  $("#lightboxName").textContent = d.name;
+  $("#lightboxDesc").textContent = d.desc || "";
+  $("#lightboxPieces").textContent = d.pieces || "";
+  $("#lightboxPrice").textContent = formatEUR(d.price);
+  syncLightboxButton(dishId);
+  $("#dishLightbox").classList.add("is-open");
+  document.body.style.overflow = "hidden";
+}
+
+function syncLightboxButton(dishId) {
+  const addBtn = $("#lightboxAdd");
+  addBtn.dataset.dish = dishId;
+  addBtn.classList.remove("is-in-cart");
+  addBtn.disabled = false;
+
+  if (isDishDisabled(dishId)) {
+    addBtn.textContent = "Agotado";
+    addBtn.disabled = true;
+    return;
+  }
+  const qty = cart.get(dishId) || 0;
+  if (qty > 0) {
+    addBtn.textContent = `En el pedido · ${qty}`;
+    addBtn.classList.add("is-in-cart");
+  } else {
+    addBtn.textContent = "Añadir al pedido";
+  }
+}
+
+function closeLightbox() {
+  $("#dishLightbox").classList.remove("is-open");
+  document.body.style.overflow = "";
+}
+
+// Delegación: click en cualquier .dish__photo abre el lightbox
+document.addEventListener("click", (e) => {
+  const photo = e.target.closest(".dish__photo");
+  if (!photo) return;
+  const article = photo.closest("[data-dish]");
+  if (!article) return;
+  openLightbox(article.dataset.dish);
+});
+
+// Cierre: X, click en fondo, Esc
+$("#lightboxClose").addEventListener("click", closeLightbox);
+$("#dishLightbox").addEventListener("click", (e) => {
+  if (e.target === $("#dishLightbox")) closeLightbox();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && $("#dishLightbox").classList.contains("is-open")) closeLightbox();
+});
+
+// Añadir desde el lightbox: incrementa el qty y refresca el botón
+$("#lightboxAdd").addEventListener("click", () => {
+  const id = $("#lightboxAdd").dataset.dish;
+  if (!id || isDishDisabled(id)) return;
+  const current = cart.get(id) || 0;
+  setQty(id, current + 1);
+  syncLightboxButton(id);
+});
+
+
 // ─── Init ─────────────────────────────────────────────────────
 (async function init() {
   loadCart();              // rehidrata el carrito guardado antes de pintar
