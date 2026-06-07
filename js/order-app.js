@@ -2,6 +2,7 @@
 
 import { MENU, CATEGORIES, MENU_BY_ID, formatEUR } from "./menu-data.js";
 import { listenSettings, createOrder, ensureSettingsExist } from "./order-store.js";
+import { sendOrderNotification } from "./email-notify.js";
 
 // ─── Estado en memoria ─────────────────────────────────────────
 const cart = new Map();     // id → qty
@@ -468,6 +469,9 @@ $("#submitOrder").addEventListener("click", async () => {
     cart.clear();
     saveCart();
     updateCartUI();
+    // Aviso al admin por email (fire-and-forget, no bloquea la UX).
+    // Solo se manda si hay un email configurado en /settings.
+    sendOrderNotification({ order, toEmail: settings.notificationEmail });
   } catch (err) {
     console.error(err);
     alert("Algo ha ido mal. Inténtalo de nuevo o llámanos al 667 09 98 28.");
