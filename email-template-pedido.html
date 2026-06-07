@@ -1,0 +1,190 @@
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║   GULA RESTAURANTE · Plantilla email "nuevo pedido"              ║
+  ╠══════════════════════════════════════════════════════════════════╣
+  ║   • Pegar tal cual en EmailJS → Email Templates → Content (HTML) ║
+  ║   • Subject sugerido:                                            ║
+  ║       🍣 Nuevo pedido {{order_number}} · {{customer_name}}        ║
+  ║   • Variables que tienes que pasar desde el JS:                  ║
+  ║       order_number      G-001                                     ║
+  ║       customer_name     Marina López                              ║
+  ║       customer_phone    +34 666 123 456                           ║
+  ║       customer_phone_link  34666123456 (sin +)                    ║
+  ║       pickup_kind       "asap"  |  "scheduled"                    ║
+  ║       pickup_time       21:30                                     ║
+  ║       pickup_mins       30   (solo cuando es asap)                ║
+  ║       items_html        <bloque HTML con las filas, ver JS>       ║
+  ║       notes             texto opcional o cadena vacía             ║
+  ║       total             32,60 €                                   ║
+  ║       order_date        viernes 7 jun · 13:42                     ║
+  ║       admin_url         https://gularestaurante.es/admin.html     ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light only">
+  <title>Nuevo pedido · Gula</title>
+  <!-- Google Fonts (lo carga Gmail; Outlook hace fallback a Georgia/serif) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,300;1,400;1,500&family=Manrope:wght@400;500;600&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* CSS embebido — solo lo soportan Gmail/Apple Mail (Outlook lo ignora,
+       por eso TODO está también inline). Aquí va lo "nice to have". */
+    body, table, td { font-family: 'Manrope', Arial, sans-serif; }
+    .em-h1, .em-h2 { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .em-kanji { font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', serif; }
+    a { color: #b07a36; }
+    @media (max-width: 520px) {
+      .em-pad   { padding-left: 22px !important; padding-right: 22px !important; }
+      .em-num   { font-size: 56px !important; }
+      .em-h1    { font-size: 22px !important; }
+      .em-table td { font-size: 14px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background:#0f0c0a; -webkit-text-size-adjust:100%;">
+
+  <!-- preheader (oculto, lo muestra Gmail bajo el asunto) -->
+  <div style="display:none;font-size:1px;color:#0f0c0a;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+    Pedido {{order_number}} de {{customer_name}} · Total {{total}} · Recoger {{pickup_time}}
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0f0c0a;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+
+        <!-- ═════════ contenedor central ═════════ -->
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px; width:100%;">
+
+          <!-- ─── HEAD oscuro con marca + número ─── -->
+          <tr>
+            <td class="em-pad" align="center" style="padding:36px 40px 28px; background:#14110e; border:1px solid rgba(176,122,54,.22); border-bottom:0;">
+              <!-- logo + nombre -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+                <tr>
+                  <td style="padding-right:10px;" valign="middle">
+                    <!-- mark SVG simplificado (Gmail lo renderiza; Outlook puede que no — fallback al texto) -->
+                    <span style="display:inline-block;width:22px;height:22px;background:#b07a36;border-radius:50%;"></span>
+                  </td>
+                  <td valign="middle" style="font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:22px; color:#ece2cf; letter-spacing:.02em;">
+                    Gula <span style="color:#8a7e6c; font-style:normal; font-family:Manrope,Arial,sans-serif; font-size:10px; letter-spacing:.32em; text-transform:uppercase; padding-left:8px;">Restaurante</span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- eyebrow kanji -->
+              <p class="em-kanji" style="margin:24px 0 6px; font-family:'Noto Serif JP','Hiragino Mincho ProN',serif; font-size:11px; letter-spacing:.36em; color:#b07a36;">
+                受 注 · NUEVO PEDIDO
+              </p>
+
+              <!-- número grande -->
+              <p class="em-num" style="margin:6px 0 4px; font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-weight:500; font-size:72px; line-height:1; color:#e2b576; letter-spacing:.02em;">
+                {{order_number}}
+              </p>
+
+              <p style="margin:14px 0 0; font-family:Manrope,Arial,sans-serif; font-size:11px; letter-spacing:.3em; color:#8a7e6c; text-transform:uppercase;">
+                {{order_date}}
+              </p>
+            </td>
+          </tr>
+
+          <!-- ─── BODY crema ─── -->
+          <tr>
+            <td class="em-pad" style="padding:32px 40px 28px; background:#ece2cf; color:#0f0c0a; border-left:1px solid rgba(176,122,54,.22); border-right:1px solid rgba(176,122,54,.22);">
+
+              <!-- ───── CLIENTE ───── -->
+              <p style="margin:0 0 4px; font-family:Manrope,Arial,sans-serif; font-size:10px; letter-spacing:.36em; color:#b07a36; text-transform:uppercase;">
+                客 · Cliente
+              </p>
+              <p class="em-h1" style="margin:0 0 4px; font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:28px; color:#0f0c0a; line-height:1.1;">
+                {{customer_name}}
+              </p>
+              <p style="margin:0; font-family:Manrope,Arial,sans-serif; font-size:15px;">
+                <a href="tel:{{customer_phone_link}}" style="color:#7a2a26; text-decoration:none; border-bottom:1px solid rgba(122,42,38,.4);">{{customer_phone}}</a>
+              </p>
+
+              <!-- separador -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;"><tr><td style="border-top:1px solid rgba(176,122,54,.3); font-size:0; line-height:0;">&nbsp;</td></tr></table>
+
+              <!-- ───── RECOGIDA ───── -->
+              <p style="margin:0 0 4px; font-family:Manrope,Arial,sans-serif; font-size:10px; letter-spacing:.36em; color:#b07a36; text-transform:uppercase;">
+                受取 · Recogida
+              </p>
+              <p class="em-h1" style="margin:0 0 6px; font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-weight:500; font-size:32px; color:#0f0c0a; line-height:1; letter-spacing:.01em;">
+                {{pickup_time}}
+              </p>
+              <p style="margin:0; font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:15px; color:#5a4f3e;">
+                {{pickup_label}}
+              </p>
+
+              <!-- separador -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;"><tr><td style="border-top:1px solid rgba(176,122,54,.3); font-size:0; line-height:0;">&nbsp;</td></tr></table>
+
+              <!-- ───── PEDIDO ───── -->
+              <p style="margin:0 0 12px; font-family:Manrope,Arial,sans-serif; font-size:10px; letter-spacing:.36em; color:#b07a36; text-transform:uppercase;">
+                注文 · Pedido
+              </p>
+
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="em-table" style="font-family:'Cormorant Garamond',Georgia,serif;">
+                {{{items_html}}}
+              </table>
+
+              <!-- total -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:18px; border-top:2px solid #0f0c0a;">
+                <tr>
+                  <td style="padding:14px 0 0; font-family:Manrope,Arial,sans-serif; font-size:11px; letter-spacing:.32em; color:#5a4f3e; text-transform:uppercase;">
+                    Total
+                  </td>
+                  <td align="right" style="padding:14px 0 0; font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-weight:500; font-size:26px; color:#0f0c0a;">
+                    {{total}}
+                  </td>
+                </tr>
+              </table>
+
+              <!-- ───── NOTAS (siempre se renderiza; si está vacío se oculta visualmente) ───── -->
+              {{{notes_block}}}
+
+              <!-- ───── CTA ───── -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:30px;">
+                <tr>
+                  <td align="center">
+                    <a href="{{admin_url}}" style="display:inline-block; padding:14px 28px; background:#0f0c0a; color:#ece2cf; font-family:Manrope,Arial,sans-serif; font-size:11px; letter-spacing:.36em; text-transform:uppercase; text-decoration:none; border:1px solid #b07a36;">
+                      Abrir el panel
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- ─── FOOTER oscuro ─── -->
+          <tr>
+            <td class="em-pad" align="center" style="padding:24px 40px 32px; background:#14110e; color:#8a7e6c; border:1px solid rgba(176,122,54,.22); border-top:0;">
+              <p class="em-kanji" style="margin:0 0 8px; font-family:'Noto Serif JP','Hiragino Mincho ProN',serif; font-size:14px; color:#b07a36; letter-spacing:.12em;">
+                味噌 ・ 大豆 ・ 米
+              </p>
+              <p style="margin:0; font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:15px; color:#d8cdb6;">
+                De Japón al corazón de Andalucía.
+              </p>
+              <p style="margin:18px 0 0; font-family:Manrope,Arial,sans-serif; font-size:11px; letter-spacing:.18em; color:#8a7e6c; line-height:1.7;">
+                C. Rafael Leña Caballero, bloque 2 · 14940 Cabra (Córdoba)<br>
+                <a href="tel:+34667099828" style="color:#b07a36; text-decoration:none;">667 09 98 28</a>
+                &nbsp;·&nbsp;
+                <a href="https://gularestaurante.es" style="color:#b07a36; text-decoration:none;">gularestaurante.es</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
