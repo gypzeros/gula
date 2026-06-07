@@ -71,7 +71,7 @@ service cloud.firestore {
            // Estructura obligatoria
               request.resource.data.keys().hasAll([
                 'number', 'customer', 'items', 'total',
-                'pickupTime', 'scheduled', 'status', 'createdAt', 'smsSent'
+                'pickupTime', 'scheduled', 'status', 'createdAt', 'mailSent'
               ])
            // El status inicial debe ser pending
            && request.resource.data.status == 'pending'
@@ -83,6 +83,11 @@ service cloud.firestore {
            && request.resource.data.customer.phone is string
            && request.resource.data.customer.phone.size() >= 9
            && request.resource.data.customer.phone.size() <= 20
+           // Email del cliente: obligatorio + límites razonables
+           && request.resource.data.customer.email is string
+           && request.resource.data.customer.email.size() >= 5
+           && request.resource.data.customer.email.size() <= 120
+           && request.resource.data.customer.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
            // Items (mínimo 1, máximo 50)
            && request.resource.data.items is list
            && request.resource.data.items.size() >= 1
@@ -93,11 +98,11 @@ service cloud.firestore {
            && request.resource.data.total < 500
            // createdAt debe ser el timestamp del servidor
            && request.resource.data.createdAt == request.time
-           // smsSent inicial debe ser un mapa vacío (la Cloud Function lo va rellenando)
-           // Se acepta también `false` por compatibilidad con clientes antiguos.
-           && (request.resource.data.smsSent == false
-               || (request.resource.data.smsSent is map
-                   && request.resource.data.smsSent.keys().size() == 0))
+           // mailSent: mapa vacío inicial. La Cloud Function escribe timestamps
+           // (customerReceived, customerConfirmed, customerReady, adminNew)
+           // tras enviar cada email.
+           && request.resource.data.mailSent is map
+           && request.resource.data.mailSent.keys().size() == 0
            // scheduled debe ser bool
            && request.resource.data.scheduled is bool
            // Notes opcional pero limitado

@@ -704,6 +704,15 @@
       font-size: .62rem; letter-spacing: .3em; text-transform: uppercase;
       color: var(--gold); margin-bottom: 6px;
     }
+    .field__hint {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: .01em;
+      color: var(--paper-mute);
+      font-size: .85rem;
+      margin-left: 2px;
+    }
     .field input, .field textarea, .field select {
       width: 100%;
       padding: 12px 14px;
@@ -1073,6 +1082,11 @@
         <div class="field">
           <label class="field__label" for="customerPhone">Teléfono móvil</label>
           <input type="tel" id="customerPhone" placeholder="+34 600 00 00 00" required />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="customerEmail">Email <span class="field__hint">· te avisamos aquí cuando esté listo</span></label>
+          <input type="email" id="customerEmail" placeholder="tu@email.com" autocomplete="email" inputmode="email" required />
         </div>
 
         <div class="field">

@@ -1,22 +1,24 @@
 // ════════════════════════════════════════════════════════════════════
-//   Gula Restaurante · Cloud Function de notificaciones SMS (Twilio)
+//   Gula Restaurante · Cloud Function de notificaciones por email
 // ─────────────────────────────────────────────────────────────────────
-//   Se dispara con CUALQUIER cambio en /orders/{orderId} y decide:
+//   Trigger: cualquier cambio en /orders/{orderId}
 //
-//     • Documento nuevo            → SMS "pedido recibido"
-//     • status pending → preparing → SMS "pedido confirmado"
-//     • status preparing → ready   → SMS "pedido listo para recoger"
+//   Eventos que dispara emails:
+//     • Documento nuevo            → email al cliente "recibido"
+//                                  → email al admin    "nuevo pedido"
+//     • status pending → preparing → email al cliente "confirmado"
+//     • status preparing → ready   → email al cliente "listo para recoger"
 //
-//   Las credenciales viven en Google Secret Manager (no en el repo).
-//   Para configurarlas:
+//   Idempotente: no manda dos veces el mismo email aunque Firestore
+//   reintente el trigger. Marca cada envío en /orders/{id}.mailSent.*
 //
-//     firebase functions:secrets:set TWILIO_ACCOUNT_SID
-//     firebase functions:secrets:set TWILIO_AUTH_TOKEN
-//     firebase functions:secrets:set TWILIO_SENDER
+//   Credenciales en Google Secret Manager:
 //
-//   Luego desplegar:
-//
-//     firebase deploy --only functions
+//     firebase functions:secrets:set MAIL_SMTP_HOST
+//     firebase functions:secrets:set MAIL_SMTP_PORT
+//     firebase functions:secrets:set MAIL_SMTP_USER
+//     firebase functions:secrets:set MAIL_SMTP_PASS
+//     firebase functions:secrets:set MAIL_FROM
 //
 // ════════════════════════════════════════════════════════════════════
 
@@ -24,164 +26,122 @@ const { onDocumentWritten } = require("firebase-functions/v2/firestore");
 const { defineSecret } = require("firebase-functions/params");
 const { logger, setGlobalOptions } = require("firebase-functions/v2");
 const admin = require("firebase-admin");
-const Twilio = require("twilio");
+const nodemailer = require("nodemailer");
+const { renderEmail } = require("./templates");
 
 admin.initializeApp();
-
-// Región y memoria globales (más cerca de España, sobra con 256MB)
 setGlobalOptions({ region: "europe-west1", memory: "256MiB", maxInstances: 5 });
 
 // ─── Secrets ──────────────────────────────────────────────────
-const TWILIO_ACCOUNT_SID = defineSecret("TWILIO_ACCOUNT_SID");
-const TWILIO_AUTH_TOKEN  = defineSecret("TWILIO_AUTH_TOKEN");
-// "GULA" (alfanumérico) o "+34..." (número Twilio)
-const TWILIO_SENDER      = defineSecret("TWILIO_SENDER");
+const MAIL_SMTP_HOST = defineSecret("MAIL_SMTP_HOST");
+const MAIL_SMTP_PORT = defineSecret("MAIL_SMTP_PORT");
+const MAIL_SMTP_USER = defineSecret("MAIL_SMTP_USER");
+const MAIL_SMTP_PASS = defineSecret("MAIL_SMTP_PASS");
+const MAIL_FROM      = defineSecret("MAIL_FROM"); // ej: "Gula Restaurante <noreply@gularestaurante.es>"
+
+const ALL_SECRETS = [MAIL_SMTP_HOST, MAIL_SMTP_PORT, MAIL_SMTP_USER, MAIL_SMTP_PASS, MAIL_FROM];
 
 // ─── Trigger principal ────────────────────────────────────────
 exports.onOrderWrite = onDocumentWritten(
   {
     document: "orders/{orderId}",
-    secrets: [TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SENDER],
+    secrets: ALL_SECRETS,
   },
   async (event) => {
     const before = event.data?.before?.exists ? event.data.before.data() : null;
     const after  = event.data?.after?.exists  ? event.data.after.data()  : null;
+    if (!after) return;        // borrado: nada que avisar
 
-    // Borrado → nada que notificar
-    if (!after) {
-      logger.info("Order deleted, no SMS", { orderId: event.params.orderId });
-      return;
-    }
-
-    const rawPhone = after.customer?.phone;
-    const to = normalizeE164(rawPhone);
-    if (!to) {
-      logger.warn("Skipping SMS: invalid phone", { rawPhone, orderId: event.params.orderId });
-      return;
-    }
-
-    const client = Twilio(TWILIO_ACCOUNT_SID.value(), TWILIO_AUTH_TOKEN.value());
-    const sender = TWILIO_SENDER.value();
     const ref = event.data.after.ref;
+    const transporter = buildTransporter();
+
+    // Lee email del admin desde settings/main (lo configuras en el panel)
+    const settings = await admin.firestore().doc("settings/main").get();
+    const adminEmail = settings.exists ? settings.data().notificationEmail : null;
+
+    const customerEmail = after.customer?.email;
 
     // ─── 1) Pedido nuevo ───────────────────────────────────────
     if (!before) {
-      // Idempotencia: si ya se mandó (por reintento del trigger), no duplicar
-      if (after.smsSent?.received) {
-        logger.info("Received SMS already sent, skip", { id: event.params.orderId });
-        return;
+      // Cliente: "hemos recibido tu pedido"
+      if (customerEmail && !after.mailSent?.customerReceived) {
+        await sendAndMark(transporter, ref, "customerReceived", {
+          to: customerEmail,
+          subject: `Hemos recibido tu pedido ${after.number} · Gula Restaurante`,
+          ...renderEmail("customerReceived", after),
+        });
       }
-      const body = buildReceivedBody(after);
-      const sid = await sendSMS(client, { from: sender, to, body });
-      if (sid) {
-        await ref.update({ "smsSent.received": admin.firestore.FieldValue.serverTimestamp() });
+      // Admin: "nuevo pedido entrando"
+      if (adminEmail && !after.mailSent?.adminNew) {
+        await sendAndMark(transporter, ref, "adminNew", {
+          to: adminEmail,
+          subject: `🍣 Nuevo pedido ${after.number} · ${after.customer.name}`,
+          ...renderEmail("adminNew", after),
+        });
       }
       return;
     }
 
     // ─── 2) Admin confirma (pending → preparing) ───────────────
     if (before.status === "pending" && after.status === "preparing") {
-      if (after.smsSent?.confirmed) {
-        logger.info("Confirmed SMS already sent, skip", { id: event.params.orderId });
-        return;
-      }
-      const body = buildConfirmedBody(after);
-      const sid = await sendSMS(client, { from: sender, to, body });
-      if (sid) {
-        await ref.update({ "smsSent.confirmed": admin.firestore.FieldValue.serverTimestamp() });
+      if (customerEmail && !after.mailSent?.customerConfirmed) {
+        await sendAndMark(transporter, ref, "customerConfirmed", {
+          to: customerEmail,
+          subject: `Tu pedido ${after.number} está confirmado`,
+          ...renderEmail("customerConfirmed", after),
+        });
       }
       return;
     }
 
     // ─── 3) Listo para recoger (preparing → ready) ─────────────
     if (before.status === "preparing" && after.status === "ready") {
-      if (after.smsSent?.ready) {
-        logger.info("Ready SMS already sent, skip", { id: event.params.orderId });
-        return;
-      }
-      const body = buildReadyBody(after);
-      const sid = await sendSMS(client, { from: sender, to, body });
-      if (sid) {
-        await ref.update({ "smsSent.ready": admin.firestore.FieldValue.serverTimestamp() });
+      if (customerEmail && !after.mailSent?.customerReady) {
+        await sendAndMark(transporter, ref, "customerReady", {
+          to: customerEmail,
+          subject: `Tu pedido ${after.number} está listo para recoger`,
+          ...renderEmail("customerReady", after),
+        });
       }
       return;
     }
 
-    // Cualquier otro cambio (notes, picked_up, cancelled…) → no SMS
-    logger.debug("No SMS for transition", {
+    logger.debug("No email for transition", {
       from: before.status, to: after.status, id: event.params.orderId,
     });
   }
 );
 
 
-// ─── Envío y reporte ──────────────────────────────────────────
-async function sendSMS(client, { from, to, body }) {
+// ─── Envío + marca de idempotencia ────────────────────────────
+async function sendAndMark(transporter, ref, key, { to, subject, html, text }) {
   try {
-    const msg = await client.messages.create({ from, to, body });
-    logger.info("SMS enviado", { to, sid: msg.sid, status: msg.status });
-    return msg.sid;
-  } catch (err) {
-    logger.error("SMS fallido", {
-      to, code: err.code, message: err.message, moreInfo: err.moreInfo,
+    const info = await transporter.sendMail({
+      from: MAIL_FROM.value(),
+      to,
+      subject,
+      text,
+      html,
     });
-    return null;
+    logger.info("Email enviado", { key, to, messageId: info.messageId });
+    await ref.update({
+      [`mailSent.${key}`]: admin.firestore.FieldValue.serverTimestamp(),
+    });
+  } catch (err) {
+    logger.error("Email fallido", { key, to, error: err.message });
   }
 }
 
 
-// ─── Plantillas (cortas para gastar 1 segmento por SMS) ───────
-function buildReceivedBody(o) {
-  return `Gula: hemos recibido tu pedido ${o.number}. Lo confirmaremos en breve. Dudas: 667099828.`;
-}
-
-function buildConfirmedBody(o) {
-  const pickup = toDate(o.pickupTime);
-  const hhmm = `${pad2(pickup.getHours())}:${pad2(pickup.getMinutes())}`;
-  if (o.scheduled) {
-    return `Gula: pedido ${o.number} confirmado. Te lo tenemos listo a las ${hhmm}.`;
-  }
-  const mins = Math.max(1, Math.round((pickup.getTime() - Date.now()) / 60000));
-  return `Gula: pedido ${o.number} confirmado. Te lo tenemos listo en unos ${mins} min.`;
-}
-
-function buildReadyBody(o) {
-  return `Gula: tu pedido ${o.number} esta LISTO para recoger. Te esperamos en C/ Rafael Lena Caballero 2, Cabra.`;
-}
-
-
-// ─── Helpers ──────────────────────────────────────────────────
-function pad2(n) { return String(n).padStart(2, "0"); }
-
-function toDate(v) {
-  if (!v) return new Date();
-  if (typeof v.toDate === "function") return v.toDate();
-  return new Date(v);
-}
-
-// Convierte cualquier formato de móvil español a E.164: "+34666123456".
-// Acepta: "+34666123456", "666 12 34 56", "0034 666 123 456", "666-123-456"…
-function normalizeE164(phone) {
-  if (!phone) return null;
-  let s = String(phone).trim();
-
-  // Si ya empieza por + lo respetamos (solo limpiamos espacios/guiones)
-  if (s.startsWith("+")) {
-    s = "+" + s.slice(1).replace(/\D/g, "");
-    return s.length >= 10 ? s : null;
-  }
-
-  // 00 al inicio = prefijo internacional → reemplazar por +
-  if (s.startsWith("00")) {
-    s = "+" + s.slice(2).replace(/\D/g, "");
-    return s.length >= 10 ? s : null;
-  }
-
-  const digits = s.replace(/\D/g, "");
-  // 9 dígitos → móvil/fijo español sin prefijo
-  if (digits.length === 9) return "+34" + digits;
-  // 11 dígitos empezando por 34 → ya tienen el código
-  if (digits.length === 11 && digits.startsWith("34")) return "+" + digits;
-
-  return null;
+// ─── Transporter (lazy, una instancia por invocación) ─────────
+function buildTransporter() {
+  return nodemailer.createTransport({
+    host: MAIL_SMTP_HOST.value(),
+    port: parseInt(MAIL_SMTP_PORT.value(), 10),
+    secure: parseInt(MAIL_SMTP_PORT.value(), 10) === 465,
+    auth: {
+      user: MAIL_SMTP_USER.value(),
+      pass: MAIL_SMTP_PASS.value(),
+    },
+  });
 }
