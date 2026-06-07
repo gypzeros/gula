@@ -7,6 +7,42 @@ import { listenSettings, createOrder, ensureSettingsExist } from "./order-store.
 const cart = new Map();     // id → qty
 let settings = { enabled: true, prepMinutes: 30, pausedMessage: "" };
 
+// ─── Persistencia del carrito (sobrevive a recarga) ───────────
+const CART_STORAGE_KEY = "gula.cart.v1";
+const CART_TTL_MS = 6 * 60 * 60 * 1000;     // 6 horas
+
+function saveCart() {
+  try {
+    if (cart.size === 0) {
+      localStorage.removeItem(CART_STORAGE_KEY);
+      return;
+    }
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({
+      items: [...cart.entries()],
+      savedAt: Date.now(),
+    }));
+  } catch { /* private mode o storage llena: ignorar silenciosamente */ }
+}
+
+function loadCart() {
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return;
+    const payload = JSON.parse(raw);
+    if (!payload || !Array.isArray(payload.items)) return;
+    // Expira: pasado el TTL, descartar
+    if (Date.now() - (payload.savedAt || 0) > CART_TTL_MS) {
+      localStorage.removeItem(CART_STORAGE_KEY);
+      return;
+    }
+    for (const [id, qty] of payload.items) {
+      if (MENU_BY_ID[id] && Number.isInteger(qty) && qty > 0 && qty <= 50) {
+        cart.set(id, qty);
+      }
+    }
+  } catch { /* JSON inválido o storage no accesible */ }
+}
+
 // ─── DOM helpers ───────────────────────────────────────────────
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
@@ -75,6 +111,7 @@ function addToCart(id) {
 function setQty(id, qty) {
   if (qty <= 0) cart.delete(id);
   else cart.set(id, qty);
+  saveCart();
   updateCartUI();
 }
 
@@ -264,7 +301,7 @@ function applySettings(s) {
       if (disabledSet.has(id)) { cart.delete(id); cartTouched = true; }
     }
     renderMenu();
-    if (cartTouched) updateCartUI();
+    if (cartTouched) { saveCart(); updateCartUI(); }
   }
 
   const card = $("#statusCard");
@@ -429,6 +466,7 @@ $("#submitOrder").addEventListener("click", async () => {
     });
     showConfirmation(order);
     cart.clear();
+    saveCart();
     updateCartUI();
   } catch (err) {
     console.error(err);
@@ -465,9 +503,13 @@ function showConfirmation(order) {
 
 // ─── Init ─────────────────────────────────────────────────────
 (async function init() {
+  loadCart();              // rehidrata el carrito guardado antes de pintar
   renderMenu();
+  updateCartUI();          // muestra los productos persistidos ya
   refreshActiveTab();
   await ensureSettingsExist();
+  // Cuando lleguen settings, si hay agotados, applySettings los limpiará
+  // del carrito y volverá a guardar la versión depurada
   listenSettings((s) => {
     applySettings(s);
     $("#loading").classList.add("is-hidden");
