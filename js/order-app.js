@@ -107,7 +107,11 @@ function updateCartUI() {
               <button data-action="dec" aria-label="Quitar uno">−</button>
               <span>${q}</span>
               <button data-action="inc" aria-label="Añadir uno">+</button>
-              <button class="cart-side__item-remove" data-action="remove" aria-label="Eliminar">Quitar</button>
+              <button class="cart-side__item-remove" data-action="remove" aria-label="Eliminar del pedido" title="Eliminar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+                </svg>
+              </button>
             </div>
           </li>
         `;
@@ -152,26 +156,26 @@ document.addEventListener("click", (e) => {
 });
 
 
-// ─── Tabs ─────────────────────────────────────────────────────
-$$(".tabs__btn").forEach((btn) => {
+// ─── Tabs (integradas en el nav) ──────────────────────────────
+$$(".nav__tab").forEach((btn) => {
   btn.addEventListener("click", () => {
     const target = $(`#cat-${btn.dataset.tab}`);
     if (!target) return;
-    const offset = 130;
-    window.scrollTo({ top: target.offsetTop - offset, behavior: "smooth" });
+    const navH = document.querySelector(".nav")?.offsetHeight || 72;
+    window.scrollTo({ top: target.offsetTop - navH - 12, behavior: "smooth" });
   });
 });
 
 // Auto-active tab según scroll
 const sections = CATEGORIES.map((c) => ({ key: c.key, el: null }));
 function refreshActiveTab() {
-  const y = window.scrollY + 200;
+  const y = window.scrollY + 160;
   let current = "sushi";
   for (const s of sections) {
     if (!s.el) s.el = $(`#cat-${s.key}`);
     if (s.el && s.el.offsetTop <= y) current = s.key;
   }
-  $$(".tabs__btn").forEach((b) => b.classList.toggle("is-active", b.dataset.tab === current));
+  $$(".nav__tab").forEach((b) => b.classList.toggle("is-active", b.dataset.tab === current));
 }
 window.addEventListener("scroll", refreshActiveTab, { passive: true });
 

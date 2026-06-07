@@ -51,14 +51,14 @@
 
     ::selection { background: var(--gold); color: var(--ink); }
 
-    /* ── nav ──────────────────────────────────────────────── */
+    /* ── nav (con tabs integradas) ────────────────────────── */
     .nav {
       position: sticky; top: 0;
       z-index: 80;
       background: rgba(15,12,10,.85);
       backdrop-filter: blur(16px) saturate(140%);
       border-bottom: 1px solid rgba(176,122,54,.18);
-      padding: 14px var(--gutter);
+      padding: 12px var(--gutter);
       display: grid;
       grid-template-columns: auto minmax(0, 1fr) auto;
       gap: 16px;
@@ -66,16 +66,74 @@
     }
     .nav__brand { display: flex; align-items: center; gap: 14px; color: var(--paper); }
     .nav__brand svg.mark { width: 26px; height: auto; flex-shrink: 0; }
-    .nav__brand svg.letras { height: 32px; width: auto; color: var(--paper); flex-shrink: 0; }
-    .nav__back {
-      font-size: .7rem; letter-spacing: .26em; text-transform: uppercase;
+    .nav__brand svg.letras { height: 30px; width: auto; color: var(--paper); flex-shrink: 0; }
+
+    .nav__tabs {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      min-width: 0;
+    }
+    .nav__tabs::-webkit-scrollbar { display: none; }
+    .nav__tab {
+      position: relative;
+      padding: 8px 16px;
+      font-family: 'Manrope', sans-serif;
+      font-size: .7rem;
+      letter-spacing: .26em;
+      text-transform: uppercase;
       color: var(--paper-mute);
+      white-space: nowrap;
       transition: color .3s var(--ease);
     }
+    .nav__tab .jp {
+      display: block;
+      font-family: 'Noto Serif JP', serif;
+      font-size: .68rem;
+      letter-spacing: .15em;
+      color: var(--gold);
+      opacity: .55;
+      margin-bottom: 2px;
+      text-transform: none;
+      transition: opacity .3s var(--ease);
+    }
+    .nav__tab::after {
+      content: "";
+      position: absolute;
+      left: 16px; right: 16px;
+      bottom: 2px; height: 1px;
+      background: var(--gold);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .4s var(--ease);
+    }
+    .nav__tab:hover { color: var(--paper); }
+    .nav__tab.is-active { color: var(--paper); }
+    .nav__tab.is-active .jp { opacity: 1; }
+    .nav__tab.is-active::after { transform: scaleX(1); }
+
+    .nav__back {
+      font-size: .68rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--paper-mute);
+      transition: color .3s var(--ease);
+      white-space: nowrap;
+    }
     .nav__back:hover { color: var(--gold-bright); }
-    @media (max-width: 480px) {
-      .nav__brand svg.letras { height: 24px; }
+
+    @media (max-width: 720px) {
+      .nav { padding: 10px 14px; gap: 10px; grid-template-columns: auto minmax(0, 1fr); }
       .nav__back { display: none; }
+      .nav__brand svg.letras { height: 26px; }
+      .nav__tab { padding: 6px 10px; font-size: .65rem; letter-spacing: .2em; }
+      .nav__tab .jp { font-size: .62rem; }
+      .nav__tabs { justify-content: flex-end; }
+    }
+    @media (max-width: 480px) {
+      .nav__brand svg.mark { width: 22px; }
+      .nav__brand svg.letras { height: 22px; }
+      .nav__tab { padding: 6px 8px; font-size: .6rem; letter-spacing: .18em; }
+      .nav__tab .jp { font-size: .58rem; letter-spacing: .1em; }
     }
 
 
@@ -153,54 +211,6 @@
       color: var(--paper);
       line-height: 1.3;
     }
-
-
-    /* ── tabs ─────────────────────────────────────────────── */
-    .tabs {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 0 var(--gutter);
-      display: flex;
-      gap: 4px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      border-bottom: 1px solid rgba(176,122,54,.15);
-      position: sticky;
-      top: 70px;
-      background: rgba(15,12,10,.92);
-      backdrop-filter: blur(12px);
-      z-index: 60;
-    }
-    .tabs::-webkit-scrollbar { display: none; }
-    .tabs__btn {
-      position: relative;
-      padding: 16px 18px;
-      font-size: .72rem; letter-spacing: .24em; text-transform: uppercase;
-      color: var(--paper-mute);
-      white-space: nowrap;
-      transition: color .3s var(--ease);
-    }
-    .tabs__btn .jp {
-      display: block;
-      font-family: 'Noto Serif JP', serif;
-      font-size: .65rem; letter-spacing: .15em;
-      color: var(--gold); opacity: .55;
-      margin-bottom: 3px; text-transform: none;
-      transition: opacity .3s var(--ease);
-    }
-    .tabs__btn::after {
-      content: "";
-      position: absolute;
-      left: 18px; right: 18px;
-      bottom: -1px; height: 2px;
-      background: var(--gold);
-      transform: scaleX(0); transform-origin: left;
-      transition: transform .4s var(--ease);
-    }
-    .tabs__btn:hover { color: var(--paper); }
-    .tabs__btn.is-active { color: var(--paper); }
-    .tabs__btn.is-active .jp { opacity: 1; }
-    .tabs__btn.is-active::after { transform: scaleX(1); }
 
 
     /* ── layout en desktop: menú a la izquierda + carrito a la derecha ── */
@@ -363,7 +373,7 @@
     /* ── carrito lateral (desktop) ────────────────────────── */
     .cart-side {
       position: sticky;
-      top: 132px;
+      top: 92px;
       padding: 24px;
       border: 1px solid rgba(176,122,54,.22);
       background: linear-gradient(180deg, var(--surface), rgba(28,24,19,.7));
@@ -471,12 +481,20 @@
       color: var(--paper);
     }
     .cart-side__item-remove {
+      width: 24px; height: 24px;
       margin-left: auto;
-      font-size: .58rem; letter-spacing: .24em; text-transform: uppercase;
+      border: 1px solid transparent !important;
+      background: transparent;
       color: var(--paper-mute);
-      transition: color .2s var(--ease);
+      display: grid; place-items: center;
+      transition: color .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
     }
-    .cart-side__item-remove:hover { color: var(--claret); }
+    .cart-side__item-remove svg { width: 13px; height: 13px; display: block; }
+    .cart-side__item-remove:hover {
+      color: var(--claret) !important;
+      border-color: rgba(122,42,38,.5) !important;
+      background: rgba(122,42,38,.1) !important;
+    }
 
     .cart-side__footer {
       margin-top: auto;
@@ -804,8 +822,13 @@
         </g>
       </svg>
     </a>
-    <div></div>
-    <a href="/" class="nav__back">← Volver al inicio</a>
+    <div class="nav__tabs" id="navTabs">
+      <button class="nav__tab is-active" data-tab="sushi"><span class="jp">寿司</span>Sushi</button>
+      <button class="nav__tab" data-tab="entrantes"><span class="jp">前菜</span>Entrantes</button>
+      <button class="nav__tab" data-tab="principales"><span class="jp">主菜</span>Principales</button>
+    </div>
+
+    <a href="/" class="nav__back">← Volver</a>
   </nav>
 
 
@@ -827,14 +850,6 @@
       </div>
     </div>
   </div>
-
-
-  <!-- TABS ────────────────────────────────────────────────── -->
-  <nav class="tabs" id="tabs">
-    <button class="tabs__btn is-active" data-tab="sushi"><span class="jp">寿司</span>Sushi</button>
-    <button class="tabs__btn" data-tab="entrantes"><span class="jp">前菜</span>Entrantes</button>
-    <button class="tabs__btn" data-tab="principales"><span class="jp">主菜</span>Principales</button>
-  </nav>
 
 
   <!-- LAYOUT ──────────────────────────────────────────────── -->
