@@ -80,7 +80,7 @@ export async function sendOrderNotification({ order, toEmail }) {
     notes: order.notes || "",
     total: fmtEUR(order.total),
     order_date: formatOrderDate(new Date()),
-    admin_url: "https://gularestaurante.es/admin.html",
+    admin_url: "https://gularestaurante.es/admin",
   };
 
   try {
