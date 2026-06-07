@@ -1024,6 +1024,105 @@
     /* selection */
     ::selection { background: var(--gold); color: var(--ink); }
 
+
+    /* ── PEDIDOS PARA RECOGER (takeaway section) ─────────────── */
+    .takeaway {
+      position: relative;
+      padding: clamp(80px, 14vh, 160px) var(--gutter);
+      z-index: 4;
+      overflow: hidden;
+    }
+    .takeaway__inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: clamp(40px, 7vw, 100px);
+      align-items: center;
+      position: relative;
+    }
+    .takeaway__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2.4rem, 5.4vw, 4.6rem);
+      line-height: 1;
+      letter-spacing: -.012em;
+      color: var(--paper);
+      margin: 20px 0 24px;
+    }
+    .takeaway__title em { font-style: italic; color: var(--gold-bright); font-weight: 400; }
+    .takeaway__lede {
+      max-width: 50ch;
+      color: var(--paper-soft);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin: 0 0 32px;
+    }
+    .takeaway__features {
+      list-style: none;
+      padding: 0; margin: 0 0 40px;
+      display: grid;
+      gap: 14px;
+    }
+    .takeaway__features li {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 14px 0;
+      border-top: 1px solid rgba(176,122,54,.15);
+      font-size: 1rem;
+      color: var(--paper);
+    }
+    .takeaway__features li:last-child { border-bottom: 1px solid rgba(176,122,54,.15); }
+    .takeaway__features .num {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--gold);
+      min-width: 28px;
+    }
+
+    .takeaway__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 32px;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: .75rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      transition: background .3s var(--t-easing), color .3s var(--t-easing), transform .4s var(--t-easing);
+    }
+    .takeaway__cta svg { width: 14px; height: 14px; transition: transform .4s var(--t-easing); }
+    .takeaway__cta:hover { background: var(--gold-bright); }
+    .takeaway__cta:hover svg { transform: translateX(4px); }
+
+    .takeaway__kanji {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(14rem, 26vw, 32rem);
+      line-height: .85;
+      color: var(--surface-2);
+      writing-mode: vertical-rl;
+      letter-spacing: .05em;
+      user-select: none;
+      pointer-events: none;
+      justify-self: end;
+      opacity: .7;
+    }
+    @media (max-width: 880px) {
+      .takeaway__inner { grid-template-columns: 1fr; }
+      .takeaway__kanji {
+        position: absolute;
+        right: -3vw;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 18rem;
+        opacity: .3;
+        z-index: -1;
+      }
+    }
+
     /* small screens fine-tune */
     @media (max-width: 480px) {
       :root { --gutter: 20px; }
@@ -1064,6 +1163,7 @@
       <a href="#concepto">Concepto</a>
       <a href="#carta">Carta</a>
       <a href="#horarios">Horarios</a>
+      <a href="/pedidos.html">Pedidos</a>
       <a href="#visita">Visítanos</a>
     </div>
 
@@ -1194,6 +1294,43 @@
         <figcaption class="tile__cap"><span class="ord">N° 08</span>Itamae · acero al carbono</figcaption>
       </figure>
 
+    </div>
+  </section>
+
+
+  <!-- PEDIDOS PARA RECOGER ────────────────────────────────── -->
+  <section class="takeaway" id="pedidos">
+    <div class="takeaway__inner">
+      <div class="takeaway__copy reveal">
+        <span class="eyebrow"><span class="rule"></span>Para llevar</span>
+        <h2 class="takeaway__title">
+          Pedidos para <em>recoger</em>.
+        </h2>
+        <p class="takeaway__lede">
+          ¿Te lo llevas a casa? Elige tus platos desde el móvil y pasa a recogerlos a la hora que te diga. Te avisamos por SMS cuando esté listo.
+        </p>
+        <ul class="takeaway__features">
+          <li>
+            <span class="num">i.</span>
+            <span>Mismo día, sin reservas previas</span>
+          </li>
+          <li>
+            <span class="num">ii.</span>
+            <span>Pagas al recoger</span>
+          </li>
+          <li>
+            <span class="num">iii.</span>
+            <span>Aviso por SMS cuando esté listo</span>
+          </li>
+        </ul>
+        <a href="/pedidos.html" class="takeaway__cta">
+          Empezar pedido
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+      <div class="takeaway__kanji" aria-hidden="true">持帰</div>
     </div>
   </section>
 

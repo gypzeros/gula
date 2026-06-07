@@ -1,0 +1,306 @@
+// Lógica del cliente: render del menú, carrito, modal de checkout y creación de pedido en Firestore
+
+import { MENU, CATEGORIES, MENU_BY_ID, formatEUR } from "./menu-data.js";
+import { listenSettings, createOrder, ensureSettingsExist } from "./order-store.js";
+
+// ─── Estado en memoria ─────────────────────────────────────────
+const cart = new Map();     // id → qty
+let settings = { enabled: true, prepMinutes: 30, pausedMessage: "" };
+
+// ─── DOM helpers ───────────────────────────────────────────────
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+// ─── Render menú ──────────────────────────────────────────────
+function renderMenu() {
+  const menuEl = $("#menu");
+  menuEl.innerHTML = "";
+  for (const cat of CATEGORIES) {
+    const dishes = MENU.filter((d) => d.cat === cat.key);
+    const section = document.createElement("section");
+    section.className = "section";
+    section.id = `cat-${cat.key}`;
+    section.innerHTML = `
+      <div class="section__head">
+        <span class="section__num">${cat.label[0].toLowerCase()}</span>
+        <h2 class="section__name">${cat.label}</h2>
+        <span class="section__jp">${cat.kanji}</span>
+      </div>
+      <div class="dishes">
+        ${dishes.map(renderDish).join("")}
+      </div>
+    `;
+    menuEl.appendChild(section);
+  }
+}
+
+function renderDish(d) {
+  return `
+    <article class="dish" data-dish="${d.id}">
+      <img class="dish__photo" src="${d.photo}" alt="${d.name}" loading="lazy" />
+      <div class="dish__body">
+        <h3 class="dish__name">${d.name}</h3>
+        <p class="dish__desc">${d.desc}</p>
+        <div class="dish__meta">
+          ${d.pieces ? `<span>${d.pieces}</span>` : ""}
+          <span class="dish__price">${formatEUR(d.price)}</span>
+        </div>
+      </div>
+      <div class="dish__qty">
+        <div class="qty" data-qty="${d.id}" style="display:none;">
+          <button class="qty__btn" data-action="dec" aria-label="Quitar uno">−</button>
+          <span class="qty__count">0</span>
+          <button class="qty__btn" data-action="inc" aria-label="Añadir uno">+</button>
+        </div>
+        <button class="qty__add" data-action="add" data-dish="${d.id}">Añadir</button>
+      </div>
+    </article>
+  `;
+}
+
+// ─── Carrito ──────────────────────────────────────────────────
+function addToCart(id) {
+  cart.set(id, (cart.get(id) || 0) + 1);
+  updateCartUI();
+}
+function setQty(id, qty) {
+  if (qty <= 0) cart.delete(id);
+  else cart.set(id, qty);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const totalQty = [...cart.values()].reduce((a, b) => a + b, 0);
+  const total = [...cart.entries()].reduce((sum, [id, q]) => sum + MENU_BY_ID[id].price * q, 0);
+
+  $("#cartCount").textContent = totalQty;
+  $("#cartTotal").textContent = formatEUR(total);
+  $("#cartBar").classList.toggle("is-visible", totalQty > 0 && settings.enabled);
+
+  // Refresca cada dish con su contador y estado
+  $$(".dish").forEach((el) => {
+    const id = el.dataset.dish;
+    const qty = cart.get(id) || 0;
+    el.classList.toggle("is-in-cart", qty > 0);
+    const qtyEl = el.querySelector(".qty");
+    const addEl = el.querySelector(".qty__add");
+    const dec = el.querySelector('[data-action="dec"]');
+    if (qty > 0) {
+      qtyEl.style.display = "flex";
+      addEl.style.display = "none";
+      qtyEl.querySelector(".qty__count").textContent = qty;
+      dec.disabled = false;
+    } else {
+      qtyEl.style.display = "none";
+      addEl.style.display = "inline-block";
+    }
+  });
+}
+
+// Delegación de eventos sobre las dishes
+document.addEventListener("click", (e) => {
+  const action = e.target.dataset?.action;
+  if (!action) return;
+  const dish = e.target.closest("[data-dish]");
+  if (!dish) return;
+  const id = dish.dataset.dish;
+  const current = cart.get(id) || 0;
+  if (action === "add" || action === "inc") setQty(id, current + 1);
+  else if (action === "dec") setQty(id, current - 1);
+});
+
+
+// ─── Tabs ─────────────────────────────────────────────────────
+$$(".tabs__btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const target = $(`#cat-${btn.dataset.tab}`);
+    if (!target) return;
+    const offset = 130;
+    window.scrollTo({ top: target.offsetTop - offset, behavior: "smooth" });
+  });
+});
+
+// Auto-active tab según scroll
+const sections = CATEGORIES.map((c) => ({ key: c.key, el: null }));
+function refreshActiveTab() {
+  const y = window.scrollY + 200;
+  let current = "sushi";
+  for (const s of sections) {
+    if (!s.el) s.el = $(`#cat-${s.key}`);
+    if (s.el && s.el.offsetTop <= y) current = s.key;
+  }
+  $$(".tabs__btn").forEach((b) => b.classList.toggle("is-active", b.dataset.tab === current));
+}
+window.addEventListener("scroll", refreshActiveTab, { passive: true });
+
+
+// ─── Settings (status banner) ─────────────────────────────────
+function applySettings(s) {
+  settings = s;
+  const card = $("#statusCard");
+  const label = $("#statusLabel");
+  const main  = $("#statusMain");
+  const asapTime = $("#asapTime");
+
+  if (s.enabled) {
+    card.classList.remove("is-closed");
+    label.textContent = "Aceptando pedidos";
+    main.innerHTML = `Tu pedido estará listo en unos <strong>${s.prepMinutes} min</strong> aproximadamente.`;
+    if (asapTime) asapTime.textContent = `~ en ${s.prepMinutes} min`;
+    $("#openCheckout").disabled = false;
+  } else {
+    card.classList.add("is-closed");
+    label.textContent = "Cerrado temporalmente";
+    main.textContent = s.pausedMessage || "Ahora estamos muy ocupados y no es posible realizar pedidos para recoger.";
+    $("#openCheckout").disabled = true;
+  }
+  updateCartUI();
+}
+
+
+// ─── Modal de checkout ────────────────────────────────────────
+function openCheckout() {
+  if (!settings.enabled) return;
+  if (cart.size === 0) return;
+  renderSummary();
+  $("#checkoutForm").style.display = "block";
+  $("#confirmView").style.display = "none";
+  $("#checkoutModal").classList.add("is-open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeCheckout() {
+  $("#checkoutModal").classList.remove("is-open");
+  document.body.style.overflow = "";
+}
+
+function renderSummary() {
+  const html = [...cart.entries()].map(([id, q]) => {
+    const d = MENU_BY_ID[id];
+    return `
+      <div class="summary__row">
+        <span class="qty">${q}×</span>
+        <span class="name">${d.name}</span>
+        <span class="price">${formatEUR(d.price * q)}</span>
+      </div>
+    `;
+  }).join("");
+
+  const total = [...cart.entries()].reduce((s, [id, q]) => s + MENU_BY_ID[id].price * q, 0);
+
+  $("#orderSummary").innerHTML = html + `
+    <div class="summary__total">
+      <span class="label">Total</span>
+      <span class="value">${formatEUR(total)}</span>
+    </div>
+  `;
+}
+
+$("#openCheckout").addEventListener("click", openCheckout);
+$$('[data-close-modal]').forEach((b) => b.addEventListener("click", closeCheckout));
+$("#checkoutModal").addEventListener("click", (e) => {
+  if (e.target.id === "checkoutModal") closeCheckout();
+});
+
+
+// ─── Time picker (asap vs scheduled) ──────────────────────────
+let timeMode = "asap";
+$$(".time-options__btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    timeMode = btn.dataset.time;
+    $$(".time-options__btn").forEach((b) => b.classList.toggle("is-active", b === btn));
+    $("#scheduledTime").style.display = (timeMode === "scheduled") ? "block" : "none";
+    if (timeMode === "scheduled" && !$("#scheduledTime").value) {
+      // Por defecto sugerir 1 hora desde ahora
+      const d = new Date(Date.now() + 60 * 60 * 1000);
+      $("#scheduledTime").value = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    }
+  });
+});
+
+
+// ─── Submit ───────────────────────────────────────────────────
+$("#submitOrder").addEventListener("click", async () => {
+  const name = $("#customerName").value.trim();
+  const phone = $("#customerPhone").value.trim();
+  const notes = $("#customerNotes").value.trim();
+
+  if (!name || !phone) {
+    alert("Por favor, escribe tu nombre y teléfono.");
+    return;
+  }
+  if (!/^[\+\d\s\-]{9,}$/.test(phone)) {
+    alert("El teléfono no parece válido. Pónlo con prefijo +34.");
+    return;
+  }
+
+  let pickupTime;
+  if (timeMode === "asap") {
+    pickupTime = new Date(Date.now() + settings.prepMinutes * 60 * 1000);
+  } else {
+    const v = $("#scheduledTime").value;
+    if (!v) { alert("Elige una hora para recoger."); return; }
+    const [hh, mm] = v.split(":").map(Number);
+    pickupTime = new Date();
+    pickupTime.setHours(hh, mm, 0, 0);
+    if (pickupTime.getTime() < Date.now()) {
+      alert("La hora elegida ya pasó. Programa para más tarde hoy.");
+      return;
+    }
+  }
+
+  const items = [...cart.entries()].map(([id, qty]) => {
+    const d = MENU_BY_ID[id];
+    return { id, name: d.name, price: d.price, qty };
+  });
+  const total = items.reduce((s, it) => s + it.price * it.qty, 0);
+
+  const btn = $("#submitOrder");
+  btn.disabled = true;
+  btn.textContent = "Enviando…";
+
+  try {
+    const order = await createOrder({
+      customer: { name, phone },
+      items,
+      total,
+      pickupTime,
+      scheduled: timeMode === "scheduled",
+      notes,
+    });
+    showConfirmation(order);
+    cart.clear();
+    updateCartUI();
+  } catch (err) {
+    console.error(err);
+    alert("Algo ha ido mal. Inténtalo de nuevo o llámanos al 667 09 98 28.");
+    btn.disabled = false;
+    btn.textContent = "Confirmar pedido";
+  }
+});
+
+function showConfirmation(order) {
+  $("#confirmName").textContent = order.customer.name;
+  $("#confirmNumber").textContent = order.number;
+  const t = order.pickupTime.toDate ? order.pickupTime.toDate() : order.pickupTime;
+  const hh = String(t.getHours()).padStart(2, "0");
+  const mm = String(t.getMinutes()).padStart(2, "0");
+  $("#confirmPickup").textContent = `a las ${hh}:${mm}`;
+  $("#checkoutForm").style.display = "none";
+  $("#confirmView").style.display = "block";
+  // permite cerrar al hacer clic fuera o en la X
+  $("#submitOrder").disabled = false;
+  $("#submitOrder").textContent = "Confirmar pedido";
+}
+
+
+// ─── Init ─────────────────────────────────────────────────────
+(async function init() {
+  renderMenu();
+  refreshActiveTab();
+  await ensureSettingsExist();
+  listenSettings((s) => {
+    applySettings(s);
+    $("#loading").classList.add("is-hidden");
+  });
+})();

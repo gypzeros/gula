@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Admin · Gula Restaurante</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0f0c0a" />
+
+  <link rel="icon" type="image/svg+xml" href="logo.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --ink:           #0f0c0a;
+      --surface:       #14110e;
+      --surface-2:     #1c1813;
+      --surface-3:     #241a14;
+      --paper:         #ece2cf;
+      --paper-soft:    #d8cdb6;
+      --paper-mute:    #8a7e6c;
+      --gold:          #b07a36;
+      --gold-soft:     #c69859;
+      --gold-bright:   #e2b576;
+      --claret:        #7a2a26;
+      --sage:          #6f8062;
+      --warn:          #d4a248;
+      --ease:          cubic-bezier(.22,.61,.36,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+    body {
+      margin: 0;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'Manrope', system-ui, sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.5;
+      overflow-x: clip;
+    }
+    a, button, input { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+    ::selection { background: var(--gold); color: var(--ink); }
+
+    /* ── login ────────────────────────────────────────────── */
+    .login {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid; place-items: center;
+      padding: 40px 20px;
+    }
+    .login__card {
+      width: 100%;
+      max-width: 420px;
+      padding: 40px;
+      border: 1px solid rgba(176,122,54,.25);
+      background: var(--surface);
+      position: relative;
+    }
+    .login__brand {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 32px;
+      color: var(--paper);
+    }
+    .login__brand svg.mark { width: 28px; height: auto; }
+    .login__brand svg.letras { height: 26px; width: auto; color: var(--paper); }
+    .login__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-weight: 300;
+      font-size: 2rem;
+      color: var(--paper);
+      margin: 0 0 6px;
+    }
+    .login__sub {
+      font-family: 'Noto Serif JP', serif;
+      font-size: .8rem; letter-spacing: .3em;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+    .login__field { margin-bottom: 16px; }
+    .login__label {
+      display: block;
+      font-size: .58rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 6px;
+    }
+    .login__input {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(15,12,10,.5);
+      border: 1px solid rgba(176,122,54,.25);
+      color: var(--paper);
+      font: inherit; font-size: 1rem;
+    }
+    .login__input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .login__btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--paper); color: var(--ink);
+      font-size: .72rem; letter-spacing: .3em; text-transform: uppercase;
+      margin-top: 8px;
+      transition: background .2s var(--ease);
+    }
+    .login__btn:hover { background: var(--gold-bright); }
+    .login__btn:disabled { opacity: .5; cursor: not-allowed; }
+    .login__error {
+      color: var(--claret);
+      font-size: .85rem;
+      margin-top: 12px;
+      min-height: 20px;
+    }
+    .login__hint {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(176,122,54,.15);
+      font-size: .78rem;
+      color: var(--paper-mute);
+      line-height: 1.6;
+    }
+    .login__hint code {
+      font-family: ui-monospace, Menlo, monospace;
+      color: var(--gold-bright);
+      background: rgba(176,122,54,.08);
+      padding: 1px 6px;
+    }
+
+    /* ── nav del dashboard ────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(15,12,10,.85);
+      backdrop-filter: blur(16px) saturate(140%);
+      border-bottom: 1px solid rgba(176,122,54,.18);
+      padding: 14px 24px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .nav__brand { display: flex; align-items: center; gap: 10px; }
+    .nav__brand svg.mark { width: 22px; height: auto; }
+    .nav__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--paper);
+    }
+    .nav__title small {
+      display: block;
+      font-style: normal; font-family: 'Manrope', sans-serif;
+      font-size: .52rem; letter-spacing: .35em; text-transform: uppercase;
+      color: var(--gold);
+    }
+    .nav__user {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 12px;
+      font-size: .85rem;
+      color: var(--paper-soft);
+    }
+    .nav__signout {
+      padding: 8px 14px;
+      border: 1px solid rgba(176,122,54,.25);
+      font-size: .62rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--paper-mute);
+      transition: color .2s var(--ease), border-color .2s var(--ease);
+    }
+    .nav__signout:hover { color: var(--gold-bright); border-color: var(--gold); }
+
+
+    /* ── layout ───────────────────────────────────────────── */
+    .dash {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 28px;
+    }
+    @media (max-width: 880px) {
+      .dash { grid-template-columns: 1fr; }
+    }
+
+    /* ── card de settings ─────────────────────────────────── */
+    .panel {
+      padding: 24px;
+      background: var(--surface);
+      border: 1px solid rgba(176,122,54,.15);
+    }
+    .panel__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--paper);
+      margin: 0 0 4px;
+    }
+    .panel__sub {
+      font-size: .58rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+
+    /* toggle on/off */
+    .toggle {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px;
+      border: 1px solid rgba(176,122,54,.15);
+      margin-bottom: 20px;
+      background: rgba(15,12,10,.4);
+    }
+    .toggle__label {
+      flex: 1;
+    }
+    .toggle__label .title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--paper);
+      line-height: 1.2;
+    }
+    .toggle__label .state {
+      font-size: .65rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--paper-mute);
+      margin-top: 2px;
+    }
+    .toggle.is-on .toggle__label .state { color: var(--sage); }
+    .toggle.is-off .toggle__label .state { color: var(--claret); }
+    .toggle__switch {
+      flex-shrink: 0;
+      width: 56px; height: 30px;
+      background: rgba(122,42,38,.5);
+      border-radius: 999px;
+      position: relative;
+      transition: background .3s var(--ease);
+      cursor: pointer;
+    }
+    .toggle.is-on .toggle__switch { background: var(--sage); }
+    .toggle__switch::after {
+      content: "";
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 24px; height: 24px;
+      background: var(--paper);
+      border-radius: 50%;
+      transition: transform .3s var(--ease);
+    }
+    .toggle.is-on .toggle__switch::after { transform: translateX(26px); }
+
+    /* slider */
+    .slider {
+      margin-bottom: 20px;
+    }
+    .slider__head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 8px;
+    }
+    .slider__label {
+      font-size: .58rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold);
+    }
+    .slider__value {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      color: var(--gold-bright);
+    }
+    .slider__input {
+      width: 100%;
+      -webkit-appearance: none; appearance: none;
+      background: transparent;
+    }
+    .slider__input::-webkit-slider-runnable-track {
+      height: 4px;
+      background: linear-gradient(to right, var(--gold) 0%, var(--gold) var(--pct, 30%), rgba(176,122,54,.15) var(--pct, 30%), rgba(176,122,54,.15) 100%);
+      border-radius: 2px;
+    }
+    .slider__input::-moz-range-track {
+      height: 4px;
+      background: rgba(176,122,54,.15);
+      border-radius: 2px;
+    }
+    .slider__input::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--gold-bright);
+      margin-top: -8px;
+      cursor: grab; transition: transform .15s var(--ease);
+    }
+    .slider__input::-webkit-slider-thumb:active { transform: scale(1.15); cursor: grabbing; }
+    .slider__input::-moz-range-thumb {
+      width: 20px; height: 20px; border-radius: 50%; border: 0;
+      background: var(--gold-bright); cursor: grab;
+    }
+    .slider__hints {
+      display: flex; justify-content: space-between;
+      font-size: .65rem; color: var(--paper-mute);
+      margin-top: 6px;
+    }
+
+    /* mensaje cierre */
+    .msg__label {
+      display: block;
+      font-size: .58rem; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 6px;
+    }
+    .msg__input {
+      width: 100%;
+      min-height: 70px;
+      padding: 10px 12px;
+      background: rgba(15,12,10,.5);
+      border: 1px solid rgba(176,122,54,.15);
+      color: var(--paper);
+      font: inherit; font-size: .9rem;
+      resize: vertical;
+    }
+    .msg__input:focus { outline: none; border-color: var(--gold); }
+    .msg__save {
+      margin-top: 8px;
+      padding: 8px 14px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: .6rem; letter-spacing: .28em; text-transform: uppercase;
+      transition: background .2s var(--ease), color .2s var(--ease);
+    }
+    .msg__save:hover { background: var(--gold); color: var(--ink); }
+    .msg__save.is-saving { opacity: .5; }
+
+
+    /* ── lista de pedidos ─────────────────────────────────── */
+    .orders { display: flex; flex-direction: column; gap: 16px; }
+    .orders__head {
+      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+    }
+    .orders__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.6rem;
+      color: var(--paper);
+      margin: 0;
+    }
+    .orders__count {
+      font-size: .7rem; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--paper-mute);
+    }
+    .filters { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+    .filter {
+      padding: 6px 12px;
+      font-size: .62rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--paper-mute);
+      border: 1px solid rgba(176,122,54,.15);
+      transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+    }
+    .filter.is-active { color: var(--gold-bright); border-color: var(--gold); background: rgba(176,122,54,.08); }
+
+    .order {
+      padding: 18px 20px;
+      background: var(--surface);
+      border: 1px solid rgba(176,122,54,.15);
+      transition: border-color .3s var(--ease);
+      position: relative;
+    }
+    .order.is-pending { border-left: 4px solid var(--warn); }
+    .order.is-preparing { border-left: 4px solid var(--gold); }
+    .order.is-ready { border-left: 4px solid var(--sage); animation: ready-pulse 2s ease-in-out infinite; }
+    .order.is-picked_up, .order.is-cancelled { opacity: .55; }
+    @keyframes ready-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(111,128,98,0); }
+      50% { box-shadow: 0 0 0 8px rgba(111,128,98,.15); }
+    }
+
+    .order__top {
+      display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .order__number {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-weight: 500;
+      font-size: 1.6rem;
+      color: var(--gold-bright);
+    }
+    .order__name {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--paper);
+    }
+    .order__phone {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: .85rem;
+      color: var(--paper-soft);
+    }
+    .order__phone a { color: inherit; text-decoration: none; border-bottom: 1px dotted rgba(216,205,182,.4); }
+    .order__phone a:hover { color: var(--gold-bright); }
+    .order__time {
+      margin-left: auto;
+      text-align: right;
+      font-size: .8rem;
+      color: var(--paper-mute);
+    }
+    .order__time strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-weight: 500;
+      font-size: 1.3rem;
+      color: var(--paper);
+      letter-spacing: 0;
+    }
+
+    .order__items {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .order__item {
+      padding: 4px 10px;
+      background: rgba(176,122,54,.1);
+      border: 1px solid rgba(176,122,54,.18);
+      font-size: .82rem;
+      color: var(--paper);
+      display: inline-flex; gap: 6px;
+    }
+    .order__item .q {
+      color: var(--gold-bright);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+    }
+    .order__notes {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: var(--paper-soft);
+      font-size: .92rem;
+      padding: 8px 12px;
+      background: rgba(15,12,10,.4);
+      border-left: 2px solid var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .order__bottom {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .order__total {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--paper);
+    }
+    .order__actions {
+      margin-left: auto;
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .action-btn {
+      padding: 10px 16px;
+      font-size: .65rem; letter-spacing: .26em; text-transform: uppercase;
+      transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
+    }
+    .action-btn--primary { background: var(--gold); color: var(--ink); }
+    .action-btn--primary:hover { background: var(--gold-bright); }
+    .action-btn--ghost { border: 1px solid rgba(216,205,182,.3); color: var(--paper-soft); }
+    .action-btn--ghost:hover { border-color: var(--gold); color: var(--gold-bright); }
+    .action-btn--danger { border: 1px solid rgba(122,42,38,.5); color: var(--claret); }
+    .action-btn--danger:hover { background: var(--claret); color: var(--paper); }
+
+    .empty {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--paper-mute);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      border: 1px dashed rgba(176,122,54,.2);
+    }
+
+    .loading {
+      position: fixed; inset: 0;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 300;
+      transition: opacity .4s var(--ease);
+    }
+    .loading.is-hidden { opacity: 0; pointer-events: none; }
+    .loading__spinner {
+      width: 36px; height: 36px;
+      border: 2px solid rgba(176,122,54,.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <div class="loading" id="loading">
+    <div class="loading__spinner"></div>
+  </div>
+
+
+  <!-- LOGIN VIEW ──────────────────────────────────────────── -->
+  <section id="loginView" class="login" style="display:none;">
+    <div class="login__card">
+      <div class="login__brand">
+        <svg class="mark" viewBox="48.37 637.83 264.26 204.96" aria-hidden="true">
+          <path fill="#b07a36" d="M237.6,691.5 L168.3,724.8 255.7,785.7c4.8,-10.6 7.4,-22.5 7.4,-35.1C263.1,726.5 253.4,705.7 237.6,691.5"/>
+          <path fill="currentColor" d="m305.1,821.9c0.5,0.7 0.1,1.3 -0.3,1.9 -0.4,0.6 -1.1,0.5 -1.6,0.2 -1.1,-0.6 -32.9,-22.8 -47.8,-33.2 -0.6,-0.5 -1.3,-1.8 -2.3,-0.5 -1,1.3 0.1,1.8 1,2.4 18.4,14.2 36.6,28.7 54.4,43.7 1.3,1.1 2.8,2 3.5,3.6 0,0.5 0.3,1.1 0,1.6 -0.9,1.4 -2.7,0.4 -4,-0.6 -17.7,-14.2 -35.5,-28.3 -53.3,-42.4 -4,-3.2 -4,-3.2 -6.9,0.9 -12.7,17.8 -29.9,28.6 -51.4,31.9 -19.3,3 -37.1,-1.2 -53.1,-12.6 -18.7,-13.3 -31.5,-30.8 -36.1,-53.6 -1.5,-7.2 -1.6,-14.5 -1.1,-21.8 1,-12.9 3.7,-25.4 10.3,-36.7 1.3,-2.2 2.4,-4.4 4,-6.4 1.3,-1.5 0.8,-2.2 -0.5,-3.2 -11.7,-8.7 -23.2,-17.7 -34.9,-26.3 -11.4,-8.4 -23,-16.4 -34.5,-24.6 -0.8,-0.6 -1.8,-1 -1.6,-2.4 0.4,-1.7 1.9,-2.4 3.7,-1.5 0,-0.5 0,-0.9 -0,-1.3 -0,-1.1 0,-2.2 1.2,-2.6 1,-0.3 1.8,0.4 2.5,1 6.6,5.8 13.2,11.6 19.8,17.3 12.2,10.4 24.8,20.3 37.6,30 17.3,13 59.1,39.9 60.5,40.9 1.1,0.8 1.7,0.5 1.7,-0.9 0,-1.9 0.9,-59.1 0.2,-75.9 -0.1,-1.7 -0.2,-3.5 0.7,-5.1 0.5,-0.9 1.1,-1.7 2.1,-1.7 1.1,0 1.8,0.8 2.3,1.9 0.6,1.4 0.6,2.9 0.6,4.4 -0.1,15.6 1.3,82.5 1.5,83.2 0.3,1 1.2,1.8 2.1,1.6 1,-0.1 0.5,-1.3 0.5,-2 0,-6 0,-68.2 0,-83.5 0,-1.4 0,-2.8 0.7,-4 1.2,-2.1 3.2,-2.1 4.4,0 0.7,1.3 0.7,2.6 0.7,4 -0,9.5 1,80 1,88.7 0,1.7 0.5,2.8 1.9,3.6C198.5,744.2 304.6,821.3 305.1,821.9"/>
+        </svg>
+        <span style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.2rem;">Gula</span>
+      </div>
+      <h1 class="login__title">Acceso al <em>panel</em></h1>
+      <div class="login__sub">管理者 · Administrador</div>
+
+      <form id="loginForm">
+        <div class="login__field">
+          <label class="login__label" for="loginEmail">Correo</label>
+          <input class="login__input" type="email" id="loginEmail" autocomplete="username" required />
+        </div>
+        <div class="login__field">
+          <label class="login__label" for="loginPassword">Contraseña</label>
+          <input class="login__input" type="password" id="loginPassword" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="login__btn" id="loginBtn">Entrar</button>
+        <div class="login__error" id="loginError"></div>
+      </form>
+
+      <div class="login__hint">
+        El primer usuario tienes que crearlo manualmente desde la consola de Firebase:
+        <strong>Authentication → Users → Add user</strong>.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- DASHBOARD VIEW ──────────────────────────────────────── -->
+  <section id="dashView" style="display:none;">
+    <nav class="nav">
+      <div class="nav__brand">
+        <svg class="mark" viewBox="48.37 637.83 264.26 204.96" aria-hidden="true">
+          <path fill="#b07a36" d="M237.6,691.5 L168.3,724.8 255.7,785.7c4.8,-10.6 7.4,-22.5 7.4,-35.1C263.1,726.5 253.4,705.7 237.6,691.5"/>
+          <path fill="#ece2cf" d="m305.1,821.9c0.5,0.7 0.1,1.3 -0.3,1.9 -0.4,0.6 -1.1,0.5 -1.6,0.2 -1.1,-0.6 -32.9,-22.8 -47.8,-33.2 -0.6,-0.5 -1.3,-1.8 -2.3,-0.5 -1,1.3 0.1,1.8 1,2.4 18.4,14.2 36.6,28.7 54.4,43.7 1.3,1.1 2.8,2 3.5,3.6 0,0.5 0.3,1.1 0,1.6 -0.9,1.4 -2.7,0.4 -4,-0.6 -17.7,-14.2 -35.5,-28.3 -53.3,-42.4 -4,-3.2 -4,-3.2 -6.9,0.9 -12.7,17.8 -29.9,28.6 -51.4,31.9 -19.3,3 -37.1,-1.2 -53.1,-12.6 -18.7,-13.3 -31.5,-30.8 -36.1,-53.6 -1.5,-7.2 -1.6,-14.5 -1.1,-21.8 1,-12.9 3.7,-25.4 10.3,-36.7 1.3,-2.2 2.4,-4.4 4,-6.4 1.3,-1.5 0.8,-2.2 -0.5,-3.2 -11.7,-8.7 -23.2,-17.7 -34.9,-26.3 -11.4,-8.4 -23,-16.4 -34.5,-24.6 -0.8,-0.6 -1.8,-1 -1.6,-2.4 0.4,-1.7 1.9,-2.4 3.7,-1.5 0,-0.5 0,-0.9 -0,-1.3 -0,-1.1 0,-2.2 1.2,-2.6 1,-0.3 1.8,0.4 2.5,1 6.6,5.8 13.2,11.6 19.8,17.3 12.2,10.4 24.8,20.3 37.6,30 17.3,13 59.1,39.9 60.5,40.9 1.1,0.8 1.7,0.5 1.7,-0.9 0,-1.9 0.9,-59.1 0.2,-75.9 -0.1,-1.7 -0.2,-3.5 0.7,-5.1 0.5,-0.9 1.1,-1.7 2.1,-1.7 1.1,0 1.8,0.8 2.3,1.9 0.6,1.4 0.6,2.9 0.6,4.4 -0.1,15.6 1.3,82.5 1.5,83.2 0.3,1 1.2,1.8 2.1,1.6 1,-0.1 0.5,-1.3 0.5,-2 0,-6 0,-68.2 0,-83.5 0,-1.4 0,-2.8 0.7,-4 1.2,-2.1 3.2,-2.1 4.4,0 0.7,1.3 0.7,2.6 0.7,4 -0,9.5 1,80 1,88.7 0,1.7 0.5,2.8 1.9,3.6C198.5,744.2 304.6,821.3 305.1,821.9"/>
+        </svg>
+        <div class="nav__title">
+          Gula
+          <small>Panel admin</small>
+        </div>
+      </div>
+      <div class="nav__user">
+        <span id="userEmail"></span>
+        <button class="nav__signout" id="signOutBtn">Salir</button>
+      </div>
+    </nav>
+
+    <div class="dash">
+      <!-- SETTINGS ──────────── -->
+      <aside>
+        <div class="panel">
+          <h2 class="panel__title">Ajustes</h2>
+          <div class="panel__sub">設定 · Operación</div>
+
+          <div class="toggle is-on" id="enabledToggle">
+            <div class="toggle__label">
+              <div class="title">Aceptar pedidos</div>
+              <div class="state" id="enabledState">Activo</div>
+            </div>
+            <div class="toggle__switch" id="enabledSwitch"></div>
+          </div>
+
+          <div class="slider">
+            <div class="slider__head">
+              <span class="slider__label">Tiempo preparación</span>
+              <span class="slider__value"><strong id="prepValue">30</strong> min</span>
+            </div>
+            <input type="range" id="prepSlider" class="slider__input" min="10" max="120" step="5" value="30" />
+            <div class="slider__hints">
+              <span>10 min</span>
+              <span>120 min</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="msg__label" for="pausedMessage">Mensaje cuando está cerrado</label>
+            <textarea class="msg__input" id="pausedMessage" placeholder="Hoy estamos al completo…"></textarea>
+            <button class="msg__save" id="saveMessageBtn">Guardar mensaje</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ORDERS ──────────── -->
+      <div class="orders">
+        <header class="orders__head">
+          <h2 class="orders__title">Pedidos de hoy</h2>
+          <span class="orders__count" id="ordersCount">0 pedidos</span>
+          <div class="filters" id="filters">
+            <button class="filter is-active" data-filter="active">En curso</button>
+            <button class="filter" data-filter="all">Todos</button>
+            <button class="filter" data-filter="ready">Listos</button>
+            <button class="filter" data-filter="picked_up">Recogidos</button>
+          </div>
+        </header>
+
+        <div id="ordersList">
+          <div class="empty">No hay pedidos todavía hoy.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <script type="module" src="js/admin-app.js"></script>
+</body>
+</html>
