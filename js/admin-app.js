@@ -74,9 +74,29 @@ function applySettingsUI(s) {
   if (document.activeElement !== $("#pausedMessage")) {
     $("#pausedMessage").value = s.pausedMessage || "";
   }
+  if (document.activeElement !== $("#openFromInput")) {
+    $("#openFromInput").value = s.openFrom || "13:30";
+  }
+  if (document.activeElement !== $("#openToInput")) {
+    $("#openToInput").value = s.openTo || "23:30";
+  }
 
   settingsApplying = false;
 }
+
+// Guardar horario con debounce
+let hoursDebounce;
+const persistHours = () => {
+  clearTimeout(hoursDebounce);
+  hoursDebounce = setTimeout(async () => {
+    await updateSettings({
+      openFrom: $("#openFromInput").value || "13:30",
+      openTo:   $("#openToInput").value   || "23:30",
+    });
+  }, 400);
+};
+$("#openFromInput").addEventListener("change", persistHours);
+$("#openToInput").addEventListener("change", persistHours);
 
 // Toggle
 $("#enabledSwitch").addEventListener("click", async () => {

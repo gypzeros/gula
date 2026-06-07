@@ -180,6 +180,62 @@ function refreshActiveTab() {
 window.addEventListener("scroll", refreshActiveTab, { passive: true });
 
 
+// ─── Helpers horario ──────────────────────────────────────────
+const DEFAULT_FROM = "13:30";
+const DEFAULT_TO   = "23:30";
+
+function getFrom(s) { return s.openFrom || DEFAULT_FROM; }
+function getTo(s)   { return s.openTo   || DEFAULT_TO; }
+
+// Convierte "HH:MM" a Date de hoy
+function timeStringToToday(hhmm) {
+  const [h, m] = (hhmm || "00:00").split(":").map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function isWithinHours(s) {
+  const now = new Date();
+  return now >= timeStringToToday(getFrom(s)) && now <= timeStringToToday(getTo(s));
+}
+
+// Genera horas válidas para programar de 15 en 15 min
+function generateTimeSlots(s) {
+  const fromMs = timeStringToToday(getFrom(s)).getTime();
+  const toMs   = timeStringToToday(getTo(s)).getTime();
+  // La primera hora válida es: max(ahora + prep, openFrom) redondeado hacia arriba a 15 min
+  let earliest = Date.now() + (s.prepMinutes || 30) * 60_000;
+  if (earliest < fromMs) earliest = fromMs;
+  const d = new Date(earliest);
+  const rem = d.getMinutes() % 15;
+  if (rem !== 0) d.setMinutes(d.getMinutes() + (15 - rem), 0, 0);
+  let cursor = d.getTime();
+  const slots = [];
+  while (cursor <= toMs) {
+    const dd = new Date(cursor);
+    slots.push(`${String(dd.getHours()).padStart(2,"0")}:${String(dd.getMinutes()).padStart(2,"0")}`);
+    cursor += 15 * 60_000;
+  }
+  return slots;
+}
+
+function refreshScheduledTimeSelect() {
+  const sel = $("#scheduledTime");
+  if (!sel) return;
+  const slots = generateTimeSlots(settings);
+  if (slots.length === 0) {
+    sel.innerHTML = `<option disabled selected>Sin horas disponibles hoy</option>`;
+    sel.disabled = true;
+  } else {
+    const previous = sel.value;
+    sel.innerHTML = slots.map(t => `<option value="${t}">${t}</option>`).join("");
+    sel.disabled = false;
+    if (previous && slots.includes(previous)) sel.value = previous;
+  }
+}
+
+
 // ─── Settings (status banner) ─────────────────────────────────
 function applySettings(s) {
   settings = s;
@@ -188,23 +244,36 @@ function applySettings(s) {
   const main  = $("#statusMain");
   const asapTime = $("#asapTime");
 
-  // Marca el <body> para que el CSS oculte/muestre la carta
-  document.body.classList.toggle("is-closed", !s.enabled);
+  const withinHours = isWithinHours(s);
+  const isOpen = s.enabled && withinHours;
 
-  if (s.enabled) {
+  // Marca el <body> para que el CSS oculte/muestre la carta
+  document.body.classList.toggle("is-closed", !isOpen);
+
+  if (isOpen) {
     card.classList.remove("is-closed");
     label.textContent = "Aceptando pedidos";
     main.innerHTML = `Tu pedido estará listo en unos <strong>${s.prepMinutes} min</strong> aproximadamente.`;
     if (asapTime) asapTime.textContent = `~ en ${s.prepMinutes} min`;
     $("#openCheckout").disabled = false;
-  } else {
+  } else if (!s.enabled) {
     card.classList.add("is-closed");
     label.textContent = "Cerrado temporalmente";
     main.textContent = s.pausedMessage || "Ahora estamos muy ocupados y no es posible realizar pedidos para recoger.";
     $("#openCheckout").disabled = true;
+  } else {
+    // toggle ON pero fuera de horario
+    card.classList.add("is-closed");
+    label.textContent = "Fuera de horario";
+    main.innerHTML = `Aceptamos pedidos hoy de <strong>${getFrom(s)}</strong> a <strong>${getTo(s)}</strong>.`;
+    $("#openCheckout").disabled = true;
   }
+  refreshScheduledTimeSelect();
   updateCartUI();
 }
+
+// Cada minuto recheckea por si pasamos a estar dentro/fuera de horario
+setInterval(() => applySettings(settings), 60_000);
 
 
 // ─── Modal de checkout ────────────────────────────────────────
@@ -259,11 +328,11 @@ $$(".time-options__btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     timeMode = btn.dataset.time;
     $$(".time-options__btn").forEach((b) => b.classList.toggle("is-active", b === btn));
-    $("#scheduledTime").style.display = (timeMode === "scheduled") ? "block" : "none";
-    if (timeMode === "scheduled" && !$("#scheduledTime").value) {
-      // Por defecto sugerir 1 hora desde ahora
-      const d = new Date(Date.now() + 60 * 60 * 1000);
-      $("#scheduledTime").value = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+    if (timeMode === "scheduled") {
+      $("#scheduledTime").style.display = "block";
+      refreshScheduledTimeSelect();
+    } else {
+      $("#scheduledTime").style.display = "none";
     }
   });
 });
@@ -287,6 +356,11 @@ $("#submitOrder").addEventListener("click", async () => {
   let pickupTime;
   if (timeMode === "asap") {
     pickupTime = new Date(Date.now() + settings.prepMinutes * 60 * 1000);
+    const toMs = timeStringToToday(getTo(settings)).getTime();
+    if (pickupTime.getTime() > toMs) {
+      alert("No queda tiempo para prepararlo antes del cierre. Programa para mañana o elige otra hora.");
+      return;
+    }
   } else {
     const v = $("#scheduledTime").value;
     if (!v) { alert("Elige una hora para recoger."); return; }
@@ -294,7 +368,14 @@ $("#submitOrder").addEventListener("click", async () => {
     pickupTime = new Date();
     pickupTime.setHours(hh, mm, 0, 0);
     if (pickupTime.getTime() < Date.now()) {
-      alert("La hora elegida ya pasó. Programa para más tarde hoy.");
+      alert("La hora elegida ya pasó. Elige otra.");
+      return;
+    }
+    // Comprobación rápida — el select ya solo muestra horas válidas pero por si acaso
+    const fromMs = timeStringToToday(getFrom(settings)).getTime();
+    const toMs   = timeStringToToday(getTo(settings)).getTime();
+    if (pickupTime.getTime() < fromMs || pickupTime.getTime() > toMs) {
+      alert(`Solo aceptamos pedidos para recoger entre ${getFrom(settings)} y ${getTo(settings)}.`);
       return;
     }
   }

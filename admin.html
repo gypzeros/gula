@@ -299,6 +299,43 @@
       margin-top: 6px;
     }
 
+    /* horario */
+    .hours-config { margin-bottom: 20px; }
+    .hours-inputs {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 6px;
+    }
+    .hours-inputs input[type="time"] {
+      flex: 1;
+      padding: 10px 12px;
+      background: rgba(15,12,10,.5);
+      border: 1px solid rgba(176,122,54,.25);
+      color: var(--paper);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      letter-spacing: .02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .hours-inputs input[type="time"]:focus { outline: none; border-color: var(--gold); }
+    .hours-inputs input[type="time"]::-webkit-calendar-picker-indicator {
+      filter: invert(70%) sepia(40%) saturate(400%) hue-rotate(2deg);
+      cursor: pointer;
+    }
+    .hours-sep {
+      color: var(--gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+    }
+    .hours-hint {
+      font-size: .78rem;
+      color: var(--paper-mute);
+      margin: 8px 0 0;
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
     /* mensaje cierre */
     .msg__label {
       display: block;
@@ -574,6 +611,16 @@
               <span>10 min</span>
               <span>120 min</span>
             </div>
+          </div>
+
+          <div class="hours-config">
+            <span class="msg__label">Horario para aceptar pedidos</span>
+            <div class="hours-inputs">
+              <input type="time" id="openFromInput" />
+              <span class="hours-sep">→</span>
+              <input type="time" id="openToInput" />
+            </div>
+            <p class="hours-hint">Solo dentro de este rango se podrán crear pedidos.</p>
           </div>
 
           <div>

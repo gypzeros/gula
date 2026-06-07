@@ -22,6 +22,8 @@ const DEFAULT_SETTINGS = {
   enabled: true,
   prepMinutes: 30,
   pausedMessage: "Ahora estamos muy ocupados y no es posible realizar pedidos para recoger. Vuelve a probar más tarde.",
+  openFrom: "13:30",
+  openTo:   "23:30",
 };
 
 export async function ensureSettingsExist() {
