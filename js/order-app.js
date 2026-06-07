@@ -153,10 +153,13 @@ function updateCartUI() {
 }
 
 // Delegación de eventos sobre dishes y sidebar
+// Nota: usamos closest("[data-action]") porque el botón X envuelve un <svg>,
+// y al pulsarlo e.target es el <path> interno (no tiene dataset.action).
 document.addEventListener("click", (e) => {
-  const action = e.target.dataset?.action;
-  if (!action) return;
-  const container = e.target.closest("[data-dish]");
+  const actionEl = e.target.closest?.("[data-action]");
+  if (!actionEl) return;
+  const action = actionEl.dataset.action;
+  const container = actionEl.closest("[data-dish]");
   if (!container) return;
   const id = container.dataset.dish;
   const current = cart.get(id) || 0;
