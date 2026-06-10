@@ -887,6 +887,136 @@
       .lightbox__img { max-height: 55vh; }
       .lightbox__figure { gap: 18px; }
     }
+
+    /* ─── Reservation dialog (mismo que landing) ────────────── */
+    .eyebrow {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 400; font-size: .72rem;
+      letter-spacing: .32em; text-transform: uppercase;
+      color: var(--gold-soft);
+    }
+    .rule {
+      display: inline-block; width: 56px; height: 1px;
+      background: var(--gold); vertical-align: middle; margin-right: 14px;
+    }
+    .reserva-dialog {
+      border: none; padding: 0; background: transparent;
+      max-width: min(560px, calc(100vw - 32px)); width: 100%;
+      color: var(--paper); overflow: visible;
+    }
+    .reserva-dialog::backdrop {
+      background: rgba(7,5,4,.78);
+      backdrop-filter: blur(8px) saturate(140%);
+      -webkit-backdrop-filter: blur(8px) saturate(140%);
+      animation: backdropIn .5s var(--ease) both;
+    }
+    @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+    .reserva-card {
+      position: relative;
+      background: linear-gradient(180deg, #181410 0%, #100d0a 100%);
+      border: 1px solid rgba(176,122,54,.35);
+      padding: clamp(36px, 5vw, 56px) clamp(28px, 4vw, 52px) clamp(32px, 4vw, 48px);
+      animation: cardIn .6s var(--ease) both;
+      box-shadow: 0 30px 80px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(176,122,54,.06) inset;
+    }
+    .reserva-card::before {
+      content: ""; position: absolute; inset: 8px;
+      border: 1px solid rgba(176,122,54,.15); pointer-events: none;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(20px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .reserva-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 38px; height: 38px;
+      display: grid; place-items: center;
+      background: transparent;
+      border: 1px solid rgba(176,122,54,.25);
+      color: var(--paper-soft); cursor: pointer;
+      transition: color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease);
+    }
+    .reserva-close svg { width: 14px; height: 14px; }
+    .reserva-close:hover {
+      color: var(--gold-bright); border-color: var(--gold); transform: rotate(90deg);
+    }
+    .reserva-header { text-align: center; margin-bottom: 32px; }
+    .reserva-header .jp {
+      display: block; color: var(--gold);
+      font-size: 1rem; letter-spacing: .2em; margin-bottom: 10px;
+    }
+    .reserva-header .eyebrow { display: block; margin-bottom: 18px; }
+    .reserva-header h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300; font-style: italic;
+      font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+      line-height: 1.1; letter-spacing: -.01em;
+      margin: 0 0 14px; color: var(--paper);
+    }
+    .reserva-header h3 em { color: var(--gold-bright); }
+    .reserva-header p {
+      color: var(--paper-mute); font-size: .95rem;
+      line-height: 1.6; max-width: 42ch; margin: 0 auto;
+    }
+    .reserva-options { display: grid; gap: 14px; margin-top: 8px; }
+    .reserva-opt {
+      display: grid; grid-template-columns: 52px 1fr auto;
+      align-items: center; gap: 18px; padding: 20px 22px;
+      background: rgba(255,255,255,.018);
+      border: 1px solid rgba(176,122,54,.2);
+      color: var(--paper); text-align: left;
+      transition: background .3s var(--ease), border-color .3s var(--ease), transform .4s var(--ease);
+    }
+    .reserva-opt:hover {
+      background: rgba(176,122,54,.08);
+      border-color: var(--gold); transform: translateY(-2px);
+    }
+    .reserva-opt__icon {
+      width: 52px; height: 52px; display: grid; place-items: center;
+      border: 1px solid rgba(176,122,54,.4);
+      color: var(--gold-bright); border-radius: 50%; flex-shrink: 0;
+      transition: background .3s var(--ease), color .3s var(--ease);
+    }
+    .reserva-opt:hover .reserva-opt__icon {
+      background: var(--gold); color: var(--ink); border-color: var(--gold);
+    }
+    .reserva-opt__icon svg { width: 22px; height: 22px; }
+    .reserva-opt__body { line-height: 1.3; }
+    .reserva-opt__label {
+      font-size: .7rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--paper-mute); display: block; margin-bottom: 4px;
+    }
+    .reserva-opt__value {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.45rem; color: var(--paper); letter-spacing: .01em;
+    }
+    .reserva-opt:hover .reserva-opt__value { color: var(--gold-bright); }
+    .reserva-opt__arrow {
+      color: var(--paper-mute);
+      transition: color .3s var(--ease), transform .4s var(--ease);
+    }
+    .reserva-opt__arrow svg { width: 18px; height: 18px; }
+    .reserva-opt:hover .reserva-opt__arrow {
+      color: var(--gold-bright); transform: translateX(4px);
+    }
+    .reserva-footer {
+      margin-top: 28px; padding-top: 22px;
+      border-top: 1px solid rgba(176,122,54,.15);
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1rem; color: var(--paper-mute);
+    }
+    .reserva-footer .jp-stamp {
+      display: inline-block; margin-top: 8px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.1rem; color: var(--claret); letter-spacing: .12em;
+    }
+    @media (max-width: 480px) {
+      .reserva-opt { grid-template-columns: 44px 1fr; }
+      .reserva-opt__arrow { display: none; }
+      .reserva-opt__icon { width: 44px; height: 44px; }
+      .reserva-opt__value { font-size: 1.2rem; }
+    }
   </style>
 </head>
 <body>
@@ -923,7 +1053,7 @@
     </div>
 
     <a href="/" class="nav__back">← Inicio</a>
-    <a class="nav__cta" href="tel:+34667099828">Reservar</a>
+    <button class="nav__cta" type="button" data-open-reserva>Reservar</button>
   </nav>
 
 
@@ -1685,6 +1815,86 @@
       });
     });
   </script>
+
+  <!-- RESERVA DIALOG (mismo que landing) ─────────────────────── -->
+  <dialog class="reserva-dialog" id="reserva" aria-labelledby="reserva-title">
+    <div class="reserva-card">
+      <button class="reserva-close" type="button" aria-label="Cerrar" data-close-reserva>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <header class="reserva-header">
+        <span class="jp">予約 · Reservas</span>
+        <span class="eyebrow"><span class="rule"></span>Mesa para ti</span>
+        <h3 id="reserva-title">Te esperamos en <em>Gula</em>.</h3>
+        <p>Para reservar tu mesa o resolver cualquier duda, escríbenos por WhatsApp o llámanos. Te responderemos personalmente.</p>
+      </header>
+      <div class="reserva-options">
+        <a class="reserva-opt" href="tel:+34667099828">
+          <span class="reserva-opt__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="reserva-opt__body">
+            <span class="reserva-opt__label">Llámanos</span>
+            <span class="reserva-opt__value">667 09 98 28</span>
+          </span>
+          <span class="reserva-opt__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </a>
+        <a class="reserva-opt" href="https://wa.me/34667099828?text=Hola%2C%20me%20gustar%C3%ADa%20reservar%20una%20mesa%20en%20Gula." target="_blank" rel="noopener">
+          <span class="reserva-opt__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.4 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.1.8.8-3-.2-.3A8 8 0 1 1 20 12c0 4.4-3.6 8-8 8z"/>
+            </svg>
+          </span>
+          <span class="reserva-opt__body">
+            <span class="reserva-opt__label">WhatsApp</span>
+            <span class="reserva-opt__value">Escríbenos al chat</span>
+          </span>
+          <span class="reserva-opt__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+      <div class="reserva-footer">
+        Atendemos personalmente cada reserva
+        <span class="jp-stamp">心 · おもてなし</span>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    (function () {
+      const dlg = document.getElementById('reserva');
+      const openIt  = () => {
+        if (typeof dlg.showModal === 'function') dlg.showModal();
+        else dlg.setAttribute('open', '');
+        document.body.style.overflow = 'hidden';
+      };
+      const closeIt = () => {
+        if (typeof dlg.close === 'function') dlg.close();
+        else dlg.removeAttribute('open');
+        document.body.style.overflow = '';
+      };
+      document.querySelectorAll('[data-open-reserva]').forEach(el =>
+        el.addEventListener('click', e => { e.preventDefault(); openIt(); })
+      );
+      document.querySelectorAll('[data-close-reserva]').forEach(el =>
+        el.addEventListener('click', closeIt)
+      );
+      dlg.addEventListener('click', e => { if (e.target === dlg) closeIt(); });
+      dlg.addEventListener('close', () => { document.body.style.overflow = ''; });
+    })();
+  </script>
+
 
   <!-- LIGHTBOX de fotos a pantalla completa ─────────────────── -->
   <div class="lightbox" id="dishLightbox" aria-hidden="true">
