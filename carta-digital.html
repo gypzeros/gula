@@ -103,23 +103,15 @@
       border-bottom: 1px solid rgba(176,122,54,.16);
       padding: 14px var(--gutter);
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      grid-template-columns: auto minmax(0, 1fr);
       gap: 24px;
       align-items: center;
       max-width: 100vw;
       box-sizing: border-box;
     }
-    .nav__back {
-      font-size: .68rem; letter-spacing: .26em; text-transform: uppercase;
-      color: var(--paper-mute);
-      transition: color .3s var(--ease);
-      white-space: nowrap;
-    }
-    .nav__back:hover { color: var(--gold-bright); }
-    @media (max-width: 720px) {
-      .nav { grid-template-columns: auto minmax(0, 1fr) auto; }
-      .nav__back { display: none; }
-    }
+    /* Brand sin link (página aislada — no se navega fuera) */
+    .nav__brand { cursor: default; }
+    .nav__brand:hover { color: var(--paper); }
     .nav__brand {
       display: flex; align-items: center; gap: 14px;
       color: var(--paper);
@@ -1023,7 +1015,7 @@
 
   <!-- NAV ─────────────────────────────────────────────────── -->
   <nav class="nav" id="nav">
-    <a href="/" class="nav__brand" aria-label="Volver al inicio · Gula Restaurante">
+    <span class="nav__brand" aria-label="Gula Restaurante">
       <svg class="mark" viewBox="48.37 637.83 264.26 204.96" aria-hidden="true">
         <path fill="#b07a36" d="M237.6,691.5 L168.3,724.8 255.7,785.7c4.8,-10.6 7.4,-22.5 7.4,-35.1C263.1,726.5 253.4,705.7 237.6,691.5"/>
         <path fill="currentColor" d="m305.1,821.9c0.5,0.7 0.1,1.3 -0.3,1.9 -0.4,0.6 -1.1,0.5 -1.6,0.2 -1.1,-0.6 -32.9,-22.8 -47.8,-33.2 -0.6,-0.5 -1.3,-1.8 -2.3,-0.5 -1,1.3 0.1,1.8 1,2.4 18.4,14.2 36.6,28.7 54.4,43.7 1.3,1.1 2.8,2 3.5,3.6 0,0.5 0.3,1.1 0,1.6 -0.9,1.4 -2.7,0.4 -4,-0.6 -17.7,-14.2 -35.5,-28.3 -53.3,-42.4 -4,-3.2 -4,-3.2 -6.9,0.9 -12.7,17.8 -29.9,28.6 -51.4,31.9 -19.3,3 -37.1,-1.2 -53.1,-12.6 -18.7,-13.3 -31.5,-30.8 -36.1,-53.6 -1.5,-7.2 -1.6,-14.5 -1.1,-21.8 1,-12.9 3.7,-25.4 10.3,-36.7 1.3,-2.2 2.4,-4.4 4,-6.4 1.3,-1.5 0.8,-2.2 -0.5,-3.2 -11.7,-8.7 -23.2,-17.7 -34.9,-26.3 -11.4,-8.4 -23,-16.4 -34.5,-24.6 -0.8,-0.6 -1.8,-1 -1.6,-2.4 0.4,-1.7 1.9,-2.4 3.7,-1.5 0,-0.5 0,-0.9 -0,-1.3 -0,-1.1 0,-2.2 1.2,-2.6 1,-0.3 1.8,0.4 2.5,1 6.6,5.8 13.2,11.6 19.8,17.3 12.2,10.4 24.8,20.3 37.6,30 17.3,13 59.1,39.9 60.5,40.9 1.1,0.8 1.7,0.5 1.7,-0.9 0,-1.9 0.9,-59.1 0.2,-75.9 -0.1,-1.7 -0.2,-3.5 0.7,-5.1 0.5,-0.9 1.1,-1.7 2.1,-1.7 1.1,0 1.8,0.8 2.3,1.9 0.6,1.4 0.6,2.9 0.6,4.4 -0.1,15.6 1.3,82.5 1.5,83.2 0.3,1 1.2,1.8 2.1,1.6 1,-0.1 0.5,-1.3 0.5,-2 0,-6 0,-68.2 0,-83.5 0,-1.4 0,-2.8 0.7,-4 1.2,-2.1 3.2,-2.1 4.4,0 0.7,1.3 0.7,2.6 0.7,4 -0,9.5 1,80 1,88.7 0,1.7 0.5,2.8 1.9,3.6C198.5,744.2 304.6,821.3 305.1,821.9"/>
@@ -1044,16 +1036,13 @@
           <path d="m402.4,788.9c-11,21.2 -23.5,42.2 -35.3,59.1 -21.9,32 -47.7,46.8 -55.1,42.5l-0,-0c-1.2,-0.6 -2,-1.9 -2.4,-3.5 -0.6,-3 -0.6,-11.9 13.6,-30.2C341.7,833.3 371.2,807.9 402.4,788.9m174.6,-69c7.5,-21.2 15.1,-38 22.6,-50.1 6.9,-10.9 11,-14.7 12.3,-14.7 0.1,-0 0.2,0 0.2,0 0.8,0.4 0.4,4.5 -5.8,16.7C598,688.4 586,706.8 577,719.9M744.8,742.1c-0.3,-0.8 -1,-1.3 -1.9,-1.4 -1.3,-0.2 -3.5,0.5 -5.2,2.9 -9.9,11.8 -35.7,27.6 -48.7,24.7 -3,-0.7 -5.1,-2.3 -6.5,-4.7 -2.7,-4.8 -2.2,-12.7 1.4,-23.7 0.8,-2.4 0.1,-4.6 -1.7,-5.8 -2.4,-1.5 -6.8,-1.3 -11.1,2.7 -0.4,0.4 -1.3,1.4 -2.5,2.6 -5.9,6.3 -21.7,23.1 -25,22.8 -0.2,-0 -0.3,-0.1 -0.3,-0.2 -1.7,-2.3 0.5,-9 2,-12.2 6.4,-15.7 20.4,-25.3 29.5,-24.4 4.7,0.4 8.5,3 10.9,7.4 1,2.5 2.9,4.2 5,4.5 1.3,0.2 2.5,-0.3 3.2,-1.2 0.8,-1.1 0.8,-2.8 -0.1,-4.6 -3.7,-7.7 -11.3,-10.2 -17,-11 -11.1,-1.6 -22.8,1.7 -32.3,9 -5,3.9 -9.1,8.7 -12,14 -3.4,5 -6.6,10.4 -10,16.1 -0.9,1.4 -1.7,2.9 -2.6,4.4C600.9,796 574.5,828.7 561.5,825.2l-0,-0c-2.7,-0.7 -4.8,-2.6 -6.2,-5.6 -7.9,-17.1 9.2,-67.3 15.4,-80.2 31.5,-41 48.4,-69.8 51.7,-88 1.4,-7.5 -0,-12.7 -4,-14.8 -4.2,-2.2 -10.8,-0.2 -16,5C586.6,658 568.6,703.7 557,743.6c-3.1,3.7 -11,13.1 -20.2,20.9 -9.6,8.2 -17.4,12.1 -23,11.6 -1.8,-0.4 -3.1,-1.4 -3.8,-3.1 -2,-4.2 -0.4,-12.1 4.4,-22.1 1.3,-2.8 0.6,-5.6 -1.7,-7.4 -2.4,-1.8 -6.4,-2.3 -10.2,0.9 -0.7,0.7 -2.2,3 -4.3,6.3 -4.5,6.9 -11.3,17.4 -16.8,21.9 -2.1,1.9 -4.2,2.8 -5.2,2.3 -0.7,-0.4 -0.9,-1.6 -0.6,-3.5l0,-0c0.9,-5.2 5.3,-15.3 8.7,-23.4 2.3,-5.3 4.3,-10 5,-12.4 1.1,-4.4 -0.2,-8.2 -3.1,-9.6 -2.8,-1.3 -6.3,0 -8.9,3.5C475.4,732.3 472.6,737.5 469.9,743.7 459.9,748.9 449.3,754.9 439,760.7 433.1,764 427,767.5 421.2,770.7c12.1,-29.5 20.4,-64.4 22.1,-82.5 0.1,-5.8 -1.1,-9.9 -3.4,-11.1 -1,-0.6 -2.2,-0.5 -3.2,0.2C435,678.3 433.3,681.3 433.8,686.2 432.2,700.8 416.7,719.9 393.1,736.2 369.8,752.4 344.3,761.9 326.8,761.2c-11.8,-0.5 -20.2,-4.8 -24.3,-12.3 -6.2,-11.5 -2.1,-30 11.9,-53.6 20.4,-34.9 61.2,-63 84.1,-64.8 9.7,-0.7 16.5,3.5 19.1,11.9 5.1,16.4 -6.8,36.8 -20.6,44.9 -3,1.8 -4.6,4.5 -4.2,7.2 0.3,2.3 2,4.2 4.2,4.8 1.7,0.5 6,0.9 11.1,-5.2 12.6,-15.4 20.7,-48.5 12.1,-65.2 -3.7,-7.3 -10.4,-10.8 -19.2,-10.2 -11.6,0.8 -26.9,7.8 -42.8,19.7 -15.5,11.6 -30.7,26.9 -42.9,43.3 -30.6,40.6 -27.7,72.5 -11.3,86.2 10.7,9 26.8,10.3 46.3,3.8 17.8,-5.9 37.8,-18.2 54.8,-33.6C420.1,724.4 430.7,710.2 434.9,698.5 430,728.9 421.6,748.1 407.7,778.3c-44,25.4 -72.8,47.6 -90.6,69.8 -17.1,21.6 -23.1,40.8 -15.8,51.3 3.3,4.7 8.8,7.2 15.8,7.2 3.6,-0 7.5,-0.6 11.7,-2 20.3,-6.4 41.9,-28.9 59.1,-61.6 9.2,-17.5 21.7,-41.4 30.2,-63.5 16.7,-9.8 33.3,-19 48.5,-26.9 -0.7,2.2 -1.2,4.4 -1.7,6.5C463.4,766.5 463.2,775.9 470.7,779.5c10.9,5.4 20.6,-6.1 28.6,-16.2 -2,5.3 -1.9,10 0.2,13.4 2,3.4 5.9,5.3 11.3,5.6 0.5,0 1,0 1.5,0 8.4,-0 17.5,-3.9 27.2,-11.7 4.9,-4 9.5,-8.5 13.6,-13 -9.1,33.6 -10.3,54.9 -3.5,65.1 2.5,3.7 6,5.9 10.6,6.4 0.5,0.1 0.9,0.1 1.4,0.1 16.5,-0 44.5,-30 61.6,-58.8 1.5,-2.4 2.9,-4.8 4.3,-7.1 0.4,4.5 2.2,7.8 5.1,9.3 11.5,6 24.5,-10.8 33,-21.8 2.1,-2.7 3.8,-4.9 5.2,-6.4 -3.5,7.5 -3.7,15 -0.5,20.7 2.9,5.4 8.6,8.7 16.1,9.4 1.4,0.2 2.8,0.2 4.2,0.2 19,-0 40.2,-13.3 52.1,-27.4 2.6,-2.8 2.5,-4.5 2.2,-5.3"/>
         </g>
       </svg>
-    </a>
+    </span>
 
     <div class="nav__tabs" role="tablist">
       <a class="nav__tab" data-tab="sushi" href="#sushi"><span class="jp">寿司</span>Sushi</a>
       <a class="nav__tab" data-tab="entrantes" href="#entrantes"><span class="jp">前菜</span>Entrantes</a>
       <a class="nav__tab" data-tab="principales" href="#principales"><span class="jp">主菜</span>Principales</a>
     </div>
-
-    <a href="/" class="nav__back">← Inicio</a>
-    <button class="nav__cta" type="button" data-open-reserva>Reservar</button>
   </nav>
 
 
@@ -1708,37 +1697,6 @@
 
 
   <!-- FOOTER / CTA ────────────────────────────────────────── -->
-  <footer class="footer">
-    <div class="footer__inner">
-      <span class="footer__jp">予約 · Reservas</span>
-      <h2 class="footer__title">Reserva tu <em>mesa</em>.</h2>
-      <p class="footer__lede">
-        Atendemos personalmente cada reserva. Escríbenos por WhatsApp o llámanos — te responderemos enseguida.
-      </p>
-
-      <div class="footer__actions">
-        <a class="footer__btn footer__btn--primary" href="tel:+34667099828">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
-          Llamar
-        </a>
-        <a class="footer__btn footer__btn--ghost" href="https://wa.me/34667099828?text=Hola%2C%20me%20gustar%C3%ADa%20reservar%20una%20mesa%20en%20Gula." target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.4 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.1.8.8-3-.2-.3A8 8 0 1 1 20 12c0 4.4-3.6 8-8 8z"/></svg>
-          WhatsApp
-        </a>
-      </div>
-
-      <div class="footer__contact">
-        <div>
-          Dirección
-          <strong>C. Rafael Leña Caballero, Cabra · Córdoba</strong>
-        </div>
-        <div>
-          Teléfono
-          <strong>667 09 98 28</strong>
-        </div>
-      </div>
-    </div>
-  </footer>
 
 
   <script>
@@ -1815,86 +1773,6 @@
       });
     });
   </script>
-
-  <!-- RESERVA DIALOG (mismo que landing) ─────────────────────── -->
-  <dialog class="reserva-dialog" id="reserva" aria-labelledby="reserva-title">
-    <div class="reserva-card">
-      <button class="reserva-close" type="button" aria-label="Cerrar" data-close-reserva>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <header class="reserva-header">
-        <span class="jp">予約 · Reservas</span>
-        <span class="eyebrow"><span class="rule"></span>Mesa para ti</span>
-        <h3 id="reserva-title">Te esperamos en <em>Gula</em>.</h3>
-        <p>Para reservar tu mesa o resolver cualquier duda, escríbenos por WhatsApp o llámanos. Te responderemos personalmente.</p>
-      </header>
-      <div class="reserva-options">
-        <a class="reserva-opt" href="tel:+34667099828">
-          <span class="reserva-opt__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-              <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-          <span class="reserva-opt__body">
-            <span class="reserva-opt__label">Llámanos</span>
-            <span class="reserva-opt__value">667 09 98 28</span>
-          </span>
-          <span class="reserva-opt__arrow" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </a>
-        <a class="reserva-opt" href="https://wa.me/34667099828?text=Hola%2C%20me%20gustar%C3%ADa%20reservar%20una%20mesa%20en%20Gula." target="_blank" rel="noopener">
-          <span class="reserva-opt__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.4 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.1.8.8-3-.2-.3A8 8 0 1 1 20 12c0 4.4-3.6 8-8 8z"/>
-            </svg>
-          </span>
-          <span class="reserva-opt__body">
-            <span class="reserva-opt__label">WhatsApp</span>
-            <span class="reserva-opt__value">Escríbenos al chat</span>
-          </span>
-          <span class="reserva-opt__arrow" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-              <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </a>
-      </div>
-      <div class="reserva-footer">
-        Atendemos personalmente cada reserva
-        <span class="jp-stamp">心 · おもてなし</span>
-      </div>
-    </div>
-  </dialog>
-
-  <script>
-    (function () {
-      const dlg = document.getElementById('reserva');
-      const openIt  = () => {
-        if (typeof dlg.showModal === 'function') dlg.showModal();
-        else dlg.setAttribute('open', '');
-        document.body.style.overflow = 'hidden';
-      };
-      const closeIt = () => {
-        if (typeof dlg.close === 'function') dlg.close();
-        else dlg.removeAttribute('open');
-        document.body.style.overflow = '';
-      };
-      document.querySelectorAll('[data-open-reserva]').forEach(el =>
-        el.addEventListener('click', e => { e.preventDefault(); openIt(); })
-      );
-      document.querySelectorAll('[data-close-reserva]').forEach(el =>
-        el.addEventListener('click', closeIt)
-      );
-      dlg.addEventListener('click', e => { if (e.target === dlg) closeIt(); });
-      dlg.addEventListener('close', () => { document.body.style.overflow = ''; });
-    })();
-  </script>
-
 
   <!-- LIGHTBOX de fotos a pantalla completa ─────────────────── -->
   <div class="lightbox" id="dishLightbox" aria-hidden="true">
