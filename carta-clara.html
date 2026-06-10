@@ -383,9 +383,12 @@
     }
 
     /* ── IMPRESIÓN ─────────────────────────────────────────── */
+    /* Fondo transparente al imprimir: pensado para imprimir sobre
+       cartulina del color crema (la copistería pide el archivo sin
+       el relleno para que sea el papel físico el que tiñe la página). */
     @media print {
       html, body {
-        background: var(--paper) !important;
+        background: transparent !important;
         margin: 0 !important;
         padding: 0 !important;
       }
@@ -395,7 +398,7 @@
         min-height: 297mm !important;
         margin: 0 !important;
         padding: 18mm 22mm 14mm !important;
-        background: var(--paper) !important;
+        background: transparent !important;
         background-image: none !important;          /* sin radial-gradients */
         box-shadow: none !important;
         page-break-after: always;
@@ -405,6 +408,9 @@
       .page::after { display: none !important; }    /* sin grano (data URI pesado) */
       .page:last-child { page-break-after: auto; break-after: auto; }
       .print-btn { display: none !important; }
+      /* La tarjeta del QR también deja de pintar su gradient suave */
+      .qr-card { background: transparent !important; }
+      .qr-card::before { display: none !important; }
     }
   </style>
 </head>
