@@ -169,7 +169,24 @@
     }
     .nav__cta:hover { background: var(--gold-bright); color: var(--ink); transform: translateY(-1px); }
     @media (max-width: 880px) {
-      .nav__links { display: none; }
+      /* En móvil escondemos los anchors internos (Concepto / Galería /
+         Horarios / Visítanos) porque son saltos a secciones de la propia
+         landing que también se ven al hacer scroll. Mantenemos visible
+         "Carta" porque va a OTRA página y desde móvil no había forma de
+         llegar si no la dejábamos. */
+      .nav__links { gap: 0; }
+      .nav__links a:not([href="/carta"]) { display: none; }
+      .nav__links a[href="/carta"] {
+        font-size: .72rem; letter-spacing: .24em;
+        padding: 8px 14px;
+        border: 1px solid rgba(176,122,54,.4);
+        color: var(--paper);
+      }
+      .nav__links a[href="/carta"]::after { display: none; }
+      .nav__links a[href="/carta"]:hover {
+        background: rgba(176,122,54,.1);
+        border-color: var(--gold);
+      }
     }
 
     /* ── hero ───────────────────────────────────────────────── */
