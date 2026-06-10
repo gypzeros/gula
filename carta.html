@@ -791,6 +791,92 @@
       .reveal-img-wrap img { transform: none !important; }
     }
 
+    /* ─── Lightbox de fotos a pantalla completa ─────────────── */
+    .dish__media { cursor: zoom-in; transition: opacity .2s var(--ease); }
+    .dish__media:hover { opacity: .92; }
+    .lightbox {
+      position: fixed; inset: 0;
+      background: rgba(15,12,10,.96);
+      backdrop-filter: blur(24px);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 250;
+      padding: 24px;
+      animation: lightboxIn .25s var(--ease);
+    }
+    .lightbox.is-open { display: flex; }
+    @keyframes lightboxIn { from { opacity: 0; } to { opacity: 1; } }
+    .lightbox__close {
+      position: fixed;
+      top: 18px; right: 18px;
+      width: 44px; height: 44px;
+      border: 1px solid rgba(176,122,54,.4);
+      background: rgba(15,12,10,.6);
+      color: var(--paper);
+      display: grid; place-items: center;
+      border-radius: 50%;
+      z-index: 1; cursor: pointer;
+      transition: border-color .2s var(--ease), background .2s var(--ease);
+    }
+    .lightbox__close:hover { border-color: var(--gold); background: rgba(15,12,10,.85); }
+    .lightbox__figure {
+      margin: 0;
+      max-width: 780px; width: 100%; max-height: 100%;
+      display: flex; flex-direction: column; gap: 22px;
+      overflow-y: auto; align-items: center;
+      animation: lightboxFigIn .35s var(--ease);
+    }
+    @keyframes lightboxFigIn {
+      from { opacity: 0; transform: scale(.97); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .lightbox__img {
+      width: 100%;
+      max-height: 60vh;
+      object-fit: contain;
+      background: var(--surface-2);
+      border: 1px solid rgba(176,122,54,.15);
+    }
+    .lightbox__caption {
+      text-align: center;
+      max-width: 580px;
+      padding: 0 8px;
+    }
+    .lightbox__eyebrow {
+      font-family: 'Manrope', sans-serif;
+      font-size: .68rem;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .lightbox__name {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-weight: 400;
+      font-size: clamp(1.6rem, 4.8vw, 2.4rem);
+      color: var(--paper);
+      margin: 0 0 12px;
+      line-height: 1.15;
+    }
+    .lightbox__name em {
+      color: var(--gold-bright);
+      font-style: italic;
+    }
+    .lightbox__desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--paper-soft);
+      margin: 0;
+      line-height: 1.5;
+    }
+    @media (max-width: 540px) {
+      .lightbox { padding: 16px; }
+      .lightbox__close { top: 12px; right: 12px; }
+      .lightbox__img { max-height: 55vh; }
+      .lightbox__figure { gap: 18px; }
+    }
+
     /* ─── Carta pública (web) ──────────────────────────────────
        Esta página es la carta visible en gularestaurante.es/carta
        (no la del QR, que es carta-digital y SÍ muestra todo).
@@ -1603,6 +1689,65 @@
         }
       });
     });
+  </script>
+
+  <!-- LIGHTBOX de fotos a pantalla completa ─────────────────── -->
+  <div class="lightbox" id="dishLightbox" aria-hidden="true">
+    <button class="lightbox__close" id="lightboxClose" aria-label="Cerrar">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M1 1 L17 17 M17 1 L1 17" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <figure class="lightbox__figure">
+      <img class="lightbox__img" id="lightboxImg" alt="" />
+      <figcaption class="lightbox__caption">
+        <div class="lightbox__eyebrow" id="lightboxEyebrow"></div>
+        <h2 class="lightbox__name" id="lightboxName"></h2>
+        <p class="lightbox__desc" id="lightboxDesc"></p>
+      </figcaption>
+    </figure>
+  </div>
+
+  <script>
+    (function () {
+      const lightbox = document.getElementById('dishLightbox');
+      const imgEl    = document.getElementById('lightboxImg');
+      const nameEl   = document.getElementById('lightboxName');
+      const descEl   = document.getElementById('lightboxDesc');
+      const eyebrowEl= document.getElementById('lightboxEyebrow');
+      const closeBtn = document.getElementById('lightboxClose');
+
+      function open(article) {
+        const img     = article.querySelector('.dish__media img');
+        const name    = article.querySelector('.dish__name');
+        const desc    = article.querySelector('.dish__desc');
+        const eyebrow = article.querySelector('.dish__eyebrow .ord');
+        if (!img) return;
+        imgEl.src = img.src;
+        imgEl.alt = img.alt || '';
+        nameEl.innerHTML  = name ? name.innerHTML : '';
+        descEl.textContent= desc ? desc.textContent : '';
+        eyebrowEl.textContent = eyebrow ? eyebrow.textContent : '';
+        lightbox.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+      }
+      function close() {
+        lightbox.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }
+
+      document.addEventListener('click', (e) => {
+        const media = e.target.closest('.dish__media');
+        if (!media) return;
+        const article = media.closest('.dish');
+        if (article) open(article);
+      });
+      closeBtn.addEventListener('click', close);
+      lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('is-open')) close();
+      });
+    })();
   </script>
 
 </body>
