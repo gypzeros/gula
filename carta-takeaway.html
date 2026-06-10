@@ -62,7 +62,7 @@
       position: relative;
       width: 210mm;
       min-height: 297mm;
-      padding: 18mm 22mm 14mm;
+      padding: 14mm 20mm 12mm;
       background: var(--paper);
       background-image:
         radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,.35), transparent 60%),
@@ -89,26 +89,26 @@
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     }
 
-    /* ── header (página 1) ──────────────────────────────────── */
+    /* ── header (compacto para caber todo en 1 página) ─────── */
     .header {
       text-align: center;
-      padding-bottom: 9mm;
+      padding-bottom: 6mm;
       border-bottom: 1px solid rgba(168,115,46,.25);
       position: relative;
     }
     .brand-mark {
       display: block;
-      margin: 0 auto 4mm;
+      margin: 0 auto 3mm;
     }
-    .brand-mark svg.mark { width: 15mm; height: auto; display: block; margin: 0 auto; }
+    .brand-mark svg.mark { width: 12mm; height: auto; display: block; margin: 0 auto; }
     .brand-letras {
       display: block;
       margin: 0 auto;
       color: var(--ink);
     }
-    .brand-letras svg { height: 13mm; width: auto; display: block; margin: 0 auto; }
+    .brand-letras svg { height: 10mm; width: auto; display: block; margin: 0 auto; }
     .tagline {
-      margin-top: 4mm;
+      margin-top: 3mm;
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       font-weight: 400;
@@ -126,24 +126,24 @@
       margin-top: 1.5mm;
     }
 
-    /* ── secciones (Sushi · Entrantes · Principales) ────────── */
+    /* ── secciones (Sushi · Calientes) ──────────────────────── */
     .section {
-      margin-top: 7mm;
+      margin-top: 5mm;
     }
     .section + .section {
-      margin-top: 5mm;
+      margin-top: 4mm;
     }
     .section__head {
       display: flex;
       align-items: baseline;
       gap: 6mm;
-      margin-bottom: 4mm;
+      margin-bottom: 3mm;
     }
     .section__title {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 300;
       font-style: italic;
-      font-size: 24pt;
+      font-size: 20pt;
       line-height: 1;
       color: var(--ink);
       margin: 0;
@@ -165,7 +165,7 @@
 
     /* ── plato ──────────────────────────────────────────────── */
     .dish {
-      margin-bottom: 3mm;
+      margin-bottom: 2mm;
       page-break-inside: avoid;
     }
     .dish__top {
@@ -237,8 +237,8 @@
 
     /* ── Info card (pedidos take away) ──────────────────────── */
     .info-card {
-      margin-top: 8mm;
-      padding: 6mm 8mm;
+      margin-top: 5mm;
+      padding: 5mm 6mm;
       display: grid;
       grid-template-columns: 1.1fr 1fr;
       gap: 8mm;
@@ -410,7 +410,6 @@
 </head>
 <body>
 
-  <!-- ───────── PÁGINA 1 ───────── -->
   <article class="page">
 
     <header class="header">
@@ -549,13 +548,7 @@
 
     </section>
 
-  </article>
-
-
-  <!-- ───────── PÁGINA 2 ───────── -->
-  <article class="page">
-
-    <section class="section" style="margin-top: 4mm;">
+    <section class="section">
       <div class="section__head">
         <span class="section__jp">温</span>
         <h2 class="section__title">Calientes</h2>
