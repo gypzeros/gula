@@ -2,784 +2,1608 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Carta · Gula Restaurante</title>
-  <meta name="description" content="Carta de Gula Restaurante · Cabra, Córdoba" />
+  <meta name="description" content="Carta digital de Gula Restaurante · Sushi y cocina creativa en Cabra, Córdoba" />
+  <meta name="theme-color" content="#0f0c0a" />
 
   <link rel="icon" type="image/svg+xml" href="logo.svg" />
+  <link rel="apple-touch-icon" href="logo.svg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Manrope:wght@200;300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Manrope:wght@200;300;400;500;600;700&family=Noto+Serif+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
 
   <style>
     /* ─────────────────────────────────────────────────────────
-       Gula · Carta imprimible (A4)
+       Gula · Carta digital — editorial moodboard
        ───────────────────────────────────────────────────────── */
 
     :root {
-      /* mismos colores que la landing pero con más calidez para que el marrón se vea bien al imprimir */
-      --paper:       #241710;       /* marrón warm oscuro (visible al imprimir, no negro plano) */
-      --paper-2:     #2b1c14;
-      --ink:         #ece2cf;       /* texto principal (crema washi) */
-      --ink-soft:    #d8cdb6;
-      --ink-mute:    #968670;
-      --gold:        #b07a36;
-      --gold-soft:   #c69859;
-      --gold-bright: #e2b576;
-      --claret:      #7a2a26;
+      --ink:           #0f0c0a;
+      --surface:       #14110e;
+      --surface-2:     #1c1813;
+      --paper:         #ece2cf;
+      --paper-soft:    #d8cdb6;
+      --paper-mute:    #8a7e6c;
+      --gold:          #b07a36;
+      --gold-soft:     #c69859;
+      --gold-bright:   #e2b576;
+      --claret:        #7a2a26;
+      --sage:          #6f8062;
+
+      --max:    1440px;
+      --gutter: clamp(20px, 5vw, 56px);
+      --ease:   cubic-bezier(.22,.61,.36,1);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
-
-    @page {
-      size: A4 portrait;
-      margin: 0;
+    /* Quita el cuadrado azul/gris que sale en móvil al tocar enlaces y botones */
+    a, button, [role="button"], .nav__tab, .nav__cta, .nav__brand, .footer__btn {
+      -webkit-tap-highlight-color: transparent;
+      tap-highlight-color: transparent;
     }
 
-    html, body {
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      overflow-x: clip;        /* clip constraint sin romper smooth scroll */
+    }
+    body {
       margin: 0;
-      padding: 0;
-      background: #050403;
-      color: var(--ink);
+      background: var(--ink);
+      color: var(--paper);
       font-family: 'Manrope', system-ui, sans-serif;
       font-weight: 300;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      font-size: 16px;
+      line-height: 1.6;
+      letter-spacing: .005em;
+      overflow-x: clip;
     }
+    /* Fallback para navegadores sin soporte de overflow-x: clip (Safari < 16) */
+    @supports not (overflow-x: clip) {
+      html, body { overflow-x: hidden; }
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+    figure { margin: 0; padding: 0; }
 
-    /* Vista en pantalla: páginas como hojas sueltas centradas */
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 28px 0;
-      gap: 24px;
-      min-height: 100vh;
-    }
-
-    .page {
-      position: relative;
-      width: 210mm;
-      min-height: 297mm;
-      padding: 18mm 22mm 14mm;
-      background: var(--paper);
-      background-image:
-        radial-gradient(120% 80% at 50% 0%, rgba(176,122,54,.10), transparent 60%),
-        radial-gradient(80% 60% at 100% 100%, rgba(122,42,38,.06), transparent 70%);
-      color: var(--ink);
-      box-shadow: 0 30px 60px -20px rgba(0,0,0,.8);
-      overflow: hidden;
-    }
-    .page::before {
+    /* Grain texture */
+    body::before {
       content: "";
-      position: absolute;
-      inset: 8mm;
-      border: 1px solid rgba(176,122,54,.28);
+      position: fixed; inset: 0;
       pointer-events: none;
-    }
-    /* Textura grano sutil */
-    .page::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: .06;
+      z-index: 200;
+      opacity: .05;
       mix-blend-mode: overlay;
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
     }
+    body::after {
+      content: "";
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background:
+        radial-gradient(60% 40% at 50% 0%, rgba(176,122,54,.06), transparent 60%);
+    }
 
-    /* ── header (página 1) ──────────────────────────────────── */
-    .header {
-      text-align: center;
-      padding-bottom: 9mm;
-      border-bottom: 1px solid rgba(176,122,54,.35);
+    ::selection { background: var(--gold); color: var(--ink); }
+
+    /* ── nav ──────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(15,12,10,.78);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border-bottom: 1px solid rgba(176,122,54,.16);
+      padding: 14px var(--gutter);
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;  /* minmax(0,...) deja encoger las tabs */
+      gap: 24px;
+      align-items: center;
+      max-width: 100vw;
+      box-sizing: border-box;
+    }
+    .nav__brand {
+      display: flex; align-items: center; gap: 14px;
+      color: var(--paper);
+      transition: color .3s var(--ease);
+    }
+    .nav__brand:hover { color: var(--gold-bright); }
+    .nav__brand svg.mark { width: 26px; height: auto; display: block; flex-shrink: 0; }
+    .nav__brand svg.letras {
+      height: 32px;
+      width: auto;
+      display: block;
+      color: var(--paper);
+      flex-shrink: 0;
+    }
+
+    .nav__tabs {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      min-width: 0;                       /* permite encoger por debajo de min-content */
+      -webkit-overflow-scrolling: touch;
+    }
+    .nav__tabs::-webkit-scrollbar { display: none; }
+    .nav__tab {
       position: relative;
+      padding: 10px 18px;
+      font-family: 'Manrope', sans-serif;
+      font-size: .72rem;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+      white-space: nowrap;
+      transition: color .3s var(--ease);
     }
-    .brand-mark {
-      display: block;
-      margin: 0 auto 4mm;
-    }
-    .brand-mark svg.mark { width: 15mm; height: auto; display: block; margin: 0 auto; }
-    .brand-letras {
-      display: block;
-      margin: 0 auto;
-      color: var(--ink);
-    }
-    .brand-letras svg { height: 13mm; width: auto; display: block; margin: 0 auto; }
-    .tagline {
-      margin-top: 4mm;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 10.5pt;
-      color: var(--ink-soft);
-      letter-spacing: .02em;
-    }
-    .tagline .jp {
+    .nav__tab .jp {
       display: block;
       font-family: 'Noto Serif JP', serif;
+      font-size: .7rem;
+      letter-spacing: .15em;
       color: var(--gold);
-      font-style: normal;
-      font-size: 8.5pt;
-      letter-spacing: .25em;
-      margin-top: 1.5mm;
+      opacity: .55;
+      margin-bottom: 2px;
+      text-transform: none;
+      transition: opacity .3s var(--ease);
+    }
+    .nav__tab::after {
+      content: "";
+      position: absolute;
+      left: 18px; right: 18px;
+      bottom: 4px;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s var(--ease);
+    }
+    .nav__tab:hover { color: var(--paper); }
+    .nav__tab:active { color: var(--gold-bright); transform: scale(.97); transition: color .1s, transform .1s; }
+    .nav__tab.is-active { color: var(--paper); }
+    .nav__tab.is-active .jp { opacity: 1; }
+    .nav__tab.is-active::after { transform: scaleX(1); }
+
+    .nav__cta {
+      padding: 9px 18px;
+      font-family: 'Manrope', sans-serif;
+      font-size: .68rem;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--paper);
+      border-radius: 2px;
+      transition: background .3s var(--ease), transform .4s var(--ease);
+      white-space: nowrap;
+    }
+    .nav__cta:hover { background: var(--gold-bright); transform: translateY(-1px); }
+    .nav__cta:active { background: var(--gold); transform: translateY(0) scale(.97); }
+    .nav__brand:active { color: var(--gold-bright); transition: color .1s; }
+
+    @media (max-width: 720px) {
+      .nav { grid-template-columns: auto minmax(0, 1fr); gap: 12px; padding: 10px 14px; }
+      .nav__cta { display: none; }
+      .nav__brand svg.letras { height: 28px; }
+      .nav__tab { padding: 8px 10px; font-size: .66rem; letter-spacing: .2em; }
+      .nav__tab .jp { font-size: .62rem; letter-spacing: .1em; }
+      .nav__tabs { justify-content: flex-end; }
+    }
+    @media (max-width: 480px) {
+      .nav__brand svg.mark { width: 22px; }
+      .nav__brand svg.letras { height: 22px; }
+      .nav__brand { gap: 10px; }
+      .nav__tab { padding: 6px 8px; font-size: .6rem; letter-spacing: .16em; }
+      .nav__tab .jp { font-size: .58rem; letter-spacing: .08em; }
+      .nav { padding: 8px 12px; gap: 8px; }
     }
 
-    /* ── secciones (Sushi · Entrantes · Principales) ────────── */
-    .section {
-      margin-top: 7mm;
+    /* ── hero ─────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      min-height: 92svh;
+      padding: 120px var(--gutter) 80px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      z-index: 3;
     }
-    .section + .section {
-      margin-top: 5mm;
+    .hero__kanji {
+      position: absolute;
+      right: -3vw; top: 10vh;
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(20rem, 42vw, 50rem);
+      line-height: .82;
+      color: var(--surface-2);
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+      opacity: .65;
+      animation: kanjiIn 2s var(--ease) .6s both;
+      max-width: 100vw;
+      overflow: hidden;
+    }
+    @media (max-width: 720px) {
+      .hero__kanji {
+        right: 0;
+        font-size: clamp(14rem, 60vw, 22rem);
+        top: 18vh;
+        opacity: .45;
+      }
+    }
+    @keyframes kanjiIn { from { opacity: 0; transform: translateY(40px); } to { opacity: .65; transform: translateY(0); } }
+
+    .hero__copy {
+      position: relative;
+      z-index: 4;
+      max-width: 800px;
+    }
+    .hero__eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      font-size: .68rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--gold-soft);
+      animation: riseSoft 1s var(--ease) .15s both;
+    }
+    .hero__eyebrow::before {
+      content: "";
+      width: 56px; height: 1px;
+      background: var(--gold);
+      transform-origin: left;
+      animation: lineDraw .9s var(--ease) .15s both;
+    }
+    @keyframes lineDraw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes riseSoft { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(3rem, 9vw, 8rem);
+      line-height: .92;
+      letter-spacing: -.018em;
+      color: var(--paper);
+      margin: 0 0 32px;
+      animation: riseSoft 1.1s var(--ease) .35s both;
+    }
+    .hero__title em { font-style: italic; color: var(--gold-bright); font-weight: 400; }
+
+    .hero__lede {
+      max-width: 56ch;
+      color: var(--paper-soft);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin: 0 0 40px;
+      animation: riseSoft 1.1s var(--ease) .55s both;
+    }
+
+    .hero__meta {
+      display: flex; gap: 36px;
+      flex-wrap: wrap;
+      animation: riseSoft 1.1s var(--ease) .75s both;
+    }
+    .hero__meta-item {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .hero__meta-item .num {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 2rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .hero__meta-item .label {
+      font-size: .66rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+      line-height: 1.6;
+    }
+    .hero__meta-item .label strong {
+      display: block;
+      color: var(--paper);
+      font-weight: 400;
+      font-size: .85rem;
+      letter-spacing: .12em;
+      margin-top: 2px;
+    }
+
+    .hero__scroll {
+      position: absolute;
+      bottom: 32px; left: var(--gutter);
+      display: flex; align-items: center; gap: 14px;
+      font-size: .66rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+      z-index: 4;
+      animation: riseSoft 1.1s var(--ease) 1.1s both;
+    }
+    .hero__scroll::before {
+      content: "";
+      width: 50px; height: 1px;
+      background: linear-gradient(90deg, var(--gold-soft), transparent);
+    }
+    .hero__scroll::after {
+      content: "↓";
+      animation: bob 2s var(--ease) infinite;
+      display: inline-block;
+      font-size: 14px;
+    }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+
+    /* ── section header ───────────────────────────────────── */
+    .section {
+      position: relative;
+      padding: clamp(80px, 12vh, 160px) var(--gutter) clamp(80px, 12vh, 140px);
+      z-index: 3;
     }
     .section__head {
-      display: flex;
-      align-items: baseline;
-      gap: 6mm;
-      margin-bottom: 4mm;
+      max-width: var(--max);
+      margin: 0 auto clamp(60px, 9vh, 100px);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: clamp(20px, 4vw, 60px);
+      align-items: end;
+    }
+    .section__num {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(4rem, 9vw, 8.5rem);
+      line-height: .8;
+      color: var(--gold);
+      opacity: .85;
     }
     .section__title {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 300;
-      font-style: italic;
-      font-size: 24pt;
-      line-height: 1;
-      color: var(--ink);
+      font-size: clamp(2.4rem, 5.4vw, 5rem);
+      line-height: .98;
+      letter-spacing: -.012em;
       margin: 0;
-      letter-spacing: -.005em;
-    }
-    .section__rule {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, var(--gold), transparent);
-      align-self: center;
-      margin-bottom: 6pt;
-    }
-    .section__jp {
-      font-family: 'Noto Serif JP', serif;
-      color: var(--gold);
-      font-size: 13pt;
-      letter-spacing: .15em;
-    }
-
-    /* ── plato ──────────────────────────────────────────────── */
-    .dish {
-      margin-bottom: 3mm;
-      page-break-inside: avoid;
-    }
-    .dish__top {
-      display: flex;
-      align-items: baseline;
-      gap: 4mm;
-    }
-    .dish__name {
-      font-family: 'Manrope', sans-serif;
-      font-weight: 500;
-      font-size: 9.8pt;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--ink);
-      white-space: nowrap;
-    }
-    .dish__leader {
-      flex: 1;
-      border-bottom: 1px dotted rgba(236,226,207,.28);
-      align-self: end;
-      margin-bottom: 4pt;
-    }
-    .dish__meta {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 9.5pt;
-      color: var(--ink-mute);
-      white-space: nowrap;
-    }
-    .dish__price {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 500;
-      font-size: 11pt;
-      color: var(--ink);
-      font-variant-numeric: tabular-nums;
-      letter-spacing: .01em;
-      white-space: nowrap;
-      min-width: 16mm;
-      text-align: right;
-    }
-    .dish__desc {
-      margin-top: 0.5mm;
-      padding-left: 0;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 9.5pt;
-      color: var(--ink-soft);
-      line-height: 1.3;
-      max-width: 130mm;
-    }
-
-    /* Estrellita Gadira (atún de almadraba sostenible) */
-    .gadira {
-      display: inline-block;
-      margin-left: 4pt;
-      padding: 1pt 5pt;
-      background: var(--claret);
       color: var(--paper);
+    }
+    .section__title em { font-style: italic; color: var(--gold-bright); }
+    .section__title .jp {
+      display: block;
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(.85rem, 1.4vw, 1.1rem);
+      letter-spacing: .25em;
+      color: var(--gold);
+      margin-top: 12px;
+      font-weight: 300;
+    }
+    .section__meta {
+      text-align: right;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--paper-mute);
+      line-height: 1.4;
+    }
+    .section__meta strong {
+      display: block;
+      font-style: normal;
       font-family: 'Manrope', sans-serif;
-      font-size: 6.5pt;
-      font-weight: 600;
-      letter-spacing: .14em;
+      font-weight: 400;
+      font-size: .7rem;
+      letter-spacing: .3em;
       text-transform: uppercase;
-      border-radius: 12pt;
-      vertical-align: middle;
-      transform: translateY(-1pt);
+      color: var(--gold);
+      margin-top: 4px;
+    }
+    @media (max-width: 720px) {
+      .section__head { grid-template-columns: auto 1fr; }
+      .section__meta { display: none; }
+      .section__num { font-size: 3.4rem; }
     }
 
-    /* ── QR card (alérgenos) ────────────────────────────────── */
-    .qr-card {
-      margin-top: 6mm;
-      padding: 4mm 6mm;
-      display: flex;
-      align-items: center;
-      gap: 7mm;
-      border: 1px solid rgba(176,122,54,.22);
-      background: linear-gradient(90deg, rgba(176,122,54,.04), transparent 70%);
-      position: relative;
-    }
-    .qr-card::before {
-      content: "";
-      position: absolute;
-      inset: 1.2mm;
-      border: 1px solid rgba(176,122,54,.08);
-      pointer-events: none;
-    }
-    .qr-card__frame {
-      width: 26mm;
-      height: 26mm;
-      flex-shrink: 0;
-      display: grid;
-      place-items: center;
-      position: relative;
-    }
-    .qr-card__frame img.qr {
-      width: 100%;
-      height: 100%;
-      display: block;
-      image-rendering: pixelated;       /* mantiene módulos nítidos al escalar */
-    }
-    /* Logo centrado sobre el QR */
-    .qr-card__logo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 8mm;
-      height: 8mm;
-      padding: 1.2mm;
-      background: var(--paper);          /* recorta los módulos del QR */
-      display: grid;
-      place-items: center;
-    }
-    .qr-card__logo svg {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    .qr-card__body {
+    /* ── dish list ────────────────────────────────────────── */
+    .dishes {
+      max-width: var(--max);
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 1.5mm;
-      line-height: 1.25;
+      gap: clamp(80px, 12vh, 140px);
     }
-    .qr-card__eyebrow {
-      font-family: 'Noto Serif JP', serif;
-      font-size: 7.5pt;
-      color: var(--gold);
-      letter-spacing: .26em;
+
+    .dish {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: clamp(28px, 6vw, 80px);
+      align-items: center;
     }
-    .qr-card__title {
+    .dish:nth-child(even) {
+      grid-template-columns: 1fr 1.05fr;
+    }
+    .dish:nth-child(even) .dish__media { order: 2; }
+    .dish:nth-child(even) .dish__body { order: 1; text-align: right; }
+    .dish:nth-child(even) .dish__eyebrow { flex-direction: row-reverse; }
+    .dish:nth-child(even) .dish__eyebrow::before { display: none; }
+    .dish:nth-child(even) .dish__eyebrow::after {
+      content: "";
+      flex: 0 0 auto;
+      width: 56px; height: 1px;
+      background: var(--gold);
+    }
+    .dish:nth-child(even) .dish__meta { justify-content: flex-end; }
+    .dish:nth-child(even) .dish__num { right: auto; left: -20px; }
+
+    .dish__media {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: var(--surface-2);
+    }
+    .dish__media img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 50%;
+      filter: brightness(.96) contrast(1.04) saturate(1.02);
+      transition: transform 1.6s var(--ease), filter .6s var(--ease);
+    }
+    /* En la mayoría de fotos verticales el plato está en la parte baja del encuadre.   */
+    .dish__media.is-vertical img { object-position: center 78%; }
+    /* Overrides puntuales por plato cuando la foto no encaja con la regla general.    */
+    .dish__media.is-top img    { object-position: center 30%; }
+    .dish__media.is-upper img  { object-position: center 40%; }
+    .dish__media.is-center img { object-position: center 50%; }
+    .dish__media.is-lower img  { object-position: center 68%; }
+    .dish__media.is-bottom img { object-position: center 88%; }
+    .dish:hover .dish__media img { transform: scale(1.04); filter: brightness(1.02) contrast(1.05) saturate(1.05); }
+    /* photo subtle vignette */
+    .dish__media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(15,12,10,.4));
+      pointer-events: none;
+    }
+    /* gold corner accent */
+    .dish__media::before {
+      content: "";
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 28px; height: 28px;
+      border-top: 1px solid var(--gold);
+      border-right: 1px solid var(--gold);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .dish__body {
+      position: relative;
+      padding: 8px 0;
+    }
+    .dish__num {
+      position: absolute;
+      top: -56px;
+      right: -20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(5rem, 9vw, 8rem);
+      line-height: .8;
+      color: rgba(176,122,54,.18);
+      letter-spacing: -.03em;
+      user-select: none;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .dish__eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .dish__eyebrow::before {
+      content: "";
+      flex: 0 0 auto;
+      width: 56px; height: 1px;
+      background: var(--gold);
+    }
+    .dish__eyebrow .ord {
+      font-size: .68rem;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--gold-soft);
+    }
+
+    .dish__name {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+      line-height: 1.02;
+      letter-spacing: -.005em;
+      color: var(--paper);
+      margin: 0 0 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .dish__name em { font-style: italic; color: var(--gold-bright); }
+
+    .dish__desc {
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
       font-weight: 400;
-      font-size: 15pt;
-      color: var(--ink);
-      line-height: 1.05;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: var(--paper-soft);
+      margin: 0 0 20px;
+      max-width: 42ch;
+      position: relative;
+      z-index: 1;
     }
-    .qr-card__desc {
-      font-family: 'Manrope', sans-serif;
-      font-size: 8.5pt;
-      font-weight: 300;
-      color: var(--ink-mute);
-      line-height: 1.4;
-      max-width: 95mm;
-      letter-spacing: .01em;
-    }
+    .dish:nth-child(even) .dish__desc { margin-left: auto; }
 
-    /* ── footer (final de carta) ────────────────────────────── */
-    .footer {
-      margin-top: 7mm;
-      padding-top: 5mm;
-      border-top: 1px solid rgba(176,122,54,.35);
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 6mm;
-      align-items: center;
-      text-align: center;
-    }
-    .footer__left, .footer__right {
-      font-family: 'Manrope', sans-serif;
-      font-size: 8.5pt;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: var(--ink-mute);
-      line-height: 1.7;
-    }
-    .footer__left { text-align: left; }
-    .footer__right { text-align: right; }
-    .footer__center {
-      font-family: 'Noto Serif JP', serif;
-      color: var(--gold);
-      font-size: 16pt;
-    }
-    .footer__phone {
+    /* ── alérgenos por plato ─────────────────────────────────── */
+    .dish__allergens {
+      margin: 0 0 28px;
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      font-size: 12pt;
-      color: var(--ink);
-      letter-spacing: .03em;
-      text-transform: none;
-      display: block;
-      margin-top: 2mm;
+      font-size: .92rem;
+      color: var(--paper-mute);
+      letter-spacing: .01em;
+      line-height: 1.5;
+      max-width: 42ch;
+      position: relative;
+      z-index: 1;
+    }
+    .dish:nth-child(even) .dish__allergens { margin-left: auto; }
+    .dish__allergens .label {
+      display: inline-block;
+      font-family: 'Manrope', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      font-size: .58rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-right: 10px;
+      vertical-align: 1px;
+    }
+    .dish__allergens .label::before {
+      content: "";
+      display: inline-block;
+      width: 18px; height: 1px;
+      background: var(--gold);
+      vertical-align: 3px;
+      margin-right: 8px;
+    }
+    .dish__allergens-item:not(:last-child)::after {
+      content: " · ";
+      color: var(--gold-soft);
+      font-style: normal;
+      margin: 0 2px;
+    }
+    .dish__allergens--empty {
+      color: var(--paper-mute);
+      font-style: italic;
     }
 
-    /* ── botón flotante (solo pantalla) ─────────────────────── */
-    .print-btn {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 14px 22px;
-      background: var(--ink);
-      color: var(--paper);
-      border: 1px solid var(--gold);
+    .dish__meta {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .dish__pieces {
       font-family: 'Manrope', sans-serif;
-      font-size: 11px;
+      font-size: .7rem;
       letter-spacing: .28em;
       text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 0 12px 28px -8px rgba(0,0,0,.4);
-      transition: transform .3s ease, background .3s ease;
-      z-index: 100;
+      color: var(--paper-mute);
     }
-    .print-btn:hover {
-      background: var(--gold);
-      color: var(--ink);
-      transform: translateY(-2px);
+    .dish__pieces::after {
+      content: "·";
+      margin-left: 18px;
+      color: var(--gold);
     }
-    .print-btn svg {
-      width: 13px; height: 13px;
-      vertical-align: middle;
-      margin-right: 8px;
-      transform: translateY(-1px);
+    .dish__pieces:last-child::after { display: none; }
+
+    .dish__price {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 500;
+      font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+      color: var(--gold-bright);
+      letter-spacing: -.005em;
+      line-height: 1;
     }
 
-    /* ── IMPRESIÓN ─────────────────────────────────────────── */
-    @media print {
-      html, body {
-        background: var(--paper) !important;
-        margin: 0 !important;
-        padding: 0 !important;
+    @media (max-width: 720px) {
+      .dish, .dish:nth-child(even) {
+        grid-template-columns: 1fr;
+        gap: 28px;
       }
-      body { display: block !important; gap: 0 !important; }
-      .page {
-        width: 210mm !important;
-        min-height: 297mm !important;
-        margin: 0 !important;
-        padding: 18mm 22mm 14mm !important;
-        background: var(--paper) !important;
-        background-image: none !important;          /* sin radial-gradients */
-        box-shadow: none !important;
-        page-break-after: always;
-        page-break-inside: avoid;
-        break-after: page;
-      }
-      .page::after { display: none !important; }    /* sin grano (data URI pesado) */
-      .page:last-child { page-break-after: auto; break-after: auto; }
-      .print-btn { display: none !important; }
+      .dish:nth-child(even) .dish__media { order: 1; }
+      .dish:nth-child(even) .dish__body { order: 2; text-align: left; }
+      .dish:nth-child(even) .dish__eyebrow { flex-direction: row; }
+      .dish:nth-child(even) .dish__eyebrow::before { display: block; }
+      .dish:nth-child(even) .dish__eyebrow::after { display: none; }
+      .dish:nth-child(even) .dish__meta { justify-content: flex-start; }
+      .dish:nth-child(even) .dish__num { left: auto; right: -8px; }
+      .dish:nth-child(even) .dish__desc { margin-left: 0; }
+      .dish__num { top: -42px; right: -8px; font-size: 5.4rem; }
+      .dish__media { aspect-ratio: 4 / 3; }
+      .dish__media::before { width: 22px; height: 22px; top: 10px; right: 10px; }
     }
+
+    /* ── footer / CTA ─────────────────────────────────────── */
+    .footer {
+      position: relative;
+      margin-top: clamp(60px, 8vh, 100px);
+      padding: clamp(80px, 12vh, 140px) var(--gutter);
+      border-top: 1px solid rgba(176,122,54,.18);
+      background: var(--surface);
+      text-align: center;
+      z-index: 3;
+    }
+    .footer::before {
+      content: "和";
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 38rem;
+      color: var(--surface-2);
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+      opacity: .35;
+      z-index: 0;
+    }
+    .footer__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .footer__jp {
+      display: block;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1rem;
+      letter-spacing: .3em;
+      color: var(--gold);
+      margin-bottom: 26px;
+    }
+    .footer__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
+      line-height: 1.05;
+      letter-spacing: -.012em;
+      color: var(--paper);
+      margin: 0 0 24px;
+    }
+    .footer__title em { font-style: italic; color: var(--gold-bright); }
+    .footer__lede {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--paper-soft);
+      margin: 0 0 40px;
+      max-width: 44ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .footer__actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .footer__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 26px;
+      font-family: 'Manrope', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      transition: background .3s var(--ease), color .3s var(--ease), transform .4s var(--ease);
+    }
+    .footer__btn--primary {
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .footer__btn--primary:hover {
+      background: var(--gold-bright);
+      transform: translateY(-2px);
+    }
+    .footer__btn--primary:active { background: var(--gold); transform: translateY(0) scale(.98); }
+    .footer__btn--ghost {
+      background: transparent;
+      color: var(--paper);
+      border: 1px solid rgba(236,226,207,.25);
+    }
+    .footer__btn--ghost:hover {
+      border-color: var(--gold);
+      color: var(--gold-bright);
+      transform: translateY(-2px);
+    }
+    .footer__btn--ghost:active { background: rgba(176,122,54,.1); transform: translateY(0) scale(.98); }
+    .footer__btn svg { width: 14px; height: 14px; }
+
+    .footer__contact {
+      margin-top: 56px;
+      padding-top: 36px;
+      border-top: 1px solid rgba(176,122,54,.15);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      font-size: .68rem;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+    }
+    .footer__contact strong {
+      display: block;
+      font-weight: 400;
+      color: var(--paper);
+      letter-spacing: .12em;
+      text-transform: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      margin-top: 6px;
+    }
+    @media (max-width: 480px) {
+      .footer__contact { grid-template-columns: 1fr; gap: 20px; text-align: center; }
+    }
+
+    /* ── reveal animation ─────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 1.1s var(--ease), transform 1.1s var(--ease);
+      transition-delay: var(--d, 0ms);
+    }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-img-wrap { overflow: hidden; }
+    .reveal-img-wrap img {
+      transform: scale(1.18);
+      transition: transform 1.8s var(--ease);
+    }
+    .reveal-img-wrap.in img { transform: scale(1); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-img-wrap { transition: none !important; opacity: 1 !important; transform: none !important; }
+      .reveal-img-wrap img { transform: none !important; }
+    }
+
+    /* ─── Carta pública (web) ──────────────────────────────────
+       Esta página es la carta visible en gularestaurante.es/carta
+       (no la del QR, que es carta-digital y SÍ muestra todo).
+       Aquí ocultamos precio, unidades por plato y alérgenos para
+       dar una experiencia más comercial / "catalogo".
+       Si quieres recuperar precios o unidades, basta con borrar
+       las reglas de abajo. */
+    .dish__price,
+    .dish__pieces,
+    .dish__allergens { display: none !important; }
+    /* Al no haber price/pieces, el meta queda vacío — colapsa */
+    .dish__meta:empty { display: none; }
+    /* Los contadores de sección "寿司 · 14 piezas" sí se quedan
+       (no son precios y dan estructura), si quieres también quitarlos
+       descomenta la regla siguiente: */
+    /* .topbar__sub .jp, .section-head .jp { display: none; } */
   </style>
 </head>
 <body>
 
-  <!-- ───────── PÁGINA 1 ───────── -->
-  <article class="page">
+  <!-- NAV ─────────────────────────────────────────────────── -->
+  <nav class="nav" id="nav">
+    <a href="#top" class="nav__brand" aria-label="Gula Restaurante">
+      <svg class="mark" viewBox="48.37 637.83 264.26 204.96" aria-hidden="true">
+        <path fill="#b07a36" d="M237.6,691.5 L168.3,724.8 255.7,785.7c4.8,-10.6 7.4,-22.5 7.4,-35.1C263.1,726.5 253.4,705.7 237.6,691.5"/>
+        <path fill="currentColor" d="m305.1,821.9c0.5,0.7 0.1,1.3 -0.3,1.9 -0.4,0.6 -1.1,0.5 -1.6,0.2 -1.1,-0.6 -32.9,-22.8 -47.8,-33.2 -0.6,-0.5 -1.3,-1.8 -2.3,-0.5 -1,1.3 0.1,1.8 1,2.4 18.4,14.2 36.6,28.7 54.4,43.7 1.3,1.1 2.8,2 3.5,3.6 0,0.5 0.3,1.1 0,1.6 -0.9,1.4 -2.7,0.4 -4,-0.6 -17.7,-14.2 -35.5,-28.3 -53.3,-42.4 -4,-3.2 -4,-3.2 -6.9,0.9 -12.7,17.8 -29.9,28.6 -51.4,31.9 -19.3,3 -37.1,-1.2 -53.1,-12.6 -18.7,-13.3 -31.5,-30.8 -36.1,-53.6 -1.5,-7.2 -1.6,-14.5 -1.1,-21.8 1,-12.9 3.7,-25.4 10.3,-36.7 1.3,-2.2 2.4,-4.4 4,-6.4 1.3,-1.5 0.8,-2.2 -0.5,-3.2 -11.7,-8.7 -23.2,-17.7 -34.9,-26.3 -11.4,-8.4 -23,-16.4 -34.5,-24.6 -0.8,-0.6 -1.8,-1 -1.6,-2.4 0.4,-1.7 1.9,-2.4 3.7,-1.5 0,-0.5 0,-0.9 -0,-1.3 -0,-1.1 0,-2.2 1.2,-2.6 1,-0.3 1.8,0.4 2.5,1 6.6,5.8 13.2,11.6 19.8,17.3 12.2,10.4 24.8,20.3 37.6,30 17.3,13 59.1,39.9 60.5,40.9 1.1,0.8 1.7,0.5 1.7,-0.9 0,-1.9 0.9,-59.1 0.2,-75.9 -0.1,-1.7 -0.2,-3.5 0.7,-5.1 0.5,-0.9 1.1,-1.7 2.1,-1.7 1.1,0 1.8,0.8 2.3,1.9 0.6,1.4 0.6,2.9 0.6,4.4 -0.1,15.6 1.3,82.5 1.5,83.2 0.3,1 1.2,1.8 2.1,1.6 1,-0.1 0.5,-1.3 0.5,-2 0,-6 0,-68.2 0,-83.5 0,-1.4 0,-2.8 0.7,-4 1.2,-2.1 3.2,-2.1 4.4,0 0.7,1.3 0.7,2.6 0.7,4 -0,9.5 1,80 1,88.7 0,1.7 0.5,2.8 1.9,3.6C198.5,744.2 304.6,821.3 305.1,821.9"/>
+      </svg>
+      <svg class="letras" viewBox="291.38 618.13 454.17 288.97" aria-hidden="true">
+        <g fill="currentColor">
+          <path d="M415.4,865.3C419.5,865.3 421.7,863.5 421.7,860.3 421.7,857.1 419.5,855.2 415.4,855.2L409.9,855.2L409.9,865.3ZM421.8,872.6 L417.2,866.4C416.6,866.5 416,866.5 415.4,866.5L409.9,866.5L409.9,872.6L408.5,872.6L408.5,854L415.4,854c4.8,-0 7.7,2.3 7.7,6.3 0,2.9 -1.6,5 -4.5,5.8l4.8,6.5z"/>
+          <path d="m455.1,871.4l0,1.2l-13.2,-0l0,-18.6l12.8,-0L454.7,855.2L443.3,855.2L443.3,862.6l10.2,-0L453.5,863.8l-10.2,-0l0,7.6z"/>
+          <path d="m472,870.2 l0.6,-1c1.3,1.3 3.8,2.3 6.3,2.3 3.8,-0 5.5,-1.6 5.5,-3.6 0,-5.6 -12,-2.2 -12,-9.1 0,-2.6 2.1,-4.9 6.8,-4.9 2.1,-0 4.3,0.6 5.8,1.7L484.5,856.7c-1.6,-1.1 -3.5,-1.6 -5.3,-1.6 -3.7,-0 -5.4,1.7 -5.4,3.7 0,5.6 12,2.3 12,9 0,2.6 -2.2,4.9 -6.9,4.9C476.1,872.7 473.4,871.7 472,870.2"/>
+          <path d="M507.7,855.2L500.8,855.2L500.8,854L516,854L516,855.2L509.1,855.2L509.1,872.6L507.7,872.6Z"/>
+          <path d="M543.5,866.2 L538.5,855.5 533.5,866.2ZM544,867.4l-11.1,-0l-2.4,5.2l-1.5,-0l8.8,-18.6l1.4,-0L548,872.6L546.5,872.6Z"/>
+          <path d="M564.6,864.7L564.6,854L566,854L566,864.7c0,4.6 2.3,6.8 6.3,6.8 4,-0 6.3,-2.2 6.3,-6.8l0,-10.6l1.4,-0L580,864.7c0,5.3 -2.9,8 -7.7,8C567.5,872.7 564.6,870 564.6,864.7"/>
+          <path d="M606.3,865.3C610.4,865.3 612.6,863.5 612.6,860.3 612.6,857.1 610.4,855.2 606.3,855.2L600.8,855.2L600.8,865.3ZM612.7,872.6 L608.2,866.4C607.6,866.5 607,866.5 606.3,866.5L600.8,866.5L600.8,872.6L599.4,872.6L599.4,854L606.3,854c4.8,-0 7.7,2.3 7.7,6.3 0,2.9 -1.6,5 -4.5,5.8l4.8,6.5z"/>
+          <path d="M647.8,866.2 L642.8,855.5 637.8,866.2ZM648.3,867.4l-11.1,-0l-2.4,5.2l-1.5,-0l8.8,-18.6l1.4,-0L652.3,872.6l-1.5,-0z"/>
+          <path d="m682.2,854l0,18.6l-1.1,-0l-13.1,-16.1l0,16.1l-1.4,-0L666.6,854l1.2,-0l13,16.1 0,-16.1z"/>
+          <path d="m706.3,855.2l-6.9,-0l0,-1.2l15.2,-0L714.6,855.2L707.7,855.2L707.7,872.6L706.3,872.6Z"/>
+          <path d="m745,871.4l0,1.2l-13.2,-0l0,-18.6l12.8,-0L744.6,855.2L733.1,855.2L733.1,862.6l10.2,-0L743.4,863.8L733.1,863.8L733.1,871.4Z"/>
+          <path d="m402.4,788.9c-11,21.2 -23.5,42.2 -35.3,59.1 -21.9,32 -47.7,46.8 -55.1,42.5l-0,-0c-1.2,-0.6 -2,-1.9 -2.4,-3.5 -0.6,-3 -0.6,-11.9 13.6,-30.2C341.7,833.3 371.2,807.9 402.4,788.9m174.6,-69c7.5,-21.2 15.1,-38 22.6,-50.1 6.9,-10.9 11,-14.7 12.3,-14.7 0.1,-0 0.2,0 0.2,0 0.8,0.4 0.4,4.5 -5.8,16.7C598,688.4 586,706.8 577,719.9M744.8,742.1c-0.3,-0.8 -1,-1.3 -1.9,-1.4 -1.3,-0.2 -3.5,0.5 -5.2,2.9 -9.9,11.8 -35.7,27.6 -48.7,24.7 -3,-0.7 -5.1,-2.3 -6.5,-4.7 -2.7,-4.8 -2.2,-12.7 1.4,-23.7 0.8,-2.4 0.1,-4.6 -1.7,-5.8 -2.4,-1.5 -6.8,-1.3 -11.1,2.7 -0.4,0.4 -1.3,1.4 -2.5,2.6 -5.9,6.3 -21.7,23.1 -25,22.8 -0.2,-0 -0.3,-0.1 -0.3,-0.2 -1.7,-2.3 0.5,-9 2,-12.2 6.4,-15.7 20.4,-25.3 29.5,-24.4 4.7,0.4 8.5,3 10.9,7.4 1,2.5 2.9,4.2 5,4.5 1.3,0.2 2.5,-0.3 3.2,-1.2 0.8,-1.1 0.8,-2.8 -0.1,-4.6 -3.7,-7.7 -11.3,-10.2 -17,-11 -11.1,-1.6 -22.8,1.7 -32.3,9 -5,3.9 -9.1,8.7 -12,14 -3.4,5 -6.6,10.4 -10,16.1 -0.9,1.4 -1.7,2.9 -2.6,4.4C600.9,796 574.5,828.7 561.5,825.2l-0,-0c-2.7,-0.7 -4.8,-2.6 -6.2,-5.6 -7.9,-17.1 9.2,-67.3 15.4,-80.2 31.5,-41 48.4,-69.8 51.7,-88 1.4,-7.5 -0,-12.7 -4,-14.8 -4.2,-2.2 -10.8,-0.2 -16,5C586.6,658 568.6,703.7 557,743.6c-3.1,3.7 -11,13.1 -20.2,20.9 -9.6,8.2 -17.4,12.1 -23,11.6 -1.8,-0.4 -3.1,-1.4 -3.8,-3.1 -2,-4.2 -0.4,-12.1 4.4,-22.1 1.3,-2.8 0.6,-5.6 -1.7,-7.4 -2.4,-1.8 -6.4,-2.3 -10.2,0.9 -0.7,0.7 -2.2,3 -4.3,6.3 -4.5,6.9 -11.3,17.4 -16.8,21.9 -2.1,1.9 -4.2,2.8 -5.2,2.3 -0.7,-0.4 -0.9,-1.6 -0.6,-3.5l0,-0c0.9,-5.2 5.3,-15.3 8.7,-23.4 2.3,-5.3 4.3,-10 5,-12.4 1.1,-4.4 -0.2,-8.2 -3.1,-9.6 -2.8,-1.3 -6.3,0 -8.9,3.5C475.4,732.3 472.6,737.5 469.9,743.7 459.9,748.9 449.3,754.9 439,760.7 433.1,764 427,767.5 421.2,770.7c12.1,-29.5 20.4,-64.4 22.1,-82.5 0.1,-5.8 -1.1,-9.9 -3.4,-11.1 -1,-0.6 -2.2,-0.5 -3.2,0.2C435,678.3 433.3,681.3 433.8,686.2 432.2,700.8 416.7,719.9 393.1,736.2 369.8,752.4 344.3,761.9 326.8,761.2c-11.8,-0.5 -20.2,-4.8 -24.3,-12.3 -6.2,-11.5 -2.1,-30 11.9,-53.6 20.4,-34.9 61.2,-63 84.1,-64.8 9.7,-0.7 16.5,3.5 19.1,11.9 5.1,16.4 -6.8,36.8 -20.6,44.9 -3,1.8 -4.6,4.5 -4.2,7.2 0.3,2.3 2,4.2 4.2,4.8 1.7,0.5 6,0.9 11.1,-5.2 12.6,-15.4 20.7,-48.5 12.1,-65.2 -3.7,-7.3 -10.4,-10.8 -19.2,-10.2 -11.6,0.8 -26.9,7.8 -42.8,19.7 -15.5,11.6 -30.7,26.9 -42.9,43.3 -30.6,40.6 -27.7,72.5 -11.3,86.2 10.7,9 26.8,10.3 46.3,3.8 17.8,-5.9 37.8,-18.2 54.8,-33.6C420.1,724.4 430.7,710.2 434.9,698.5 430,728.9 421.6,748.1 407.7,778.3c-44,25.4 -72.8,47.6 -90.6,69.8 -17.1,21.6 -23.1,40.8 -15.8,51.3 3.3,4.7 8.8,7.2 15.8,7.2 3.6,-0 7.5,-0.6 11.7,-2 20.3,-6.4 41.9,-28.9 59.1,-61.6 9.2,-17.5 21.7,-41.4 30.2,-63.5 16.7,-9.8 33.3,-19 48.5,-26.9 -0.7,2.2 -1.2,4.4 -1.7,6.5C463.4,766.5 463.2,775.9 470.7,779.5c10.9,5.4 20.6,-6.1 28.6,-16.2 -2,5.3 -1.9,10 0.2,13.4 2,3.4 5.9,5.3 11.3,5.6 0.5,0 1,0 1.5,0 8.4,-0 17.5,-3.9 27.2,-11.7 4.9,-4 9.5,-8.5 13.6,-13 -9.1,33.6 -10.3,54.9 -3.5,65.1 2.5,3.7 6,5.9 10.6,6.4 0.5,0.1 0.9,0.1 1.4,0.1 16.5,-0 44.5,-30 61.6,-58.8 1.5,-2.4 2.9,-4.8 4.3,-7.1 0.4,4.5 2.2,7.8 5.1,9.3 11.5,6 24.5,-10.8 33,-21.8 2.1,-2.7 3.8,-4.9 5.2,-6.4 -3.5,7.5 -3.7,15 -0.5,20.7 2.9,5.4 8.6,8.7 16.1,9.4 1.4,0.2 2.8,0.2 4.2,0.2 19,-0 40.2,-13.3 52.1,-27.4 2.6,-2.8 2.5,-4.5 2.2,-5.3"/>
+        </g>
+      </svg>
+    </a>
 
-    <header class="header">
-      <span class="brand-mark">
-        <svg class="mark" viewBox="48.37 637.83 264.26 204.96" aria-hidden="true">
-          <path fill="#b07a36" d="M237.6,691.5 L168.3,724.8 255.7,785.7c4.8,-10.6 7.4,-22.5 7.4,-35.1C263.1,726.5 253.4,705.7 237.6,691.5"/>
-          <path fill="#ece2cf" d="m305.1,821.9c0.5,0.7 0.1,1.3 -0.3,1.9 -0.4,0.6 -1.1,0.5 -1.6,0.2 -1.1,-0.6 -32.9,-22.8 -47.8,-33.2 -0.6,-0.5 -1.3,-1.8 -2.3,-0.5 -1,1.3 0.1,1.8 1,2.4 18.4,14.2 36.6,28.7 54.4,43.7 1.3,1.1 2.8,2 3.5,3.6 0,0.5 0.3,1.1 0,1.6 -0.9,1.4 -2.7,0.4 -4,-0.6 -17.7,-14.2 -35.5,-28.3 -53.3,-42.4 -4,-3.2 -4,-3.2 -6.9,0.9 -12.7,17.8 -29.9,28.6 -51.4,31.9 -19.3,3 -37.1,-1.2 -53.1,-12.6 -18.7,-13.3 -31.5,-30.8 -36.1,-53.6 -1.5,-7.2 -1.6,-14.5 -1.1,-21.8 1,-12.9 3.7,-25.4 10.3,-36.7 1.3,-2.2 2.4,-4.4 4,-6.4 1.3,-1.5 0.8,-2.2 -0.5,-3.2 -11.7,-8.7 -23.2,-17.7 -34.9,-26.3 -11.4,-8.4 -23,-16.4 -34.5,-24.6 -0.8,-0.6 -1.8,-1 -1.6,-2.4 0.4,-1.7 1.9,-2.4 3.7,-1.5 0,-0.5 0,-0.9 -0,-1.3 -0,-1.1 0,-2.2 1.2,-2.6 1,-0.3 1.8,0.4 2.5,1 6.6,5.8 13.2,11.6 19.8,17.3 12.2,10.4 24.8,20.3 37.6,30 17.3,13 59.1,39.9 60.5,40.9 1.1,0.8 1.7,0.5 1.7,-0.9 0,-1.9 0.9,-59.1 0.2,-75.9 -0.1,-1.7 -0.2,-3.5 0.7,-5.1 0.5,-0.9 1.1,-1.7 2.1,-1.7 1.1,0 1.8,0.8 2.3,1.9 0.6,1.4 0.6,2.9 0.6,4.4 -0.1,15.6 1.3,82.5 1.5,83.2 0.3,1 1.2,1.8 2.1,1.6 1,-0.1 0.5,-1.3 0.5,-2 0,-6 0,-68.2 0,-83.5 0,-1.4 0,-2.8 0.7,-4 1.2,-2.1 3.2,-2.1 4.4,0 0.7,1.3 0.7,2.6 0.7,4 -0,9.5 1,80 1,88.7 0,1.7 0.5,2.8 1.9,3.6C198.5,744.2 304.6,821.3 305.1,821.9"/>
-        </svg>
-      </span>
-      <span class="brand-letras">
-        <svg viewBox="291.38 618.13 454.17 288.97" aria-hidden="true">
-          <g fill="currentColor">
-            <path d="M415.4,865.3C419.5,865.3 421.7,863.5 421.7,860.3 421.7,857.1 419.5,855.2 415.4,855.2L409.9,855.2L409.9,865.3ZM421.8,872.6 L417.2,866.4C416.6,866.5 416,866.5 415.4,866.5L409.9,866.5L409.9,872.6L408.5,872.6L408.5,854L415.4,854c4.8,-0 7.7,2.3 7.7,6.3 0,2.9 -1.6,5 -4.5,5.8l4.8,6.5z"/>
-            <path d="m455.1,871.4l0,1.2l-13.2,-0l0,-18.6l12.8,-0L454.7,855.2L443.3,855.2L443.3,862.6l10.2,-0L453.5,863.8l-10.2,-0l0,7.6z"/>
-            <path d="m472,870.2 l0.6,-1c1.3,1.3 3.8,2.3 6.3,2.3 3.8,-0 5.5,-1.6 5.5,-3.6 0,-5.6 -12,-2.2 -12,-9.1 0,-2.6 2.1,-4.9 6.8,-4.9 2.1,-0 4.3,0.6 5.8,1.7L484.5,856.7c-1.6,-1.1 -3.5,-1.6 -5.3,-1.6 -3.7,-0 -5.4,1.7 -5.4,3.7 0,5.6 12,2.3 12,9 0,2.6 -2.2,4.9 -6.9,4.9C476.1,872.7 473.4,871.7 472,870.2"/>
-            <path d="M507.7,855.2L500.8,855.2L500.8,854L516,854L516,855.2L509.1,855.2L509.1,872.6L507.7,872.6Z"/>
-            <path d="M543.5,866.2 L538.5,855.5 533.5,866.2ZM544,867.4l-11.1,-0l-2.4,5.2l-1.5,-0l8.8,-18.6l1.4,-0L548,872.6L546.5,872.6Z"/>
-            <path d="M564.6,864.7L564.6,854L566,854L566,864.7c0,4.6 2.3,6.8 6.3,6.8 4,-0 6.3,-2.2 6.3,-6.8l0,-10.6l1.4,-0L580,864.7c0,5.3 -2.9,8 -7.7,8C567.5,872.7 564.6,870 564.6,864.7"/>
-            <path d="M606.3,865.3C610.4,865.3 612.6,863.5 612.6,860.3 612.6,857.1 610.4,855.2 606.3,855.2L600.8,855.2L600.8,865.3ZM612.7,872.6 L608.2,866.4C607.6,866.5 607,866.5 606.3,866.5L600.8,866.5L600.8,872.6L599.4,872.6L599.4,854L606.3,854c4.8,-0 7.7,2.3 7.7,6.3 0,2.9 -1.6,5 -4.5,5.8l4.8,6.5z"/>
-            <path d="M647.8,866.2 L642.8,855.5 637.8,866.2ZM648.3,867.4l-11.1,-0l-2.4,5.2l-1.5,-0l8.8,-18.6l1.4,-0L652.3,872.6l-1.5,-0z"/>
-            <path d="m682.2,854l0,18.6l-1.1,-0l-13.1,-16.1l0,16.1l-1.4,-0L666.6,854l1.2,-0l13,16.1 0,-16.1z"/>
-            <path d="m706.3,855.2l-6.9,-0l0,-1.2l15.2,-0L714.6,855.2L707.7,855.2L707.7,872.6L706.3,872.6Z"/>
-            <path d="m745,871.4l0,1.2l-13.2,-0l0,-18.6l12.8,-0L744.6,855.2L733.1,855.2L733.1,862.6l10.2,-0L743.4,863.8L733.1,863.8L733.1,871.4Z"/>
-            <path d="m402.4,788.9c-11,21.2 -23.5,42.2 -35.3,59.1 -21.9,32 -47.7,46.8 -55.1,42.5l-0,-0c-1.2,-0.6 -2,-1.9 -2.4,-3.5 -0.6,-3 -0.6,-11.9 13.6,-30.2C341.7,833.3 371.2,807.9 402.4,788.9m174.6,-69c7.5,-21.2 15.1,-38 22.6,-50.1 6.9,-10.9 11,-14.7 12.3,-14.7 0.1,-0 0.2,0 0.2,0 0.8,0.4 0.4,4.5 -5.8,16.7C598,688.4 586,706.8 577,719.9M744.8,742.1c-0.3,-0.8 -1,-1.3 -1.9,-1.4 -1.3,-0.2 -3.5,0.5 -5.2,2.9 -9.9,11.8 -35.7,27.6 -48.7,24.7 -3,-0.7 -5.1,-2.3 -6.5,-4.7 -2.7,-4.8 -2.2,-12.7 1.4,-23.7 0.8,-2.4 0.1,-4.6 -1.7,-5.8 -2.4,-1.5 -6.8,-1.3 -11.1,2.7 -0.4,0.4 -1.3,1.4 -2.5,2.6 -5.9,6.3 -21.7,23.1 -25,22.8 -0.2,-0 -0.3,-0.1 -0.3,-0.2 -1.7,-2.3 0.5,-9 2,-12.2 6.4,-15.7 20.4,-25.3 29.5,-24.4 4.7,0.4 8.5,3 10.9,7.4 1,2.5 2.9,4.2 5,4.5 1.3,0.2 2.5,-0.3 3.2,-1.2 0.8,-1.1 0.8,-2.8 -0.1,-4.6 -3.7,-7.7 -11.3,-10.2 -17,-11 -11.1,-1.6 -22.8,1.7 -32.3,9 -5,3.9 -9.1,8.7 -12,14 -3.4,5 -6.6,10.4 -10,16.1 -0.9,1.4 -1.7,2.9 -2.6,4.4C600.9,796 574.5,828.7 561.5,825.2l-0,-0c-2.7,-0.7 -4.8,-2.6 -6.2,-5.6 -7.9,-17.1 9.2,-67.3 15.4,-80.2 31.5,-41 48.4,-69.8 51.7,-88 1.4,-7.5 -0,-12.7 -4,-14.8 -4.2,-2.2 -10.8,-0.2 -16,5C586.6,658 568.6,703.7 557,743.6c-3.1,3.7 -11,13.1 -20.2,20.9 -9.6,8.2 -17.4,12.1 -23,11.6 -1.8,-0.4 -3.1,-1.4 -3.8,-3.1 -2,-4.2 -0.4,-12.1 4.4,-22.1 1.3,-2.8 0.6,-5.6 -1.7,-7.4 -2.4,-1.8 -6.4,-2.3 -10.2,0.9 -0.7,0.7 -2.2,3 -4.3,6.3 -4.5,6.9 -11.3,17.4 -16.8,21.9 -2.1,1.9 -4.2,2.8 -5.2,2.3 -0.7,-0.4 -0.9,-1.6 -0.6,-3.5l0,-0c0.9,-5.2 5.3,-15.3 8.7,-23.4 2.3,-5.3 4.3,-10 5,-12.4 1.1,-4.4 -0.2,-8.2 -3.1,-9.6 -2.8,-1.3 -6.3,0 -8.9,3.5C475.4,732.3 472.6,737.5 469.9,743.7 459.9,748.9 449.3,754.9 439,760.7 433.1,764 427,767.5 421.2,770.7c12.1,-29.5 20.4,-64.4 22.1,-82.5 0.1,-5.8 -1.1,-9.9 -3.4,-11.1 -1,-0.6 -2.2,-0.5 -3.2,0.2C435,678.3 433.3,681.3 433.8,686.2 432.2,700.8 416.7,719.9 393.1,736.2 369.8,752.4 344.3,761.9 326.8,761.2c-11.8,-0.5 -20.2,-4.8 -24.3,-12.3 -6.2,-11.5 -2.1,-30 11.9,-53.6 20.4,-34.9 61.2,-63 84.1,-64.8 9.7,-0.7 16.5,3.5 19.1,11.9 5.1,16.4 -6.8,36.8 -20.6,44.9 -3,1.8 -4.6,4.5 -4.2,7.2 0.3,2.3 2,4.2 4.2,4.8 1.7,0.5 6,0.9 11.1,-5.2 12.6,-15.4 20.7,-48.5 12.1,-65.2 -3.7,-7.3 -10.4,-10.8 -19.2,-10.2 -11.6,0.8 -26.9,7.8 -42.8,19.7 -15.5,11.6 -30.7,26.9 -42.9,43.3 -30.6,40.6 -27.7,72.5 -11.3,86.2 10.7,9 26.8,10.3 46.3,3.8 17.8,-5.9 37.8,-18.2 54.8,-33.6C420.1,724.4 430.7,710.2 434.9,698.5 430,728.9 421.6,748.1 407.7,778.3c-44,25.4 -72.8,47.6 -90.6,69.8 -17.1,21.6 -23.1,40.8 -15.8,51.3 3.3,4.7 8.8,7.2 15.8,7.2 3.6,-0 7.5,-0.6 11.7,-2 20.3,-6.4 41.9,-28.9 59.1,-61.6 9.2,-17.5 21.7,-41.4 30.2,-63.5 16.7,-9.8 33.3,-19 48.5,-26.9 -0.7,2.2 -1.2,4.4 -1.7,6.5C463.4,766.5 463.2,775.9 470.7,779.5c10.9,5.4 20.6,-6.1 28.6,-16.2 -2,5.3 -1.9,10 0.2,13.4 2,3.4 5.9,5.3 11.3,5.6 0.5,0 1,0 1.5,0 8.4,-0 17.5,-3.9 27.2,-11.7 4.9,-4 9.5,-8.5 13.6,-13 -9.1,33.6 -10.3,54.9 -3.5,65.1 2.5,3.7 6,5.9 10.6,6.4 0.5,0.1 0.9,0.1 1.4,0.1 16.5,-0 44.5,-30 61.6,-58.8 1.5,-2.4 2.9,-4.8 4.3,-7.1 0.4,4.5 2.2,7.8 5.1,9.3 11.5,6 24.5,-10.8 33,-21.8 2.1,-2.7 3.8,-4.9 5.2,-6.4 -3.5,7.5 -3.7,15 -0.5,20.7 2.9,5.4 8.6,8.7 16.1,9.4 1.4,0.2 2.8,0.2 4.2,0.2 19,-0 40.2,-13.3 52.1,-27.4 2.6,-2.8 2.5,-4.5 2.2,-5.3"/>
-          </g>
-        </svg>
-      </span>
-      <div class="tagline">
-        Cocina japonesa con producto del sur
-        <span class="jp">献立 · Carta</span>
+    <div class="nav__tabs" role="tablist">
+      <a class="nav__tab" data-tab="sushi" href="#sushi"><span class="jp">寿司</span>Sushi</a>
+      <a class="nav__tab" data-tab="entrantes" href="#entrantes"><span class="jp">前菜</span>Entrantes</a>
+      <a class="nav__tab" data-tab="principales" href="#principales"><span class="jp">主菜</span>Principales</a>
+    </div>
+
+    <a class="nav__cta" href="tel:+34667099828">Reservar</a>
+  </nav>
+
+
+  <!-- HERO ────────────────────────────────────────────────── -->
+  <header class="hero" id="top">
+    <div class="hero__kanji" aria-hidden="true">膳</div>
+
+    <div class="hero__copy">
+      <div class="hero__eyebrow">Cabra · Córdoba · Carta 2026</div>
+      <h1 class="hero__title">
+        De Japón al<br>
+        corazón <em>de Andalucía</em>.
+      </h1>
+      <p class="hero__lede">
+        Cocina creativa donde la disciplina ancestral del sushi se mece al ritmo cálido del Mediterráneo. Veintisiete platos, cada uno una pequeña ceremonia.
+      </p>
+      <div class="hero__meta">
+        <div class="hero__meta-item">
+          <span class="num">27</span>
+          <span class="label">Total platos<strong>14 · 9 · 4</strong></span>
+        </div>
+        <div class="hero__meta-item">
+          <span class="num">3</span>
+          <span class="label">Apartados<strong>Sushi · Entrantes · Principales</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__scroll">Desliza para descubrir</div>
+  </header>
+
+
+  <!-- ═════════════════ SUSHI ═════════════════ -->
+  <section class="section" id="sushi" aria-labelledby="sushi-title">
+    <header class="section__head">
+      <div class="section__num reveal">i.</div>
+      <h2 class="section__title reveal" id="sushi-title" style="--d:120ms;">
+        <em>Sushi</em>
+        <span class="jp">寿司 · 14 piezas</span>
+      </h2>
+      <div class="section__meta reveal" style="--d:240ms;">
+        Piezas elaboradas<br>al momento.
+        <strong>Itamae</strong>
       </div>
     </header>
 
-    <section class="section">
-      <div class="section__head">
-        <span class="section__jp">寿司</span>
-        <h2 class="section__title">Sushi</h2>
-        <span class="section__rule"></span>
-      </div>
+    <div class="dishes">
 
-
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nigiri del abuelo Antonio</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 piezas</span>
-          <span class="dish__price">5,70&nbsp;€</span>
+      <!-- 01 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/01.jpg" alt="Nigiri del abuelo Antonio" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">01</span>
+          <div class="dish__eyebrow"><span class="ord">N° 01 · Nigiri</span></div>
+          <h3 class="dish__name">Nigiri del <em>abuelo Antonio</em></h3>
+          <p class="dish__desc">Atún rojo, panko y aire del jugo del «picaíllo». Un homenaje familiar.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Gluten (panko)</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 piezas</span>
+            <span class="dish__price">5,70 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Atún rojo, panko y aire del jugo del «picaíllo».</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nigiri flameado de ventresca y foie</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 piezas</span>
-          <span class="dish__price">6,00&nbsp;€</span>
+      <!-- 02 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/02.jpg" alt="Nigiri flameado de ventresca y foie" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">02</span>
+          <div class="dish__eyebrow"><span class="ord">N° 02 · Nigiri</span></div>
+          <h3 class="dish__name">Nigiri flameado de <em>ventresca y foie</em></h3>
+          <p class="dish__desc">Con ralladura de corazón de atún curado.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 piezas</span>
+            <span class="dish__price">6,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con ralladura de corazón de atún curado.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nigiri de anguila</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 piezas</span>
-          <span class="dish__price">6,00&nbsp;€</span>
+      <!-- 03 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/03.jpg" alt="Nigiri de anguila con foie flameado" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">03</span>
+          <div class="dish__eyebrow"><span class="ord">N° 03 · Nigiri</span></div>
+          <h3 class="dish__name">Nigiri de <em>anguila</em></h3>
+          <p class="dish__desc">Con foie flameado en la mesa.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Soja (salsa unagi)</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 piezas</span>
+            <span class="dish__price">6,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con foie flameado.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nigiri de salmón y ajo negro</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 piezas</span>
-          <span class="dish__price">5,70&nbsp;€</span>
+      <!-- 04 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/04.jpg" alt="Nigiri de salmón y ajo negro" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">04</span>
+          <div class="dish__eyebrow"><span class="ord">N° 04 · Nigiri</span></div>
+          <h3 class="dish__name">Nigiri de salmón y <em>ajo negro</em></h3>
+          <p class="dish__desc">Mahonesa de ajo negro y alcaparra.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Posible mostaza</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 piezas</span>
+            <span class="dish__price">5,70 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Mahonesa de ajo negro y alcaparra.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nigiri de salmón al teriyaki</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 piezas</span>
-          <span class="dish__price">5,50&nbsp;€</span>
+      <!-- 05 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/05.jpg" alt="Nigiri de salmón al teriyaki" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">05</span>
+          <div class="dish__eyebrow"><span class="ord">N° 05 · Nigiri</span></div>
+          <h3 class="dish__name">Nigiri de salmón al <em>teriyaki</em></h3>
+          <p class="dish__desc">Pez mantequilla con salsa de trufa negra.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Soja</span><span class="dish__allergens-item">Gluten</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 piezas</span>
+            <span class="dish__price">5,50 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Pez mantequilla con salsa de trufa negra.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nigiri de dorada</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 piezas</span>
-          <span class="dish__price">5,50&nbsp;€</span>
+      <!-- 06 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/06.jpg" alt="Nigiri de dorada con mantequilla dulce picante" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">06</span>
+          <div class="dish__eyebrow"><span class="ord">N° 06 · Nigiri</span></div>
+          <h3 class="dish__name">Nigiri de <em>dorada</em></h3>
+          <p class="dish__desc">Con mantequilla dulce picante.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Huevo</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 piezas</span>
+            <span class="dish__price">5,50 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con mantequilla dulce picante.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nigiri de butterfish</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 piezas</span>
-          <span class="dish__price">5,70&nbsp;€</span>
+      <!-- 07 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/07.jpg" alt="Nigiri de butterfish" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">07</span>
+          <div class="dish__eyebrow"><span class="ord">N° 07 · Nigiri</span></div>
+          <h3 class="dish__name">Nigiri de <em>butterfish</em></h3>
+          <p class="dish__desc">Con mahonesa de trufa negra.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Posible gluten</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 piezas</span>
+            <span class="dish__price">5,70 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con mahonesa de trufa negra.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nigiri de boletus</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 piezas</span>
-          <span class="dish__price">5,20&nbsp;€</span>
+      <!-- 08 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/08.jpg" alt="Nigiri de boletus con papada ibérica" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">08</span>
+          <div class="dish__eyebrow"><span class="ord">N° 08 · Nigiri</span></div>
+          <h3 class="dish__name">Nigiri de <em>boletus</em></h3>
+          <p class="dish__desc">Con papada ibérica y chip de ajo.</p>
+          <div class="dish__allergens dish__allergens--empty">
+            <span class="label">Alérgenos</span>
+            Sin alérgenos evidentes
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 piezas</span>
+            <span class="dish__price">5,20 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con papada ibérica y chip de ajo.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nigiri de jamón de pato</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 piezas</span>
-          <span class="dish__price">6,00&nbsp;€</span>
+      <!-- 09 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/09.jpg" alt="Nigiri de jamón de pato" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">09</span>
+          <div class="dish__eyebrow"><span class="ord">N° 09 · Nigiri</span></div>
+          <h3 class="dish__name">Nigiri de <em>jamón de pato</em></h3>
+          <p class="dish__desc">Con reducción de mango y cebolla.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 piezas</span>
+            <span class="dish__price">6,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con reducción de mango y cebolla.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Uramaki de salmón y aguacate</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">8 piezas</span>
-          <span class="dish__price">12,00&nbsp;€</span>
+      <!-- 10 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/10.jpg" alt="Uramaki de salmón y aguacate" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">10</span>
+          <div class="dish__eyebrow"><span class="ord">N° 10 · Uramaki</span></div>
+          <h3 class="dish__name">Uramaki de <em>salmón y aguacate</em></h3>
+          <p class="dish__desc">Con salsa unagi y cebolla frita.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">8 piezas</span>
+            <span class="dish__price">12,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con salsa unagi y cebolla frita.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Uramaki de atún picante</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">8 piezas</span>
-          <span class="dish__price">13,00&nbsp;€</span>
+      <!-- 11 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/11.jpg" alt="Uramaki de atún picante" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">11</span>
+          <div class="dish__eyebrow"><span class="ord">N° 11 · Uramaki</span></div>
+          <h3 class="dish__name">Uramaki de <em>atún picante</em></h3>
+          <p class="dish__desc">Con aguacate y salsa picante.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">8 piezas</span>
+            <span class="dish__price">13,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con aguacate y salsa picante.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Uramaki de atún y kimchi</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">8 piezas</span>
-          <span class="dish__price">13,50&nbsp;€</span>
+      <!-- 12 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap is-center">
+          <img src="fotos-carta/12.jpg" alt="Uramaki de atún y kimchi" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">12</span>
+          <div class="dish__eyebrow"><span class="ord">N° 12 · Uramaki</span></div>
+          <h3 class="dish__name">Uramaki de <em>atún y kimchi</em></h3>
+          <p class="dish__desc">Con topping de salmón, mayo kimchi, lima y cebollino.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">8 piezas</span>
+            <span class="dish__price">13,50 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con topping de salmón, mayo kimchi, lima y cebollino.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Uramaki de la casita</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">8 piezas</span>
-          <span class="dish__price">12,00&nbsp;€</span>
+      <!-- 13 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/13.jpg" alt="Uramaki de la casita con membrillo y foie" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">13</span>
+          <div class="dish__eyebrow"><span class="ord">N° 13 · Uramaki</span></div>
+          <h3 class="dish__name">Uramaki de <em>la casita</em></h3>
+          <p class="dish__desc">Membrillo, foie y panko crunch.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Soja</span><span class="dish__allergens-item">Gluten</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">8 piezas</span>
+            <span class="dish__price">12,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Membrillo, foie y panko crunch.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Futomaki rainbow</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">12 piezas</span>
-          <span class="dish__price">15,00&nbsp;€</span>
+      <!-- 14 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/14.jpg" alt="Futomaki rainbow" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">14</span>
+          <div class="dish__eyebrow"><span class="ord">N° 14 · Futomaki</span></div>
+          <h3 class="dish__name">Futomaki <em>rainbow</em></h3>
+          <p class="dish__desc">Atún rojo, pez mantequilla, salmón y aguacate.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">12 piezas</span>
+            <span class="dish__price">15,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Atún rojo, pez mantequilla, salmón y aguacate.</p>
+      </article>
+
+    </div>
+  </section>
+
+
+  <!-- ═════════════════ ENTRANTES ═════════════════ -->
+  <section class="section" id="entrantes" aria-labelledby="entrantes-title">
+    <header class="section__head">
+      <div class="section__num reveal">ii.</div>
+      <h2 class="section__title reveal" id="entrantes-title" style="--d:120ms;">
+        <em>Entrantes</em>
+        <span class="jp">前菜 · 9 platos</span>
+      </h2>
+      <div class="section__meta reveal" style="--d:240ms;">
+        Bocados para<br>compartir.
+        <strong>Para empezar</strong>
       </div>
+    </header>
 
+    <div class="dishes">
 
-    </section>
-
-  </article>
-
-
-  <!-- ───────── PÁGINA 2 ───────── -->
-  <article class="page">
-
-    <section class="section" style="margin-top: 4mm;">
-      <div class="section__head">
-        <span class="section__jp">前菜</span>
-        <h2 class="section__title">Entrantes</h2>
-        <span class="section__rule"></span>
-      </div>
-
-
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Tartar de atún rojo con ajoblanco</span>
-          <span class="dish__leader"></span>
-          <span class="dish__price">20,00&nbsp;€</span>
+      <!-- 15 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/15.jpg" alt="Tartar de atún rojo con ajoblanco" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">15</span>
+          <div class="dish__eyebrow"><span class="ord">N° 15 · Entrante</span></div>
+          <h3 class="dish__name">Tartar de <em>atún rojo</em> con ajoblanco</h3>
+          <p class="dish__desc">Con crujiente de miel de caña y aire de ponzu.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Frutos de cáscara (almendra)</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__price">20,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con crujiente de miel de caña y aire de ponzu.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Ensaladilla de gambón</span>
-          <span class="dish__leader"></span>
-          <span class="dish__price">14,00&nbsp;€</span>
+      <!-- 16 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/16.jpg" alt="Ensaladilla de gambón" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">16</span>
+          <div class="dish__eyebrow"><span class="ord">N° 16 · Entrante</span></div>
+          <h3 class="dish__name">Ensaladilla de <em>gambón</em></h3>
+          <p class="dish__desc">Gambón, panko y mahonesa japonesa.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Crustáceos</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Gluten (panko)</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__price">14,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Gambón, panko y mahonesa japonesa.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Croquetas de kimchi</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">6 unidades</span>
-          <span class="dish__price">12,00&nbsp;€</span>
+      <!-- 17 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap is-center">
+          <img src="fotos-carta/17.jpg" alt="Croquetas de kimchi" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">17</span>
+          <div class="dish__eyebrow"><span class="ord">N° 17 · Entrante</span></div>
+          <h3 class="dish__name">Croquetas de <em>kimchi</em></h3>
+          <p class="dish__desc">Con leche de oveja y sashimi de atún rojo.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Huevo</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">6 unidades</span>
+            <span class="dish__price">12,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con leche de oveja y sashimi de atún rojo.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Nuestra versión del takoyaki</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">6 unidades</span>
-          <span class="dish__price">12,00&nbsp;€</span>
+      <!-- 18 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap is-upper">
+          <img src="fotos-carta/18.jpg" alt="Nuestra versión del takoyaki" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">18</span>
+          <div class="dish__eyebrow"><span class="ord">N° 18 · Entrante</span></div>
+          <h3 class="dish__name">Nuestra versión del <em>takoyaki</em></h3>
+          <p class="dish__desc">Con leche de oveja, pulpo, salsa unagi, katsuobushi y caldo dashi.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Pescado</span><span class="dish__allergens-item">Moluscos (pulpo)</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">6 unidades</span>
+            <span class="dish__price">12,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con leche de oveja, pulpo, salsa unagi, katsuobushi y caldo dashi.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Dumplings fritos</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">6 unidades</span>
-          <span class="dish__price">12,00&nbsp;€</span>
+      <!-- 19 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/19.jpg" alt="Dumplings fritos" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">19</span>
+          <div class="dish__eyebrow"><span class="ord">N° 19 · Entrante</span></div>
+          <h3 class="dish__name">Dumplings <em>fritos</em></h3>
+          <p class="dish__desc">Relleno de alita de pollo a baja temperatura.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Soja</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">6 unidades</span>
+            <span class="dish__price">12,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Relleno de alita de pollo a baja temperatura.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Gyozas de carrillera</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 unidades</span>
-          <span class="dish__price">12,00&nbsp;€</span>
+      <!-- 20 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/20.jpg" alt="Gyozas de carrillera" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">20</span>
+          <div class="dish__eyebrow"><span class="ord">N° 20 · Entrante</span></div>
+          <h3 class="dish__name">Gyozas de <em>carrillera</em></h3>
+          <p class="dish__desc">Relleno del guiso tradicional cordobés.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Soja</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 unidades</span>
+            <span class="dish__price">12,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Relleno del guiso tradicional cordobés.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Pan bao de panceta ibérica</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 unidades</span>
-          <span class="dish__price">13,00&nbsp;€</span>
+      <!-- 21 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/21.jpg" alt="Pan bao de panceta ibérica" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">21</span>
+          <div class="dish__eyebrow"><span class="ord">N° 21 · Entrante</span></div>
+          <h3 class="dish__name">Pan bao de <em>panceta ibérica</em></h3>
+          <p class="dish__desc">Cocinada a baja temperatura durante 9 horas.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 unidades</span>
+            <span class="dish__price">13,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Cocinada a baja temperatura durante 9 horas.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Baozi de calamares</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 unidades</span>
-          <span class="dish__price">15,00&nbsp;€</span>
+      <!-- 22 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/22.jpg" alt="Baozi de calamares" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">22</span>
+          <div class="dish__eyebrow"><span class="ord">N° 22 · Entrante</span></div>
+          <h3 class="dish__name">Baozi de <em>calamares</em></h3>
+          <p class="dish__desc">Relleno de calamares «encebollaos».</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Moluscos</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 unidades</span>
+            <span class="dish__price">15,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Relleno de calamares «encebollaos».</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Baozi de bolognese</span>
-          <span class="dish__leader"></span>
-          <span class="dish__meta">2 unidades</span>
-          <span class="dish__price">14,00&nbsp;€</span>
+      <!-- 23 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/23.jpg" alt="Baozi de bolognese" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">23</span>
+          <div class="dish__eyebrow"><span class="ord">N° 23 · Entrante</span></div>
+          <h3 class="dish__name">Baozi de <em>bolognese</em></h3>
+          <p class="dish__desc">Relleno de ragú de ternera y cerdo.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Posible apio</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__pieces">2 unidades</span>
+            <span class="dish__price">14,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Relleno de ragú de ternera y cerdo.</p>
+      </article>
+
+    </div>
+  </section>
+
+
+  <!-- ═════════════════ PRINCIPALES ═════════════════ -->
+  <section class="section" id="principales" aria-labelledby="principales-title">
+    <header class="section__head">
+      <div class="section__num reveal">iii.</div>
+      <h2 class="section__title reveal" id="principales-title" style="--d:120ms;">
+        <em>Principales</em>
+        <span class="jp">主菜 · 4 platos</span>
+      </h2>
+      <div class="section__meta reveal" style="--d:240ms;">
+        Para una mesa<br>más sustancial.
+        <strong>Plato fuerte</strong>
       </div>
-    </section>
+    </header>
 
-    <section class="section">
-      <div class="section__head">
-        <span class="section__jp">主菜</span>
-        <h2 class="section__title">Principales</h2>
-        <span class="section__rule"></span>
-      </div>
+    <div class="dishes">
 
-
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Katsu curry</span>
-          <span class="dish__leader"></span>
-          <span class="dish__price">16,00&nbsp;€</span>
+      <!-- 24 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/24.jpg" alt="Katsu curry con arroz y lomo ibérico" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">24</span>
+          <div class="dish__eyebrow"><span class="ord">N° 24 · Principal</span></div>
+          <h3 class="dish__name">Katsu <em>curry</em></h3>
+          <p class="dish__desc">Con arroz y lomo ibérico.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Huevo</span><span class="dish__allergens-item">Soja</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__price">16,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con arroz y lomo ibérico.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Udon de carbonara</span>
-          <span class="dish__leader"></span>
-          <span class="dish__price">19,00&nbsp;€</span>
+      <!-- 25 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/25.jpg" alt="Udon de carbonara con guanchale y pecorino" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">25</span>
+          <div class="dish__eyebrow"><span class="ord">N° 25 · Principal</span></div>
+          <h3 class="dish__name">Udon de <em>carbonara</em></h3>
+          <p class="dish__desc">Con guanchale y pecorino romano.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Gluten</span><span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Huevo</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__price">19,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con guanchale y pecorino romano.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Magret de pato de Navarra</span>
-          <span class="dish__leader"></span>
-          <span class="dish__price">21,00&nbsp;€</span>
+      <!-- 26 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/26.jpg" alt="Magret de pato de Navarra" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">26</span>
+          <div class="dish__eyebrow"><span class="ord">N° 26 · Principal</span></div>
+          <h3 class="dish__name">Magret de <em>pato de Navarra</em></h3>
+          <p class="dish__desc">Salsa de trufa y foie, setas de temporada y zanahorias baby.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Leche</span><span class="dish__allergens-item">Posibles sulfitos</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__price">21,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Salsa de trufa y foie, setas de temporada y zanahorias baby.</p>
-      </div>
+      </article>
 
-      <div class="dish">
-        <div class="dish__top">
-          <span class="dish__name">Tteokbokki en salsa de gochujang</span>
-          <span class="dish__leader"></span>
-          <span class="dish__price">18,00&nbsp;€</span>
+      <!-- 27 -->
+      <article class="dish reveal">
+        <figure class="dish__media reveal-img-wrap">
+          <img src="fotos-carta/27.jpg" alt="Tteokbokki en salsa de gochujang" loading="lazy" />
+        </figure>
+        <div class="dish__body">
+          <span class="dish__num">27</span>
+          <div class="dish__eyebrow"><span class="ord">N° 27 · Principal</span></div>
+          <h3 class="dish__name">Tteokbokki en salsa de <em>gochujang</em></h3>
+          <p class="dish__desc">Con mollejas de cordero y setas shitake.</p>
+          <div class="dish__allergens">
+            <span class="label">Alérgenos</span>
+            <span class="dish__allergens-item">Soja</span><span class="dish__allergens-item">Gluten</span>
+          </div>
+          <div class="dish__meta">
+            <span class="dish__price">18,00 €</span>
+          </div>
         </div>
-        <p class="dish__desc">Con mollejas de cordero y setas shitake.</p>
-      </div>
-    </section>
+      </article>
 
-    <aside class="qr-card" aria-label="QR para carta digital y alérgenos">
-      <div class="qr-card__frame">
-        <img class="qr" alt="QR carta digital y alérgenos" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcIAAAHCCAIAAADzel4SAAAIR0lEQVR42u3dwa1jRRCG0d9oAvDOCTgFJLZEzhaJpMgApLkUVdV9zn7m2X3tT+1FqV7fzzsA/KxfHAGAjALIKICMAsgoADIKIKMAMgogowDIKICMAsgogIwCIKMAMgogowAyCoCMAsgogIwCyCiAjAIgowAyCiCjADIKgIwCyCiAjALIKAAyCiCjADIKIKMAyCiAjALIKICMAsgoAD/rR9cf/vOvPw47yt9+/b3l/c78u0+eft076jqrupP0HZxwkm6jADIKIKMAMgogowDIKICMAsgogIwCkLFTTBk5jZCyqY8n8zPnncZt02J1T7Du7/rUuY0CyCiAjALIKAAyCiCjADIKIKMAyChAjp9iStMkQ9e0SZomVTJy1qju+dbtgKrbTOU76DYK4Ec9ADIKIKMAMgogowDIKICMAsgoQEwxkdmbfOqma+reUd3Oq5k7oG6bgHIbBUBGAWQUQEYBZBRARh0BgIwCyCiAjALEFBOxi2nzjNPGvVVPXvPGzUVuowDIKICMAsgogIwCyKgjAJBRABkFkFGAmGLK/r1GOW4XE1k+hzZzAuq276DbKICMAsgoADIKIKMAMgogowDIKICMAsQUU06f6qnbPtQ15dK1bWnmWXW9Zt9Bt1EAGQWQUQBkFEBGAWQUQEYBkFEAGQWIKabY5ZLyiZGubTye0fwZNt9Bt1EAGQWQUQBkFEBGAWQUQEYBkFEAGQWIXUw5a1Lln2dCnkyM1M2xdO3b2bjnZ+buqZn7wc47K7dRABkFkFEAGQVARgFkFEBGAWQUABkFyNIppplzLHWzRl3zFRu3AHVNbdW9qplzaBvf78z9UW6jADIKIKMAMgogowDIKICMAsgogIwC8K9e3887Z209skFo/g6orv1CMzc1bXy+XduWZpbBbRRARgFkFEBGAWQUABkFkFEAGQWQUQAydhfTzJ0q502q5LJZsq5nNHPm58kzum1Pl9sogIwCyCiAjAIgowAyCiCjADIKgIwC5MgppplmzmZ0zRpt3LfTdVZPTsNEn9sogB/1AMgogIwCyCiAjAIgowAyCiCjADHFFFuAZk/mzJxTOm8T18ZvSteWp67/2W0UwI96ABkFQEYBZBRARgFkFAAZBZBRgLFe3887Z01uzNwglOOmp7rmlOpmqzZ+YnPc3N3G+Ua3UQAZBZBRABkFkFEAZBRARgFkFEBGAciFu5i6dtdk5FacuqeQy/YaZeQcWtenbuaGKLdRAD/qAWQUABkFkFEAGQWQUQBkFEBGAWIXU06fNtk4TTTz/W58VabFzt625DYKIKMAMgogowDIKICMAsgogIwCIKMAuXAXU8omKLq2xMyczchl25Zum4DqmhY779PuNgogowAyCiCjADIKgIwCyCiAjALIKAAZO8WUpl0uWbghqm6eZOa80G3n3HWSXRuxZm7ichsF8KMeQEYBZBQAGQWQUQAZBZBRAGQUIEdOMd0255CyOZau7UMzN1N1TUDVfRd8B91GAfyoB0BGAWQUQEYBZBQAGQWQUQAZBTjA6/t5X/WGzWZMOKs0TTF1/c91s1UzJ75u+x65jQLIKICMAsgogIwCIKMAMgogowAyCkDG7mJK0yxKmmYzurbxbNxNtPGz0TU99eTv1n2ez/vUuY0CyCiAjALIKAAyCiCjADIKIKMAyChAlk4xbZxzqHvNM7ce1c3PzNzUtNHGybq6Z9T1mt1GAWQUQEYBZBRARgGQUQAZBZBRABkFIEt3MaVs5ufJ1IeNSf/VadTN3sycCOp6+l1Tam6jAMgogIwCyCiAjAIgowAyCiCjADIKQIZMMXVNBHXNOG2czKnbejRz0qxrq9XMJzjzO+g2CuBHPQAyCiCjADIKIKMAyCiAjALIKMBSr+/nnXlzDmmaj9o4E7Jx+9B5T3DmhNvMk6yb6XIbBfCjHkBGAZBRABkFkFEAGQVARgFkFCB2MeX06YuZE0HneXKSdZ+NjU+/6ySfnNXMOUO3UQAZBZBRABkFkFEAZBRARgFkFEBGAcjSXUxP5hzq5klue1Vdzzcjp3o2nvNtm7jcRgH8qAeQUQBkFEBGAWQUQEYBkFEAGQWIKabM2JiUhdMXM7dLZeFE0HmfutvMnHFyGwWQUQAZBZBRABkFQEYBZBRARgFkFICMnWK6Td3OnK7pmq5X1TXHsnGL18YdUG6jAH7UAyCjADIKIKMAMgqAjALIKICMAhzpRxZO9WThlpgnsyh1r6prBmbmPqWuc575HZy5W2zm03cbBZBRABkFkFEAGQVARgFkFEBGAWQUgIydYsrCbS1PZlHqJjdmzgvdtgOq7qxmnuRtE19uowAyCiCjADIKgIwCyCiAjALIKAAyCpAjp5jStMepa/vQzA0zMyeCNs7PdE3mdP3d8+aU3EYBZBRARgFkFAAZBZBRABkFkFEAZBQgF04xnWfj1EfXTqQsnNvpmger27V12x42t1EAGQWQUQAZBUBGAWQUQEYBZBQAGQWIKaaYccpFG7GezN7U/du6yZyuV9V1Vhsnr9xGAWQUQEYBZBRARgGQUQAZBZBRABkFIEdOMW3c1pKy2Yy6WZSuGSdzSvM/dV1n5TYK4Ec9ADIKIKMAMgogowDIKICMAsgoQEwxZcOenxw3l7VxXmjm3qq6p3De3M7M/WBuowAyCiCjAMgogIwCyCiAjAIgowAyCjDW6/t5OwUAt1EAGQWQUQAZBUBGAWQUQEYBZBQAGQWQUQAZBZBRAGQUQEYBZBRARgGQUQAZBZBRABkFkFEAZBRARgFkFEBGAZBRABkFkFEAGQVARgFkFEBGAWQUABkFkFEAGQWQUQAZBUBGAf5/fwM85bBWa1IfWQAAAABJRU5ErkJggg==" />
-        <span class="qr-card__logo" aria-hidden="true">
-          <svg viewBox="48.37 637.83 264.26 204.96">
-            <path fill="#b07a36" d="M237.6,691.5 L168.3,724.8 255.7,785.7c4.8,-10.6 7.4,-22.5 7.4,-35.1C263.1,726.5 253.4,705.7 237.6,691.5"/>
-            <path fill="#ece2cf" d="m305.1,821.9c0.5,0.7 0.1,1.3 -0.3,1.9 -0.4,0.6 -1.1,0.5 -1.6,0.2 -1.1,-0.6 -32.9,-22.8 -47.8,-33.2 -0.6,-0.5 -1.3,-1.8 -2.3,-0.5 -1,1.3 0.1,1.8 1,2.4 18.4,14.2 36.6,28.7 54.4,43.7 1.3,1.1 2.8,2 3.5,3.6 0,0.5 0.3,1.1 0,1.6 -0.9,1.4 -2.7,0.4 -4,-0.6 -17.7,-14.2 -35.5,-28.3 -53.3,-42.4 -4,-3.2 -4,-3.2 -6.9,0.9 -12.7,17.8 -29.9,28.6 -51.4,31.9 -19.3,3 -37.1,-1.2 -53.1,-12.6 -18.7,-13.3 -31.5,-30.8 -36.1,-53.6 -1.5,-7.2 -1.6,-14.5 -1.1,-21.8 1,-12.9 3.7,-25.4 10.3,-36.7 1.3,-2.2 2.4,-4.4 4,-6.4 1.3,-1.5 0.8,-2.2 -0.5,-3.2 -11.7,-8.7 -23.2,-17.7 -34.9,-26.3 -11.4,-8.4 -23,-16.4 -34.5,-24.6 -0.8,-0.6 -1.8,-1 -1.6,-2.4 0.4,-1.7 1.9,-2.4 3.7,-1.5 0,-0.5 0,-0.9 -0,-1.3 -0,-1.1 0,-2.2 1.2,-2.6 1,-0.3 1.8,0.4 2.5,1 6.6,5.8 13.2,11.6 19.8,17.3 12.2,10.4 24.8,20.3 37.6,30 17.3,13 59.1,39.9 60.5,40.9 1.1,0.8 1.7,0.5 1.7,-0.9 0,-1.9 0.9,-59.1 0.2,-75.9 -0.1,-1.7 -0.2,-3.5 0.7,-5.1 0.5,-0.9 1.1,-1.7 2.1,-1.7 1.1,0 1.8,0.8 2.3,1.9 0.6,1.4 0.6,2.9 0.6,4.4 -0.1,15.6 1.3,82.5 1.5,83.2 0.3,1 1.2,1.8 2.1,1.6 1,-0.1 0.5,-1.3 0.5,-2 0,-6 0,-68.2 0,-83.5 0,-1.4 0,-2.8 0.7,-4 1.2,-2.1 3.2,-2.1 4.4,0 0.7,1.3 0.7,2.6 0.7,4 -0,9.5 1,80 1,88.7 0,1.7 0.5,2.8 1.9,3.6C198.5,744.2 304.6,821.3 305.1,821.9"/>
-          </svg>
-        </span>
-      </div>
-      <div class="qr-card__body">
-        <span class="qr-card__eyebrow">献立 · アレルゲン</span>
-        <span class="qr-card__title">Carta digital y alérgenos</span>
-        <span class="qr-card__desc">Escanea con la cámara del móvil para consultar la información detallada de cada plato y los alérgenos.</span>
-      </div>
-    </aside>
+    </div>
+  </section>
 
-    <footer class="footer">
-      <div class="footer__left">
-        Gula Restaurante<br>
-        Cabra · Córdoba
-      </div>
-      <div class="footer__center" aria-hidden="true">和</div>
-      <div class="footer__right">
-        Reservas
-        <span class="footer__phone">667 09 98 28</span>
-      </div>
-    </footer>
 
-  </article>
+  <!-- FOOTER / CTA ────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <span class="footer__jp">予約 · Reservas</span>
+      <h2 class="footer__title">Reserva tu <em>mesa</em>.</h2>
+      <p class="footer__lede">
+        Atendemos personalmente cada reserva. Escríbenos por WhatsApp o llámanos — te responderemos enseguida.
+      </p>
 
-  <button class="print-btn" type="button" onclick="window.print()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-      <path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v7H6z" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    Imprimir / Guardar PDF
-  </button>
+      <div class="footer__actions">
+        <a class="footer__btn footer__btn--primary" href="tel:+34667099828">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+          Llamar
+        </a>
+        <a class="footer__btn footer__btn--ghost" href="https://wa.me/34667099828?text=Hola%2C%20me%20gustar%C3%ADa%20reservar%20una%20mesa%20en%20Gula." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-1 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.3 0-.4 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.3c1.4.8 3.1 1.3 4.8 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.1.8.8-3-.2-.3A8 8 0 1 1 20 12c0 4.4-3.6 8-8 8z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+
+      <div class="footer__contact">
+        <div>
+          Dirección
+          <strong>C. Rafael Leña Caballero, Cabra · Córdoba</strong>
+        </div>
+        <div>
+          Teléfono
+          <strong>667 09 98 28</strong>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    /* ── Auto-detect vertical photos and adjust crop anchor ─────── */
+    document.querySelectorAll('.dish__media img').forEach(img => {
+      const tagVertical = () => {
+        if (img.naturalHeight > img.naturalWidth) {
+          img.closest('.dish__media').classList.add('is-vertical');
+        }
+      };
+      if (img.complete && img.naturalWidth > 0) tagVertical();
+      else img.addEventListener('load', tagVertical, { once: true });
+    });
+
+
+    /* ── Reveal on scroll (graceful, never hides JS-off content) ── */
+    const revealables = document.querySelectorAll('.reveal, .reveal-img-wrap');
+
+    if (!('IntersectionObserver' in window)) {
+      revealables.forEach(el => el.classList.add('in'));
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -8% 0px' });
+
+      revealables.forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.95 && r.bottom > 0) el.classList.add('in');
+        else io.observe(el);
+      });
+
+      // Salvaguarda: si en 5s algo sigue oculto, fuerza la entrada
+      setTimeout(() => revealables.forEach(el => el.classList.add('in')), 5000);
+    }
+
+
+    /* ── Sticky tab nav: highlight active section ──────────── */
+    const sections = ['sushi', 'entrantes', 'principales'].map(id => document.getElementById(id));
+    const tabs = document.querySelectorAll('.nav__tab');
+
+    const setActiveTab = (id) => {
+      tabs.forEach(t => t.classList.toggle('is-active', t.dataset.tab === id));
+    };
+
+    const onScroll = () => {
+      const y = window.scrollY + window.innerHeight * 0.35;
+      let current = null;
+      for (const s of sections) {
+        if (s && s.offsetTop <= y) current = s.id;
+      }
+      setActiveTab(current);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+
+    /* ── Smooth scroll for in-page anchors ─────────────────── */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if (href.length > 1) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            const offset = href === '#top' ? 0 : (document.getElementById('nav').offsetHeight + 8);
+            window.scrollTo({ top: target.offsetTop - offset, behavior: 'smooth' });
+          }
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
