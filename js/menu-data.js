@@ -25,9 +25,8 @@ export const MENU = [
   { id: "17", cat: "entrantes", name: "Croquetas de kimchi",               pieces: "6 unidades", price: 12.00, desc: "Con leche de oveja y sashimi de atún rojo.",                                  photo: "fotos-carta/17.jpg" },
   { id: "18", cat: "entrantes", name: "Nuestra versión del takoyaki",      pieces: "6 unidades", price: 12.00, desc: "Con leche de oveja, pulpo, salsa unagi, katsuobushi y caldo dashi.",          photo: "fotos-carta/18.jpg" },
   { id: "19", cat: "entrantes", name: "Dumplings fritos",                  pieces: "6 unidades", price: 12.00, desc: "Relleno de alita de pollo a baja temperatura.",                               photo: "fotos-carta/19.jpg" },
-  { id: "20", cat: "entrantes", name: "Gyozas de carrillera",              pieces: "2 unidades", price: 12.00, desc: "Relleno del guiso tradicional cordobés.",                                     photo: "fotos-carta/20.jpg" },
+  { id: "20", cat: "entrantes", name: "Gyozas de carrillera",              pieces: "6 unidades", price: 12.00, desc: "Relleno del guiso tradicional cordobés.",                                     photo: "fotos-carta/20.jpg" },
   { id: "21", cat: "entrantes", name: "Pan bao de panceta ibérica",        pieces: "2 unidades", price: 13.00, desc: "Cocinada a baja temperatura durante 9 horas.",                                photo: "fotos-carta/21.jpg" },
-  { id: "22", cat: "entrantes", name: "Baozi de calamares",                pieces: "2 unidades", price: 15.00, desc: "Relleno de calamares «encebollaos».",                                         photo: "fotos-carta/22.jpg" },
   { id: "23", cat: "entrantes", name: "Baozi de bolognese",                pieces: "2 unidades", price: 14.00, desc: "Relleno de ragú de ternera y cerdo.",                                         photo: "fotos-carta/23.jpg" },
 
   // ─── PRINCIPALES ───
