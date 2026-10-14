@@ -4,12 +4,12 @@
 
 export const MENU = [
   // ─── SUSHI ───
-  { id: "01", cat: "sushi", name: "Nigiri de atún rojo de Almadraba con mantequilla tostada", pieces: "2 piezas", price: 5.70,  desc: "Atún rojo de almadraba con mantequilla tostada.",            photo: "fotos-carta/placeholder.svg" },
+  { id: "01", cat: "sushi", name: "Nigiri de atún rojo de almadraba", pieces: "2 piezas", price: 5.70,  desc: "Con mantequilla tostada.",            photo: "fotos-carta/placeholder.svg" },
   { id: "02", cat: "sushi", name: "Nigiri flameado de ventresca y foie", pieces: "2 piezas", price: 6.00,  desc: "Con ralladura de corazón de atún curado.",                 photo: "fotos-carta/02.jpg" },
   { id: "03", cat: "sushi", name: "Nigiri de anguila",                  pieces: "2 piezas",  price: 6.00,  desc: "Con foie flameado.",                                       photo: "fotos-carta/03.jpg" },
   { id: "04", cat: "sushi", name: "Nigiri de salmón y ajo negro",       pieces: "2 piezas",  price: 5.70,  desc: "Mahonesa de ajo negro y alcaparra.",                       photo: "fotos-carta/04.jpg" },
   { id: "05", cat: "sushi", name: "Nigiri de salmón al teriyaki",       pieces: "2 piezas",  price: 5.50,  desc: "Salmón flameado con salsa teriyaki y arroz frito.",        photo: "fotos-carta/05.jpg" },
-  { id: "28", cat: "sushi", name: "Nigiri de salmón, jalapeño encurtido y sus huevas", pieces: "2 piezas", price: 5.70, desc: "Salmón, jalapeño encurtido y sus huevas.",   photo: "fotos-carta/placeholder.svg" },
+  { id: "28", cat: "sushi", name: "Nigiri de salmón y jalapeño", pieces: "2 piezas", price: 5.70, desc: "Con jalapeño encurtido y sus huevas.",   photo: "fotos-carta/placeholder.svg" },
   { id: "06", cat: "sushi", name: "Nigiri de dorada",                   pieces: "2 piezas",  price: 5.50,  desc: "Con mantequilla dulce picante.",                           photo: "fotos-carta/06.jpg" },
   { id: "07", cat: "sushi", name: "Nigiri de butterfish",               pieces: "2 piezas",  price: 5.70,  desc: "Con mahonesa de trufa negra.",                             photo: "fotos-carta/07.jpg" },
   { id: "08", cat: "sushi", name: "Nigiri de boletus",                  pieces: "2 piezas",  price: 5.20,  desc: "Con papada ibérica y chip de ajo.",                        photo: "fotos-carta/08.jpg" },
@@ -28,13 +28,12 @@ export const MENU = [
   { id: "20", cat: "entrantes", name: "Gyozas fritas de carrillera",       pieces: "6 unidades", price: 12.00, desc: "Relleno del guiso tradicional cordobés.",                                     photo: "fotos-carta/20.jpg" },
   { id: "29", cat: "entrantes", name: "Gyozas de langostino y pollo",      pieces: "6 unidades", price: 12.00, desc: "Con miel de naranja y mahonesa de pimienta sichuan.",                         photo: "fotos-carta/placeholder.svg" },
   { id: "21", cat: "entrantes", name: "Pan bao de panceta ibérica",        pieces: "2 unidades", price: 13.00, desc: "Cocinada a baja temperatura durante 9 horas.",                                photo: "fotos-carta/21.jpg" },
-  { id: "23", cat: "entrantes", name: "Baozi de bolognese",                pieces: "2 unidades", price: 14.00, desc: "Relleno de ragú de ternera y cerdo.",                                         photo: "fotos-carta/23.jpg" },
 
   // ─── PRINCIPALES ───
   { id: "24", cat: "principales", name: "Katsu curry",                       pieces: null, price: 16.00, desc: "Con arroz y lomo ibérico.",                                          photo: "fotos-carta/24.jpg" },
   { id: "25", cat: "principales", name: "Udon de carbonara",                 pieces: null, price: 19.00, desc: "Con guanchale y pecorino romano.",                                   photo: "fotos-carta/25.jpg" },
   { id: "26", cat: "principales", name: "Magret de pato de Navarra",         pieces: null, price: 21.00, desc: "Salsa de trufa y foie, setas de temporada y zanahorias baby.",      photo: "fotos-carta/26.jpg" },
-  { id: "30", cat: "principales", name: "Ramen con dumpling de panceta y huevo marinado", pieces: null, price: 16.00, desc: "Con dumpling de panceta y huevo marinado.",            photo: "fotos-carta/placeholder.svg" },
+  { id: "30", cat: "principales", name: "Shoyu ramen", pieces: null, price: 16.00, desc: "Con dumpling de panceta y huevo marinado.",            photo: "fotos-carta/placeholder.svg" },
   { id: "27", cat: "principales", name: "Tteokbokki en salsa de gochujang",  pieces: null, price: 18.00, desc: "Con mollejas de cordero y setas shitake.",                          photo: "fotos-carta/27.jpg" },
 ];
 
