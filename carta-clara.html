@@ -395,18 +395,21 @@
       body { display: block !important; gap: 0 !important; }
       .page {
         width: 210mm !important;
-        min-height: 297mm !important;
+        height: 297mm !important;
+        min-height: 0 !important;
         margin: 0 !important;
         padding: 18mm 22mm 14mm !important;
         background: transparent !important;
         background-image: none !important;          /* sin radial-gradients */
         box-shadow: none !important;
-        page-break-after: always;
         page-break-inside: avoid;
-        break-after: page;
+        overflow: hidden;
       }
       .page::after { display: none !important; }    /* sin grano (data URI pesado) */
-      .page:last-child { page-break-after: auto; break-after: auto; }
+      .page:not(:last-child) {
+        page-break-after: always;
+        break-after: page;
+      }
       .print-btn { display: none !important; }
       /* La tarjeta del QR también deja de pintar su gradient suave */
       .qr-card { background: transparent !important; }
