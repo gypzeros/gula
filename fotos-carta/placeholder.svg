@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Foto próximamente">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="40%" r="80%">
+      <stop offset="0%" stop-color="#2a2420"/>
+      <stop offset="100%" stop-color="#15110e"/>
+    </radialGradient>
+    <pattern id="grain" x="0" y="0" width="220" height="220" patternUnits="userSpaceOnUse">
+      <filter id="n">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+        <feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 0"/>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#n)" opacity=".3"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#g)"/>
+  <rect width="1200" height="900" fill="url(#grain)" opacity=".35"/>
+
+  <!-- marco inner sutil -->
+  <rect x="40" y="40" width="1120" height="820" fill="none" stroke="#b07a36" stroke-opacity=".2" stroke-width="1"/>
+
+  <!-- Signo de interrogación central -->
+  <text x="600" y="520"
+        font-family="'Cormorant Garamond', 'Times New Roman', serif"
+        font-style="italic"
+        font-weight="400"
+        font-size="520"
+        text-anchor="middle"
+        fill="#b07a36"
+        opacity=".85">?</text>
+
+  <!-- Etiqueta inferior -->
+  <text x="600" y="700"
+        font-family="'Noto Serif JP', serif"
+        font-size="34"
+        letter-spacing="12"
+        text-anchor="middle"
+        fill="#b07a36"
+        opacity=".7">近日公開</text>
+
+  <text x="600" y="760"
+        font-family="'Manrope', sans-serif"
+        font-size="26"
+        letter-spacing="8"
+        text-anchor="middle"
+        fill="#ece2cf"
+        opacity=".55">FOTO PRÓXIMAMENTE</text>
+</svg>
